@@ -183,7 +183,7 @@ virtual class ObstacleSDFFactorGPArm : gtsam::NoiseModelFactor {
 };
 
 
-// Arm obstacle avoid factor (just plannar arm with 2D signed distance field)
+// Arm obstacle avoid factor (just planar arm with 2D signed distance field)
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorArm.h>
 
 virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
@@ -193,13 +193,35 @@ virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
 };
 
 
-// Arm obstacle avoid factor with GP  (just plannar arm with 2D signed distance field)
+// Arm obstacle avoid factor with GP  (just planar arm with 2D signed distance field)
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPArm.h>
 
 virtual class ObstaclePlanarSDFFactorGPArm : gtsam::NoiseModelFactor {
   ObstaclePlanarSDFFactorGPArm(
-      size_t pose1key, size_t vel1key, size_t pose2key, size_t ve21key,
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
       const gpmp2::ArmModel& arm, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
+// planar obstacle avoid factor for Point Robot
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPointRobot.h>
+
+virtual class ObstaclePlanarSDFFactorPointRobot : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPointRobot(
+      size_t posekey, const gpmp2::PointRobotModel& pR,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+};
+
+
+// planar obstacle avoid factor with GP for Point Robot 
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPointRobot.h>
+
+virtual class ObstaclePlanarSDFFactorGPPointRobot : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPointRobot(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::PointRobotModel& pR, const gpmp2::PlanarSDF& sdf,
       double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
       double delta_t, double tau);
 };
