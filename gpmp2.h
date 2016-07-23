@@ -1,6 +1,6 @@
-// gpmp2 matlab wrapper declearations
+// gpmp2 matlab wrapper declarations
 
-// gtsam delearation
+// gtsam deceleration
 class gtsam::Vector6;
 class gtsam::Vector3;
 class gtsam::Point3;
@@ -68,6 +68,20 @@ class Arm {
   gtsam::Pose3 base_pose() const;
 };
 
+// Abstract Point Robot class
+#include <gpmp2/kinematics/PointRobot.h>
+
+class PointRobot {
+  PointRobot(size_t dof, size_t nr_links);
+  // full forward kinematics
+  Matrix forwardKinematicsPose(Vector jp) const;
+  Matrix forwardKinematicsPosition(Vector jp) const;
+  Matrix forwardKinematicsVel(Vector jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+};
+
 
 // BodySphere class
 #include <gpmp2/kinematics/RobotModel.h>
@@ -82,7 +96,9 @@ class BodySphereVector {
 };
 
 
-// Physical ArmModel classes
+// Physical ArmModel class
+#include <gpmp2/kinematics/ArmModel.h>
+
 class ArmModel {
   ArmModel(const gpmp2::Arm& arm, const gpmp2::BodySphereVector& spheres);
   // solve sphere center position in world frame
@@ -90,6 +106,20 @@ class ArmModel {
   // accesses
   size_t dof() const;
   gpmp2::Arm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Point Robot Model class
+#include <gpmp2/kinematics/PointRobotModel.h>
+
+class PointRobotModel {
+  PointRobotModel(const gpmp2::PointRobot& pR, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(Vector conf) const;
+  // accesses
+  size_t dof() const;
+  gpmp2::PointRobot fk_model() const;
   size_t nr_body_spheres() const;
   double sphere_radius(size_t i) const;
 };
@@ -153,7 +183,7 @@ virtual class ObstacleSDFFactorGPArm : gtsam::NoiseModelFactor {
 };
 
 
-// Arm obstacle avoid factor (just plannar arm with 2D signed distance field)
+// Arm obstacle avoid factor (just planar arm with 2D signed distance field)
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorArm.h>
 
 virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
@@ -163,13 +193,35 @@ virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
 };
 
 
-// Arm obstacle avoid factor with GP  (just plannar arm with 2D signed distance field)
+// Arm obstacle avoid factor with GP  (just planar arm with 2D signed distance field)
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPArm.h>
 
 virtual class ObstaclePlanarSDFFactorGPArm : gtsam::NoiseModelFactor {
   ObstaclePlanarSDFFactorGPArm(
-      size_t pose1key, size_t vel1key, size_t pose2key, size_t ve21key,
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
       const gpmp2::ArmModel& arm, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
+// planar obstacle avoid factor for Point Robot
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPointRobot.h>
+
+virtual class ObstaclePlanarSDFFactorPointRobot : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPointRobot(
+      size_t posekey, const gpmp2::PointRobotModel& pR,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+};
+
+
+// planar obstacle avoid factor with GP for Point Robot 
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPointRobot.h>
+
+virtual class ObstaclePlanarSDFFactorGPPointRobot : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPointRobot(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::PointRobotModel& pR, const gpmp2::PlanarSDF& sdf,
       double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
       double delta_t, double tau);
 };
