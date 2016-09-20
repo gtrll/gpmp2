@@ -1,4 +1,4 @@
-function plotPointRobot2D(robot, conf, color_rgb)
+function h = plotPointRobot2D(robot, conf, color_rgb)
 %plotPointRobot2D Plot PointRobotModel in 2D
 %
 %   Usage: plotRobotModel(robot, conf, color_rgb)
@@ -18,6 +18,6 @@ r = robot.sphere_radius(0);
 theta = linspace(0,2*pi);
 x = r * cos(theta) + body_points(1,:);
 y = r * sin(theta) + body_points(2,:);
-plot(x, y, 'Color', color_rgb);
+h = plot(x, y, 'Color', color_rgb);
 
 end

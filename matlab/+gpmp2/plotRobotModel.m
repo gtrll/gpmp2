@@ -1,4 +1,4 @@
-function plotRobotModel(robot, conf, color_rgb)
+function h = plotRobotModel(robot, conf, color_rgb)
 %plotRobotModel Plot RobotModel class in 3D, visualize the body spheres
 %   also it can plot any child class of RobotModelm like ArmModel
 %
@@ -20,9 +20,9 @@ colormap(color_rgb);
 [X_ball, Y_ball, Z_ball] = sphere(16);
 
 for i=1:robot.nr_body_spheres()
-    surf(X_ball * robot.sphere_radius(i-1) + body_points(1, i), ...
-        Y_ball * robot.sphere_radius(i-1) + body_points(2, i), ...
-        Z_ball * robot.sphere_radius(i-1) + body_points(3, i));
+    h(i) = surf(X_ball * robot.sphere_radius(i-1) + body_points(1, i), ...
+                Y_ball * robot.sphere_radius(i-1) + body_points(2, i), ...
+                Z_ball * robot.sphere_radius(i-1) + body_points(3, i));
 end
 
 end
