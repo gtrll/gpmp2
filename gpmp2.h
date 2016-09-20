@@ -169,6 +169,7 @@ virtual class ObstacleSDFFactorArm : gtsam::NoiseModelFactor {
   ObstacleSDFFactorArm(
       size_t poseKey, const gpmp2::ArmModel& arm,
       const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(Vector pose) const;
 };
 
 
@@ -190,6 +191,7 @@ virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
   ObstaclePlanarSDFFactorArm(
       size_t posekey, const gpmp2::ArmModel& arm,
       const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(Vector pose) const;
 };
 
 
@@ -212,6 +214,7 @@ virtual class ObstaclePlanarSDFFactorPointRobot : gtsam::NoiseModelFactor {
   ObstaclePlanarSDFFactorPointRobot(
       size_t posekey, const gpmp2::PointRobotModel& pR,
       const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(Vector pose) const;
 };
 
 
