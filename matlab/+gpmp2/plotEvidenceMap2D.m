@@ -25,8 +25,5 @@ axis equal
 axis([origin_x-cell_size/2, grid_corner_x+cell_size/2, ...
     origin_y-cell_size/2, grid_corner_y+cell_size/2])
 
-xlabel('X/m')
-ylabel('Y/m')
-
 end
 

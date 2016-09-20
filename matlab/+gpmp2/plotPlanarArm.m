@@ -1,4 +1,4 @@
-function plotPlanarArm(arm, conf, color, width)
+function h = plotPlanarArm(arm, conf, color, width)
 %PLOTPLANARARM Plot Arm class in 2D
 %
 %   Usage: PLOTPLANARARM(arm, conf, color, width)
@@ -12,9 +12,9 @@ position = position(1:2, :);
 position = [[0;0], position];
 
 style = strcat(color, '-');
-plot(position(1,:), position(2,:), style, 'LineWidth', width);
+h(1) = plot(position(1,:), position(2,:), style, 'LineWidth', width);
 
-plot(position(1,1:end-1), position(2,1:end-1), 'k.', 'MarkerSize', 20);
+h(2) = plot(position(1,1:end-1), position(2,1:end-1), 'k.', 'MarkerSize', 20);
 
 end
 

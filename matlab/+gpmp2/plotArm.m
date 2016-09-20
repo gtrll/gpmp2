@@ -1,4 +1,4 @@
-function plotArm(arm, conf, color, width)
+function h = plotArm(arm, conf, color, width)
 %PLOTARM Plot Arm class in 3D
 %
 %   Usage: PLOTARM(arm, conf, color, width)
@@ -10,9 +10,9 @@ function plotArm(arm, conf, color, width)
 position = arm.forwardKinematicsPosition(conf);
 
 style = strcat(color, '-');
-plot3(position(1,:), position(2,:), position(3,:), style, 'LineWidth', width);
+h(1) = plot3(position(1,:), position(2,:), position(3,:), style, 'LineWidth', width);
 
-plot3(position(1,1:end-1), position(2,1:end-1), position(3,1:end-1), 'k.', ...
+h(2) = plot3(position(1,1:end-1), position(2,1:end-1), position(3,1:end-1), 'k.', ...
     'MarkerSize', 10*width);
 
 end

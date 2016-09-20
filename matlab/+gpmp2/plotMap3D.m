@@ -27,9 +27,5 @@ end
 
 axis equal
 
-xlabel('X/m')
-ylabel('Y/m')
-zlabel('Z/m')
-
 end
 
