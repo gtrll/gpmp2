@@ -27,5 +27,10 @@ field = map_dist - inv_map_dist;
 field = field * cell_size;
 field = double(field);
 
+% limit inf
+if isinf(field(1,1))
+    field = ones(size(field)) * 1000;
+end
+
 end
 
