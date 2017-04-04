@@ -17,8 +17,8 @@ namespace gpmp2 {
 /* ************************************************************************** */
 template <class ROBOT, class GPINTER>
 gtsam::Vector ObstaclePlanarSDFFactorGP<ROBOT, GPINTER>::evaluateError(
-    const typename Robot::Pose& conf1, const typename Robot::Velocity& vel1,
-    const typename Robot::Pose& conf2, const typename Robot::Velocity& vel2,
+    const Pose& conf1, const Velocity& vel1,
+    const Pose& conf2, const Velocity& vel2,
     boost::optional<gtsam::Matrix&> H1, boost::optional<gtsam::Matrix&> H2,
     boost::optional<gtsam::Matrix&> H3, boost::optional<gtsam::Matrix&> H4) const {
 

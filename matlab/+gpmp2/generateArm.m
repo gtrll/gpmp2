@@ -84,7 +84,8 @@ elseif strcmp(arm_str, 'WAMArm')
     alpha = [-pi/2,pi/2,-pi/2,pi/2,-pi/2,pi/2,0]';
     a = [0,0,0.045,-0.045,0,0,0]';
     d = [0,0,0.55,0,0.3,0,0.06]';
-    abs_arm = Arm(7, a, alpha, d);
+    theta = [0, 0, 0, 0, 0, 0, 0]';
+    abs_arm = Arm(7, a, alpha, d, base_pose, theta);
     
     % physical arm
     % sphere data [id x y z r]
@@ -115,6 +116,7 @@ elseif strcmp(arm_str, 'WAMArm')
     end
     arm_model = ArmModel(abs_arm, sphere_vec);
 
+% 7 DOF PR2 right arm
 elseif strcmp(arm_str, 'PR2Arm')
     % arm: PR2 arm
     alpha = [-1.5708, 1.5708, -1.5708, 1.5708, -1.5708, 1.5708, 0]';
@@ -153,6 +155,67 @@ elseif strcmp(arm_str, 'PR2Arm')
           6 0 -0.027000 0.155 0.035000
           6 0 -0.00900 0.18 0.030000
           6 0 -0.00950 0.205 0.020000];
+
+    nr_body = size(spheres_data, 1);
+    
+    sphere_vec = BodySphereVector;
+    for i=1:nr_body
+        sphere_vec.push_back(BodySphere(spheres_data(i,1), spheres_data(i,5), ...
+            Point3(spheres_data(i,2:4)')));
+    end
+    arm_model = ArmModel(abs_arm, sphere_vec);
+
+% 6 DOF JACO2 arm
+elseif strcmp(arm_str, 'JACO2Arm')
+    % arm: JACO2 6DOF arm
+    alpha = [pi/2, pi, pi/2, 1.0472, 1.0472, pi]';
+    a = [0, 0.41, 0, 0, 0, 0]';
+    d = [0.2755, 0, -0.0098, -0.2501, -0.0856, -0.2228]';
+    theta = [0, 0, 0, 0, 0, 0]';
+    abs_arm = Arm(6, a, alpha, d, base_pose, theta);
+    % physical arm
+    % sphere data [id x y z r]
+    spheres_data = [...
+        0 0.0   0.0    0.0 0.053
+        0 0.0  -0.08   0.0 0.053
+        0 0.0  -0.155  0.0 0.053
+        0 0.0  -0.23   0.0 0.053
+        
+        1 0.0  0.0  0.0 0.053
+        1 -0.06  0.0  0.03 0.04
+        1 -0.12  0.0  0.03 0.04
+        1 -0.18  0.0  0.03 0.04
+        1 -0.24  0.0  0.03 0.04
+        1 -0.30  0.0  0.03 0.04
+        1 -0.36  0.0  0.03 0.04
+        
+        2 0.0  -0.01  -0.05 0.035
+        2 0.0  -0.01  -0.10 0.03
+        2 0.0   0.0   -0.15 0.035
+        2 0.0   0.0   -0.2 0.035
+        
+        3 0.0  0.0  0.0 0.04
+        3 0.0  0.0  -0.045 0.04
+               
+        4 0.0  0.0  0.0 0.04
+        4 0.0  -0.008  -0.075 0.05
+
+        5 0.0  0.05  -0.01 0.013
+        5 0.0  0.05  0.01 0.013
+        5 0.0  0.06  -0.039 0.018
+        5 0.0  0.06  -0.067 0.018
+        5 0.0  0.035  -0.042 0.018
+        5 0.0  -0.05  -0.01 0.013
+        5 0.0  -0.05  0.01 0.013
+        5 0.0  -0.06  -0.039 0.018
+        5 0.0  -0.06  -0.067 0.018
+        5 0.0  -0.035  -0.042 0.018
+        5 0.0  0.015  -0.055 0.02
+        5 0.0  0.025  -0.08 0.02
+        5 0.0  0.0  -0.08 0.02
+        5 0.0  -0.025  -0.08 0.02
+        5 0.0  -0.015  -0.055 0.02
+        ];
 
     nr_body = size(spheres_data, 1);
     

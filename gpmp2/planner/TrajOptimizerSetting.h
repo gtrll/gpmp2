@@ -1,7 +1,7 @@
 /**
  *  @file  TrajOptimizerSetting.h
  *  @brief settings of trajectory optimizer
- *  @author Jing Dong
+ *  @author Jing Dong, Mustafa Mukadam
  *  @date  May 10, 2015
  **/
 
@@ -38,6 +38,8 @@ struct TrajOptimizerSetting {
   double rel_thresh;            // relative error decrease threshold for stopping optimization
   size_t max_iter;              // max iteration for stopping optimization
 
+  /// default constructor, must manually set all parameters that depend on dof
+  TrajOptimizerSetting();
 
   /// default parameters, DOF must be given explicitly
   TrajOptimizerSetting(size_t system_dof);

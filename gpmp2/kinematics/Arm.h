@@ -36,6 +36,8 @@ private:
   std::vector<gtsam::Pose3> link_trans_notheta_;  // transformation of each link, no theta matrix
 
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   /// default contructor do nothing
   Arm() {}
 
@@ -64,6 +66,10 @@ public:
       boost::optional<std::vector<gtsam::Matrix>&> J_jpx_jp = boost::none,
       boost::optional<std::vector<gtsam::Matrix>&> J_jvx_jp = boost::none,
       boost::optional<std::vector<gtsam::Matrix>&> J_jvx_jv = boost::none) const;
+
+
+  /// update base pose in const
+  void updateBasePose(const gtsam::Pose3& p) const { base_pose_ = p; }
 
 
   /// accesses

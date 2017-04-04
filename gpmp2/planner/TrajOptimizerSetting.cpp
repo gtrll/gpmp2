@@ -1,7 +1,7 @@
 /**
  *  @file  TrajOptimizerSetting.cpp
  *  @brief settings of trajectory optimizer
- *  @author Jing Dong
+ *  @author Jing Dong, Mustafa Mukadam
  *  @date  May 11, 2015
  **/
 
@@ -10,6 +10,19 @@
 using namespace gtsam;
 
 namespace gpmp2 {
+
+/* ************************************************************************** */
+TrajOptimizerSetting::TrajOptimizerSetting() :
+    dof(0),
+    total_step(10),
+    total_time(1.0),
+    epsilon(0.2),
+    cost_sigma(0.1),
+    obs_check_inter(5),
+    opt_type(LM),
+    rel_thresh(1e-6),
+    max_iter(100) {
+}
 
 /* ************************************************************************** */
 TrajOptimizerSetting::TrajOptimizerSetting(size_t system_dof) :

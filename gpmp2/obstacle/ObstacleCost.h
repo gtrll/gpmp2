@@ -31,8 +31,8 @@ inline double hingeLossObstacleCost(const gtsam::Point3& point, const SignedDist
   try {
     dist_signed = sdf.getSignedDistance(point, field_gradient);
   } catch (SDFQueryOutOfRange&) {
-    std::cout << "[hingeLossObstacleCost] WARNING: querying signed distance out of range, "
-        "assume zero obstacle cost." << std::endl;
+    //std::cout << "[hingeLossObstacleCost] WARNING: querying signed distance out of range, "
+    //    "assume zero obstacle cost." << std::endl;
     if (H_point) *H_point = gtsam::Matrix13::Zero();
     return 0.0;
   }
@@ -59,8 +59,8 @@ inline double hingeLossObstacleCost(const gtsam::Point2& point, const PlanarSDF&
   try {
     dist_signed = sdf.getSignedDistance(point, field_gradient);
   } catch (SDFQueryOutOfRange&) {
-    std::cout << "[hingeLossObstacleCost] WARNING: querying signed distance out of range, "
-        "assume zero obstacle cost." << std::endl;
+    //std::cout << "[hingeLossObstacleCost] WARNING: querying signed distance out of range, "
+    //    "assume zero obstacle cost." << std::endl;
     if (H_point) *H_point = gtsam::Matrix12::Zero();
     return 0.0;
   }

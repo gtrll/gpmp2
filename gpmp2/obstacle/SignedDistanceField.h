@@ -1,7 +1,7 @@
 /**
  *  @file  SignedDistanceField.h
  *  @brief util functions for signed distance field
- *  @author Jing Dong
+ *  @author Jing Dong, Mustafa Mukadam
  *  @date  Dec 2, 2015
  **/
 
@@ -13,9 +13,18 @@
 #include <gtsam/geometry/Point3.h>
 
 #include <boost/tuple/tuple.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <cstring>
 
 
 namespace gpmp2 {
@@ -175,6 +184,59 @@ public:
     std::cout << "field resolution: " << cell_size_ << std::endl;
     std::cout << "field size:       " << field_cols_ << " x "
         << field_rows_ << " x " << field_z_ << std::endl;
+  }
+
+  /// save to file
+  void saveSDF(const std::string filename) {
+    std::ofstream ofs(filename.c_str());
+    assert(ofs.good());
+    std::string fext = filename.substr(filename.find_last_of(".") + 1);
+    if (fext == "xml") {
+      boost::archive::xml_oarchive oa(ofs);
+      oa << BOOST_SERIALIZATION_NVP(this);
+    }
+    else if (fext == "bin") {
+      boost::archive::binary_oarchive oa(ofs);
+      oa << *this;
+    }
+    else {
+      boost::archive::text_oarchive oa(ofs);
+      oa << *this;
+    }
+  }
+
+  // load from file
+  void loadSDF(const std::string filename) {
+    std::ifstream ifs(filename.c_str());
+    if (!ifs.good())
+      std::cout<<"File \'"<<filename<<"\' does not exist!"<<std::endl;
+    std::string fext = filename.substr(filename.find_last_of(".") + 1);
+    if (fext == "xml") {
+      boost::archive::xml_iarchive ia(ifs);
+      ia >> BOOST_SERIALIZATION_NVP(*this);
+    }
+    else if (fext == "bin") {
+      boost::archive::binary_iarchive ia(ifs);
+      ia >> *this;
+    }
+    else {
+      boost::archive::text_iarchive ia(ifs);
+      ia >> *this;
+    }
+  }
+
+
+private:
+  /** Serialization function */
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int /* version */) {
+    ar & BOOST_SERIALIZATION_NVP(origin_);
+    ar & BOOST_SERIALIZATION_NVP(field_rows_);
+    ar & BOOST_SERIALIZATION_NVP(field_cols_);
+    ar & BOOST_SERIALIZATION_NVP(field_z_);
+    ar & BOOST_SERIALIZATION_NVP(cell_size_);
+    ar & BOOST_SERIALIZATION_NVP(data_);
   }
 
 };

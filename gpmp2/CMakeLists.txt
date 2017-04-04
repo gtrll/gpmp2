@@ -2,8 +2,10 @@
 # tests, timing, and an optional convenience library.
 # The following variable is the master list of subdirs to add
 set(gpmp2_subdirs 
+    geometry
     gp 
     kinematics
+    dynamics
     obstacle
     planner
     utils

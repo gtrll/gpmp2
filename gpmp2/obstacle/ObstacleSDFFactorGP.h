@@ -26,17 +26,19 @@ namespace gpmp2 {
  */
 template <class ROBOT, class GPINTER>
 class ObstacleSDFFactorGP: public gtsam::NoiseModelFactor4<
-    gtsam::Vector, gtsam::Vector, gtsam::Vector, gtsam::Vector> {
+    typename ROBOT::Pose, typename ROBOT::Velocity,
+    typename ROBOT::Pose, typename ROBOT::Velocity> {
 
 public:
   // typedefs
   typedef ROBOT Robot;
+  typedef typename Robot::Pose Pose;
+  typedef typename Robot::Velocity Velocity;
 
 private:
   // typedefs
   typedef ObstacleSDFFactorGP This;
-  typedef gtsam::NoiseModelFactor4<gtsam::Vector, gtsam::Vector,
-      gtsam::Vector, gtsam::Vector> Base;
+  typedef gtsam::NoiseModelFactor4<Pose, Velocity, Pose, Velocity> Base;
   typedef GPINTER GPBase;
 
   // GP interpolator
