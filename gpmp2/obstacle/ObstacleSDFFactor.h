@@ -26,16 +26,17 @@ namespace gpmp2 {
  * template robot model version
  */
 template <class ROBOT>
-class ObstacleSDFFactor: public gtsam::NoiseModelFactor1<gtsam::Vector> {
+class ObstacleSDFFactor: public gtsam::NoiseModelFactor1<typename ROBOT::Pose> {
 
 public:
   // typedefs
   typedef ROBOT Robot;
+  typedef typename Robot::Pose Pose;
 
 private:
   // typedefs
   typedef ObstacleSDFFactor This;
-  typedef gtsam::NoiseModelFactor1<gtsam::Vector> Base;
+  typedef gtsam::NoiseModelFactor1<Pose> Base;
 
   // obstacle cost settings
   double epsilon_;      // distance from object that start non-zero cost

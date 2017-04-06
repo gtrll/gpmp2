@@ -26,17 +26,19 @@ namespace gpmp2 {
  */
 template <class ROBOT, class GPINTER>
 class ObstaclePlanarSDFFactorGP: public gtsam::NoiseModelFactor4<
-    gtsam::Vector, gtsam::Vector, gtsam::Vector, gtsam::Vector> {
+    typename ROBOT::Pose, typename ROBOT::Velocity,
+    typename ROBOT::Pose, typename ROBOT::Velocity> {
 
 public:
   // typedefs
   typedef ROBOT Robot;
+  typedef typename Robot::Pose Pose;
+  typedef typename Robot::Velocity Velocity;
 
 private:
   // typedefs
   typedef ObstaclePlanarSDFFactorGP This;
-  typedef gtsam::NoiseModelFactor4<gtsam::Vector, gtsam::Vector,
-      gtsam::Vector, gtsam::Vector> Base;
+  typedef gtsam::NoiseModelFactor4<Pose, Velocity, Pose, Velocity> Base;
   typedef GPINTER GPBase;
 
   // GP interpolator
@@ -86,8 +88,8 @@ public:
   /// error function
   /// numerical jacobians / analytic jacobians from cost function
   gtsam::Vector evaluateError(
-      const typename Robot::Pose& conf1, const typename Robot::Velocity& vel1,
-      const typename Robot::Pose& conf2, const typename Robot::Velocity& vel2,
+      const Pose& conf1, const Velocity& vel1,
+      const Pose& conf2, const Velocity& vel2,
       boost::optional<gtsam::Matrix&> H1 = boost::none, boost::optional<gtsam::Matrix&> H2 = boost::none,
       boost::optional<gtsam::Matrix&> H3 = boost::none, boost::optional<gtsam::Matrix&> H4 = boost::none) const ;
 

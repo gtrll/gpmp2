@@ -55,7 +55,26 @@ elseif strcmp(dataset_str, 'MultiObstacleDataset')
     dataset.map = add_obstacle(get_center(12,10,dataset), get_dim(5,7,dataset), dataset.map);
     dataset.map = add_obstacle(get_center(-7,10,dataset), get_dim(10,7,dataset), dataset.map);
     dataset.map = add_obstacle(get_center(0,-5,dataset), get_dim(10,5,dataset), dataset.map);
-    
+
+% mobile 2d map
+elseif strcmp(dataset_str, 'MobileMap1')
+    % params
+    dataset.cols = 500; %x
+    dataset.rows = 500; %y
+    dataset.origin_x = -5;
+    dataset.origin_y = -5;
+    dataset.cell_size = 0.01;
+    % map
+    dataset.map = zeros(dataset.rows, dataset.cols);
+    % obstacles
+    dataset.map = add_obstacle(get_center(0,0,dataset), get_dim(1,5,dataset), dataset.map);
+%     dataset.map = add_obstacle(get_center(-2.5,-2,dataset), get_dim(5,1,dataset), dataset.map);
+    % wall
+    dataset.map = add_obstacle(get_center(0,4.5,dataset), get_dim(10,1,dataset), dataset.map);
+    dataset.map = add_obstacle(get_center(0,-4.5,dataset), get_dim(10,1,dataset), dataset.map);
+    dataset.map = add_obstacle(get_center(4.5,0,dataset), get_dim(1,10,dataset), dataset.map);
+    dataset.map = add_obstacle(get_center(-4.5,0,dataset), get_dim(1,10,dataset), dataset.map);
+
     
 % no such dataset
 else

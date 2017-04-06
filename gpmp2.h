@@ -18,15 +18,46 @@ virtual class gtsam::NoiseModelFactor;
 namespace gpmp2 {
 
 ////////////////////////////////////////////////////////////////////////////////
+// geometry
+////////////////////////////////////////////////////////////////////////////////
+
+#include <gpmp2/geometry/Pose2Vector.h>
+
+class Pose2Vector {
+  // constructors
+  Pose2Vector();
+  Pose2Vector(const gtsam::Pose2& pose, Vector c);
+  // access
+  gtsam::Pose2 pose() const;
+  Vector configuration() const;
+  // print
+  void print(string s) const;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
 // gp
 ////////////////////////////////////////////////////////////////////////////////
 
 // prior factor
 #include <gpmp2/gp/GaussianProcessPriorLinear.h>
 
-// template DOF list
 virtual class GaussianProcessPriorLinear : gtsam::NoiseModelFactor {
   GaussianProcessPriorLinear(size_t key1, size_t key2, size_t key3, size_t key4,
+      double delta, const gtsam::noiseModel::Base* Qc_model);
+};
+
+#include <gpmp2/gp/GaussianProcessPriorPose2.h>
+
+virtual class GaussianProcessPriorPose2 : gtsam::NoiseModelFactor {
+  GaussianProcessPriorPose2(size_t key1, size_t key2, size_t key3, size_t key4,
+      double delta, const gtsam::noiseModel::Base* Qc_model);
+};
+
+#include <gpmp2/gp/GaussianProcessPriorPose2Vector.h>
+
+virtual class GaussianProcessPriorPose2Vector : gtsam::NoiseModelFactor {
+  GaussianProcessPriorPose2Vector(size_t key1, size_t key2, size_t key3, size_t key4,
       double delta, const gtsam::noiseModel::Base* Qc_model);
 };
 
@@ -34,7 +65,6 @@ virtual class GaussianProcessPriorLinear : gtsam::NoiseModelFactor {
 // util class for all interpolated measurements
 #include <gpmp2/gp/GaussianProcessInterpolatorLinear.h>
 
-// template DOF list
 class GaussianProcessInterpolatorLinear {
   GaussianProcessInterpolatorLinear(const gtsam::noiseModel::Base* Qc_model,
       double delta_t, double tau);
@@ -66,6 +96,25 @@ class Arm {
   Vector d() const;
   Vector alpha() const;
   gtsam::Pose3 base_pose() const;
+};
+
+
+// abstract pose2 mobile arm class
+#include <gpmp2/kinematics/Pose2MobileArm.h>
+
+class Pose2MobileArm {
+  Pose2MobileArm(const gpmp2::Arm& arm);
+  Pose2MobileArm(const gpmp2::Arm& arm, const gtsam::Pose3& base_T_arm);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm() const;
+  gtsam::Pose3 base_T_arm() const;
 };
 
 // Abstract Point Robot class
@@ -110,6 +159,22 @@ class ArmModel {
   double sphere_radius(size_t i) const;
 };
 
+
+// Physical Pose2MobileArmModel class
+#include <gpmp2/kinematics/Pose2MobileArmModel.h>
+
+class Pose2MobileArmModel {
+  Pose2MobileArmModel(const gpmp2::Pose2MobileArm& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileArm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+
 // Point Robot Model class
 #include <gpmp2/kinematics/PointRobotModel.h>
 
@@ -134,6 +199,20 @@ virtual class GoalFactorArm : gtsam::NoiseModelFactor {
       const gpmp2::Arm& arm, const gtsam::Point3& dest_point);
   //Vector evaluateError(Vector conf) const;      // for debug: plot error
 };
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// dynamics
+////////////////////////////////////////////////////////////////////////////////
+
+// dynamics factor
+#include <gpmp2/dynamics/VehicleDynamicsFactorPose2Vector.h>
+
+virtual class VehicleDynamicsFactorPose2Vector : gtsam::NoiseModelFactor {
+  VehicleDynamicsFactorPose2Vector(size_t poseKey, size_t velKey, double cost_sigma);
+};
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -230,6 +309,46 @@ virtual class ObstaclePlanarSDFFactorGPPointRobot : gtsam::NoiseModelFactor {
 };
 
 
+// planar obstacle avoid factor (pose2 mobile arm with 2D signed distance field)
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2MobileArm.h>
+virtual class ObstaclePlanarSDFFactorPose2MobileArm : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPose2MobileArm(
+      size_t posekey, const gpmp2::Pose2MobileArmModel& marm,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileArm.h>
+virtual class ObstaclePlanarSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPose2MobileArm(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileArmModel& marm, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
+// obstacle avoid factor (pose2 mobile arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
+virtual class ObstacleSDFFactorPose2MobileArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileArm(
+      size_t posekey, const gpmp2::Pose2MobileArmModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileArm.h>
+virtual class ObstacleSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileArm(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // planner
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,6 +393,37 @@ gtsam::Values BatchTrajOptimize3DArm(
     Vector start_conf, Vector start_vel, Vector end_conf, Vector end_vel,
     const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
 
+/// 2D mobile arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileArm2D(
+    const gpmp2::Pose2MobileArmModel& marm, const gpmp2::PlanarSDF& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileArm(
+    const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 2D arm collision cost
+double CollisionCost2DArm(
+    const gpmp2::ArmModel& arm, const gpmp2::PlanarSDF& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D arm collision cost
+double CollisionCost3DArm(
+    const gpmp2::ArmModel& arm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 2D mobile arm collision cost
+double CollisionCostPose2MobileArm2D(
+    const gpmp2::Pose2MobileArmModel& marm, const gpmp2::PlanarSDF& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile arm collision cost
+double CollisionCostPose2MobileArm(
+    const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
 
 
 /// iSAM2 incremental trajectory optimizers
@@ -291,7 +441,10 @@ class ISAM2TrajOptimizer2DArm {
 
   /// Replanning interfaces
   void changeGoalConfigAndVel(Vector goal_conf, Vector goal_vel);
+  void removeGoalConfigAndVel();
   void fixConfigAndVel(size_t state_idx, Vector conf_fix, Vector vel_fix);
+  void addPoseEstimate(size_t state_idx, Vector pose, Matrix pose_cov);
+  void addStateEstimate(size_t state_idx, Vector pose, Matrix pose_cov, Vector vel, Matrix vel_cov);
 
   /// accesses
   gtsam::Values values() const;
@@ -309,7 +462,52 @@ class ISAM2TrajOptimizer3DArm {
 
   /// Replanning interfaces
   void changeGoalConfigAndVel(Vector goal_conf, Vector goal_vel);
+  void removeGoalConfigAndVel();
   void fixConfigAndVel(size_t state_idx, Vector conf_fix, Vector vel_fix);
+  void addPoseEstimate(size_t state_idx, Vector pose, Matrix pose_cov);
+  void addStateEstimate(size_t state_idx, Vector pose, Matrix pose_cov, Vector vel, Matrix vel_cov);
+
+  /// accesses
+  gtsam::Values values() const;
+};
+
+/// 2D mobile arm replanner
+class ISAM2TrajOptimizerPose2MobileArm2D {
+  ISAM2TrajOptimizerPose2MobileArm2D(const gpmp2::Pose2MobileArmModel& marm, const gpmp2::PlanarSDF& sdf,
+      const gpmp2::TrajOptimizerSetting& setting);
+
+  void initFactorGraph(const gpmp2::Pose2Vector& start_conf, Vector start_vel,
+      const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void initValues(const gtsam::Values& init_values);
+  void update();
+
+  /// Replanning interfaces
+  void changeGoalConfigAndVel(const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void removeGoalConfigAndVel();
+  void fixConfigAndVel(size_t state_idx, const gpmp2::Pose2Vector& conf_fix, Vector vel_fix);
+  void addPoseEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov);
+  void addStateEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov, Vector vel, Matrix vel_cov);
+
+  /// accesses
+  gtsam::Values values() const;
+};
+
+/// 3D mobile arm replanner
+class ISAM2TrajOptimizerPose2MobileArm {
+  ISAM2TrajOptimizerPose2MobileArm(const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+      const gpmp2::TrajOptimizerSetting& setting);
+
+  void initFactorGraph(const gpmp2::Pose2Vector& start_conf, Vector start_vel,
+      const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void initValues(const gtsam::Values& init_values);
+  void update();
+
+  /// Replanning interfaces
+  void changeGoalConfigAndVel(const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void removeGoalConfigAndVel();
+  void fixConfigAndVel(size_t state_idx, const gpmp2::Pose2Vector& conf_fix, Vector vel_fix);
+  void addPoseEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov);
+  void addStateEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov, Vector vel, Matrix vel_cov);
 
   /// accesses
   gtsam::Values values() const;
@@ -322,9 +520,39 @@ class ISAM2TrajOptimizer3DArm {
 /// initialization
 gtsam::Values initArmTrajStraightLine(Vector init_conf, Vector end_conf, size_t total_step);
 
-/// robot arm trajectory interpolater
+/// robot arm trajectory interpolator
 gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
     const gtsam::noiseModel::Base* Qc_model, double delta_t, size_t inter_step);
+
+/// robot arm trajectory interpolator between any two states
+gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
+    const gtsam::noiseModel::Base* Qc_model, double delta_t, size_t inter_step, 
+    size_t start_index, size_t end_index);
+
+/// mobile arm trajectory interpolator between any two states
+gtsam::Values interpolatePose2MobileArmTraj(const gtsam::Values& opt_values,
+    const gtsam::noiseModel::Base* Qc_model, double delta_t, size_t inter_step, 
+    size_t start_index, size_t end_index);
+
+
+////////////////////////////////////////////////////////////////////////////////
+// utils
+////////////////////////////////////////////////////////////////////////////////
+
+
+#include <gpmp2/utils/matlabUtils.h>
+
+/// prior factors
+virtual class PriorFactorPose2Vector : gtsam::NoiseModelFactor {
+  PriorFactorPose2Vector(
+      size_t poseKey, const gpmp2::Pose2Vector& value,
+      const gtsam::noiseModel::Base* model);
+};
+
+
+/// values utils
+void insertPose2VectorInValues(size_t key, const gpmp2::Pose2Vector& p, gtsam::Values& values);
+gpmp2::Pose2Vector atPose2VectorValues(size_t key, const gtsam::Values& values);
 
 
 }

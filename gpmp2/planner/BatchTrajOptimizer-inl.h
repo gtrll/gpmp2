@@ -1,7 +1,7 @@
 /**
  *  @file  BatchTrajOptimizer-inl.h
  *  @brief batch trajectory optimizer
- *  @author Jing Dong
+ *  @author Jing Dong, Mustafa Mukadam
  *  @date  May 10, 2015
  **/
 
@@ -94,6 +94,22 @@ gtsam::Values BatchTrajOptimize(
   }
 
   return results;
+}
+
+/* ************************************************************************** */
+template <class ROBOT, class SDF, class OBS_FACTOR>
+double CollisionCost(
+    const ROBOT& robot, const SDF& sdf, const gtsam::Values& result, 
+    const TrajOptimizerSetting& setting) {
+
+  using namespace gtsam;
+
+  double coll_cost = 0;
+  OBS_FACTOR obs_factor = OBS_FACTOR(Symbol('x', 0), robot, sdf, setting.cost_sigma, 0);
+  for (size_t i=0; i<result.size()/2; i++)
+    coll_cost += (obs_factor.evaluateError(result.at<typename ROBOT::Pose>(Symbol('x', i)))).sum();
+  
+  return coll_cost;
 }
 
 }   // namespace internal
