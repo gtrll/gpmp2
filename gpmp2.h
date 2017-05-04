@@ -222,6 +222,7 @@ virtual class VehicleDynamicsFactorPose2Vector : gtsam::NoiseModelFactor {
 // signed distance field class
 #include <gpmp2/obstacle/SignedDistanceField.h>
 class SignedDistanceField {
+  SignedDistanceField();
   SignedDistanceField(const gtsam::Point3& origin, double cell_size, size_t field_rows,
       size_t field_cols, size_t field_z);
   // insert field data
@@ -229,6 +230,8 @@ class SignedDistanceField {
   // access
   double getSignedDistance(const gtsam::Point3& point) const;
   void print(string s) const;
+  void saveSDF(string filename);
+  void loadSDF(string filename);
 };
 
 
