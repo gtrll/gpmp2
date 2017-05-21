@@ -15,7 +15,12 @@ set(GPMP2_VERSION_STRING "${GPMP2_VERSION_MAJOR}.${GPMP2_VERSION_MINOR}.${GPMP2_
 
 
 # option: whether turn on Matlab toolbox
-option(GPMP2_BUILD_MATLAB_TOOLBOX "whether build matlab toolbox" OFF)
+option(GPMP2_BUILD_STATIC_LIBRARY "whether build static library" OFF)
+option(GPMP2_BUILD_MATLAB_TOOLBOX "whether build matlab toolbox, need shared lib" OFF)
+
+if(${GPMP2_BUILD_STATIC_LIBRARY} AND ${GPMP2_BUILD_MATLAB_TOOLBOX})
+  message(FATAL_ERROR "matlab toolbox needs shared lib")
+endif()
 
 
 # Find GTSAM components
@@ -47,19 +52,4 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Process source subdirs
 add_subdirectory(gpmp2)
-
-
-# Wrapping to MATLAB
-if(GPMP2_BUILD_MATLAB_TOOLBOX)
-  # wrap
-  include(GtsamMatlabWrap)
-  wrap_and_install_library(gpmp2.h ${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}" "")
-  
-  # install matlab functions and scripts
-  add_subdirectory(matlab)
-endif()
-
-# Install config and export files
-GtsamMakeConfigFile(gpmp2)
-export(TARGETS ${gpmp2_EXPORTED_TARGETS} FILE gpmp2-exports.cmake)
 
