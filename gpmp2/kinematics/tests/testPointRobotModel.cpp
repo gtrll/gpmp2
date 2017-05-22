@@ -57,7 +57,8 @@ TEST(PointRobot, 2DExample) {
   // random position and velocity
   p = Vector2(1.0, 2.0);
   v = Vector2(0.1, 0.2);
-  pR.forwardKinematics(p, Vector(v), pvec_act, vvec_act, pJp_act, vJp_act, vJv_act);
+  Vector vdymc = Vector(v);
+  pR.forwardKinematics(p, vdymc, pvec_act, vvec_act, pJp_act, vJp_act, vJv_act);
 
   pvec_exp.clear();
   pvec_exp.push_back(Pose3(Rot3(), Point3(p(0), p(1), 0)));

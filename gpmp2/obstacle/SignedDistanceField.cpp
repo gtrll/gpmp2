@@ -17,7 +17,7 @@ void SignedDistanceField::saveSDF(const std::string filename) {
   std::string fext = filename.substr(filename.find_last_of(".") + 1);
   if (fext == "xml") {
     boost::archive::xml_oarchive oa(ofs);
-    oa << BOOST_SERIALIZATION_NVP(this);
+    oa << BOOST_SERIALIZATION_NVP(*this);
   }
   else if (fext == "bin") {
     boost::archive::binary_oarchive oa(ofs);
