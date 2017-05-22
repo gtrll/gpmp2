@@ -33,7 +33,7 @@ inline Vector convertSDFtoErr(const Vector& sdf, double eps) {
 
 
 // data
-SignedDistanceField sdf;
+SignedDistanceField sdf2;
 
 /* ************************************************************************** */
 TEST(ObstacleSDFFactorGPArm, data) {
@@ -68,7 +68,7 @@ TEST(ObstacleSDFFactorGPArm, data) {
       0.3000, 0.2449, 0.2236, 0.2236, 0.2236, 0.2449, 0.3000,
       0.3464, 0.3000, 0.2828, 0.2828, 0.2828, 0.3000, 0.3464).finished();
 
-  sdf = SignedDistanceField(origin, cell_size, field);
+  sdf2 = SignedDistanceField(origin, cell_size, field);
 }
 
 /* ************************************************************************** */
@@ -93,7 +93,7 @@ TEST(ObstacleSDFFactorGPArm, error) {
   double delta_t = 0.1, tau = 0.025;
 
   double obs_eps = 0.2;
-  ObstacleSDFFactorGPArm factor(0, 0, 0, 0, arm, sdf, 1.0, obs_eps,
+  ObstacleSDFFactorGPArm factor(0, 0, 0, 0, arm, sdf2, 1.0, obs_eps,
       Qc_model, delta_t, tau);
 
   // just check cost of two link joint

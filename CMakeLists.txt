@@ -18,7 +18,7 @@ set(GPMP2_VERSION_STRING "${GPMP2_VERSION_MAJOR}.${GPMP2_VERSION_MINOR}.${GPMP2_
 option(GPMP2_BUILD_STATIC_LIBRARY "whether build static library" OFF)
 option(GPMP2_BUILD_MATLAB_TOOLBOX "whether build matlab toolbox, need shared lib" OFF)
 
-if(${GPMP2_BUILD_STATIC_LIBRARY} AND ${GPMP2_BUILD_MATLAB_TOOLBOX})
+if(GPMP2_BUILD_STATIC_LIBRARY AND GPMP2_BUILD_MATLAB_TOOLBOX)
   message(FATAL_ERROR "matlab toolbox needs shared lib")
 endif()
 

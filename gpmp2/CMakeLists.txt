@@ -43,8 +43,9 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 
 # build shared lib
-if(${GPMP2_BUILD_STATIC_LIBRARY})
+if(GPMP2_BUILD_STATIC_LIBRARY)
   # static
+  message(STATUS "Build static library")
   add_library(${PROJECT_NAME} STATIC ${gpmp2_srcs})
   target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${GTSAM_LIBRARIES})
   set_target_properties(gpmp2 PROPERTIES
@@ -56,6 +57,7 @@ if(${GPMP2_BUILD_STATIC_LIBRARY})
 
 else()
   # shared
+  message(STATUS "Build shared library")
   add_library(${PROJECT_NAME} SHARED ${gpmp2_srcs})
   target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${GTSAM_LIBRARIES})
   set_target_properties(gpmp2 PROPERTIES
