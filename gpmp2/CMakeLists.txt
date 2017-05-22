@@ -22,16 +22,16 @@ install(FILES "${PROJECT_BINARY_DIR}/gpmp2/config.h" DESTINATION include/gpmp2)
 
 # Library sources
 foreach(subdir ${gpmp2_subdirs})
-    file(GLOB subdir_srcs "${subdir}/*.cpp" "${subdir}/*.h")
-    list(REMOVE_ITEM subdir_srcs "${excluded_sources}")
+  file(GLOB subdir_srcs "${subdir}/*.cpp" "${subdir}/*.h")
+  list(REMOVE_ITEM subdir_srcs "${excluded_sources}")
 
-    file(GLOB subdir_test_files "${subdir}/tests/*")
+  file(GLOB subdir_test_files "${subdir}/tests/*")
   
-    list(APPEND gpmp2_srcs ${subdir_srcs})
-    message(STATUS "Building Module: ${subdir}")
+  list(APPEND gpmp2_srcs ${subdir_srcs})
+  message(STATUS "Building Module: ${subdir}")
 
-    # local and tests
-    add_subdirectory(${subdir})
+  # local and tests
+  add_subdirectory(${subdir})
 endforeach(subdir)
 
 
