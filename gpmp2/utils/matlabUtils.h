@@ -8,6 +8,8 @@
 #pragma once
 
 #include <gpmp2/geometry/Pose2Vector.h>
+#include <gpmp2/config.h>
+
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam/slam/PriorFactor.h>
 
@@ -19,8 +21,8 @@ typedef gtsam::PriorFactor<gpmp2::Pose2Vector> PriorFactorPose2Vector;
 
 
 /// Pose2Vector Values utils
-void insertPose2VectorInValues(gtsam::Key key, const gpmp2::Pose2Vector& p, gtsam::Values& values);
-gpmp2::Pose2Vector atPose2VectorValues(gtsam::Key key, const gtsam::Values& values);
+GPMP2_EXPORT void insertPose2VectorInValues(gtsam::Key key, const gpmp2::Pose2Vector& p, gtsam::Values& values);
+GPMP2_EXPORT gpmp2::Pose2Vector atPose2VectorValues(gtsam::Key key, const gtsam::Values& values);
 
 }
 

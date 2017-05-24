@@ -8,6 +8,7 @@
 #pragma once
 
 #include <gpmp2/obstacle/SDFexception.h>
+#include <gpmp2/config.h>
 
 #include <gtsam/base/Matrix.h>
 #include <gtsam/geometry/Point2.h>
@@ -21,7 +22,7 @@ namespace gpmp2 {
  * Signed distance field use Matrix as data type
  * Matrix represent the X (col) & Y (row) dimension
  */
-class PlanarSDF {
+class GPMP2_EXPORT PlanarSDF {
 
 public:
   // index and float_index is <row, col>

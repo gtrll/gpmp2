@@ -18,6 +18,7 @@ set(excluded_sources "")
 # Generate and install config and dllexport files
 configure_file(config.h.in config.h)
 list(APPEND gpmp2_srcs "${PROJECT_BINARY_DIR}/gpmp2/config.h")
+include_directories(BEFORE ${PROJECT_BINARY_DIR}) # So we can include generated config header files
 install(FILES "${PROJECT_BINARY_DIR}/gpmp2/config.h" DESTINATION include/gpmp2)
 
 # Library sources
@@ -53,6 +54,10 @@ if(GPMP2_BUILD_STATIC_LIBRARY)
       CLEAN_DIRECT_OUTPUT 1
       VERSION             ${gpmp2_version}
       SOVERSION           ${gpmp2_soversion})
+  if(WIN32) # Add 'lib' prefix to static library to avoid filename collision with shared library
+    set_target_properties(gpmp2 PROPERTIES
+      PREFIX "lib")
+  endif()
   install(TARGETS ${PROJECT_NAME} EXPORT gpmp2-exports ARCHIVE DESTINATION lib)
 
 else()

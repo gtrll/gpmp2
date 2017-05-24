@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <gpmp2/config.h>
+
 #include <gtsam/linear/NoiseModel.h>
 #include <gtsam/base/Vector.h>
 #include <gtsam/base/Matrix.h>
@@ -17,8 +19,7 @@
 namespace gpmp2 {
 
 /// get Qc covariance matrix from noise model
-gtsam::Matrix getQc(const gtsam::SharedNoiseModel Qc_model);
-
+GPMP2_EXPORT gtsam::Matrix getQc(const gtsam::SharedNoiseModel Qc_model);
 
 /// calculate Q
 inline gtsam::Matrix calcQ(const gtsam::Matrix& Qc, double tau) {
