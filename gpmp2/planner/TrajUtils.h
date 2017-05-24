@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <gpmp2/config.h>
+
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam/linear/NoiseModel.h>
 #include <gtsam/base/Matrix.h>
@@ -22,7 +24,7 @@ namespace gpmp2 {
  * @param total_step is how many intervals do you want in the traj
  * @return values, x(0) - x(total_step), v(0) - v(total_step)
  */
-gtsam::Values initArmTrajStraightLine(const gtsam::Vector& init_conf,
+GPMP2_EXPORT gtsam::Values initArmTrajStraightLine(const gtsam::Vector& init_conf,
     const gtsam::Vector& end_conf, size_t total_step);
 
 /**
@@ -33,7 +35,7 @@ gtsam::Values initArmTrajStraightLine(const gtsam::Vector& init_conf,
  * @param output_inter_step is how many steps you want interpolate, 0 is not interpolate
  * @return interpolated values, x(0) - x(total_step), v(0) - v(total_step)
  */
-gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
+GPMP2_EXPORT gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
     const gtsam::SharedNoiseModel Qc_model, double delta_t, size_t output_inter_step);
 
 /**
@@ -46,7 +48,7 @@ gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
  * @param end_index interpolate till this state
  * @return interpolated values, x(start_index) - x(end_index), v(start_index) - v(end_index)
  */
-gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
+GPMP2_EXPORT gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
     const gtsam::SharedNoiseModel Qc_model, double delta_t, size_t output_inter_step, 
     size_t start_index, size_t end_index);
 
@@ -60,7 +62,7 @@ gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
  * @param end_index interpolate till this state
  * @return interpolated values, x(start_index) - x(end_index), v(start_index) - v(end_index)
  */
-gtsam::Values interpolatePose2MobileArmTraj(const gtsam::Values& opt_values,
+GPMP2_EXPORT gtsam::Values interpolatePose2MobileArmTraj(const gtsam::Values& opt_values,
     const gtsam::SharedNoiseModel Qc_model, double delta_t, size_t inter_step, 
     size_t start_index, size_t end_index);
 

@@ -10,6 +10,7 @@
 #include <gpmp2/geometry/DynamicVector.h>
 #include <gpmp2/geometry/DynamicLieTraits.h>
 #include <gpmp2/geometry/ProductDynamicLieGroup.h>
+#include <gpmp2/config.h>
 
 #include <gtsam/base/ProductLieGroup.h>
 #include <gtsam/geometry/Pose2.h>
@@ -22,7 +23,7 @@ namespace gpmp2 {
  * Pose2Vector is the Lie group product of gtsam Pose2 and eigen vector
  * use to describe the pose of a mobile manipulator with planner base
  */
-class Pose2Vector : public ProductDynamicLieGroup<gtsam::Pose2, DynamicVector> {
+class GPMP2_EXPORT Pose2Vector : public ProductDynamicLieGroup<gtsam::Pose2, DynamicVector> {
 
 private:
   typedef ProductDynamicLieGroup<gtsam::Pose2, DynamicVector> Base;

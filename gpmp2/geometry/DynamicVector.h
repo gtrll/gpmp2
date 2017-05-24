@@ -7,11 +7,14 @@
 
 #pragma once
 
+#include <gpmp2/config.h>
+
 #include <Eigen/Core> // from gtsam included path, use gtsam eigen version
 #include <gtsam/base/Vector.h>
 #include <gtsam/base/VectorSpace.h>
 
 #include <iostream>
+
 
 namespace gpmp2 {
 
@@ -20,7 +23,7 @@ namespace gpmp2 {
  * replace raw dynamic size eigen vector, which does not have all traits
  * fully implemented in gtsam
  */
-class DynamicVector {
+class GPMP2_EXPORT DynamicVector {
 
 private:
   size_t dim_;

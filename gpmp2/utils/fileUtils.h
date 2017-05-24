@@ -8,6 +8,7 @@
 #pragma once
 
 #include <gpmp2/obstacle/SignedDistanceField.h>
+#include <gpmp2/config.h>
 
 
 namespace gpmp2 {
@@ -16,7 +17,7 @@ namespace gpmp2 {
 /// the filename_pre.vol.head has the size/origin/resolution data
 /// the filename_pre.vol.data contains actual data
 /// return whether successfully read
-bool readSDFvolfile(const std::string& filename_pre, SignedDistanceField& sdf);
+GPMP2_EXPORT bool readSDFvolfile(const std::string& filename_pre, SignedDistanceField& sdf);
 
 
 }

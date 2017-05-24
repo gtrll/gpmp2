@@ -92,7 +92,6 @@ void Pose2MobileArm::forwardKinematics(
         J_px_p ? boost::optional<vector<Matrix>&>(Jarm_jpx_jp) : boost::none);
   }
 
-
   for (size_t i = 0; i < arm_.dof(); i++) {
     px[i+1] = armjpx[i];
     if (J_px_p) {

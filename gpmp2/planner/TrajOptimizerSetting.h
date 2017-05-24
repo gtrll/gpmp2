@@ -7,13 +7,14 @@
 
 #pragma once
 
+#include <gpmp2/config.h>
 #include <gtsam/linear/NoiseModel.h>
 
 
 namespace gpmp2 {
 
 /// general setting of all trajectory optimizers, batch and incremental
-struct TrajOptimizerSetting {
+struct GPMP2_EXPORT TrajOptimizerSetting {
 
   /// optimization iteration types
   enum IterationType {GaussNewton, LM, Dogleg};

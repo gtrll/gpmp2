@@ -33,12 +33,12 @@ inline Vector convertSDFtoErr(const Vector& sdf, double eps) {
 
 /* ************************************************************************** */
 // signed distance field data
-Matrix field, map_ground_truth;
-PlanarSDF sdf;
+Matrix field2, map_ground_truth2;
+PlanarSDF sdf2;
 
 TEST(ObstaclePlanarSDFFactorGPArm, data) {
 
-  map_ground_truth = (Matrix(7, 7) <<
+  map_ground_truth2 = (Matrix(7, 7) <<
       0,     0,     0,     0,     0,     0,     0,
       0,     0,     0,     0,     0,     0,     0,
       0,     0,     1,     1,     1,     0,     0,
@@ -46,7 +46,7 @@ TEST(ObstaclePlanarSDFFactorGPArm, data) {
       0,     0,     1,     1,     1,     0,     0,
       0,     0,     0,     0,     0,     0,     0,
       0,     0,     0,     0,     0,     0,     0).finished();
-  field = (Matrix(7, 7) <<
+  field2 = (Matrix(7, 7) <<
       2.8284,    2.2361,    2.0000,    2.0000,    2.0000,    2.2361,    2.8284,
       2.2361,    1.4142,    1.0000,    1.0000,    1.0000,    1.4142,    2.2361,
       2.0000,    1.0000,   -1.0000,   -1.0000,   -1.0000,    1.0000,    2.0000,
@@ -58,7 +58,7 @@ TEST(ObstaclePlanarSDFFactorGPArm, data) {
   Point2 origin(0, 0);
   double cell_size = 1.0;
 
-  sdf = PlanarSDF(origin, cell_size, field);
+  sdf2 = PlanarSDF(origin, cell_size, field2);
 }
 
 /* ************************************************************************** */
@@ -83,7 +83,7 @@ TEST_UNSAFE(ObstaclePlanarSDFFactorGPArm, error) {
   double delta_t = 0.1, tau = 0.025;
 
   double obs_eps = 1.0;
-  ObstaclePlanarSDFFactorGPArm factor(0, 0, 0, 0, arm, sdf, 1.0, obs_eps,
+  ObstaclePlanarSDFFactorGPArm factor(0, 0, 0, 0, arm, sdf2, 1.0, obs_eps,
       Qc_model, delta_t, tau);
 
   // just check cost of two link joint

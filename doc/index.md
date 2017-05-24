@@ -10,6 +10,7 @@ This is only a preliminary documentation, so please do not hesitate to let us kn
 Beginner
 ---------
 
+- [Installation CMake settings](Install.md)
 - [Example: A simple 2D Matlab example](ExampleMatlab2D.md)
 - [Example: A real-world 3D Matlab example](ExampleMatlab3D.md)
 - [Example: A 3D re-planning Matlab example](ExampleReplanning.md)

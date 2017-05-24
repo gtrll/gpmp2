@@ -44,10 +44,11 @@ After you install the Matlab toolbox, don't forget to add `/path/install/toolbox
 Tested Compatibility
 -----
 
-The gpmp2 library is designed to be cross-platform, however it's only tested on Ubuntu Linux for now.
+The gpmp2 library is designed to be cross-platform. It has been tested on Ubuntu Linux and Windows for now.
 
-- Compilers: GCC 4.8 - 4.9, 5.3 - 5.4
-- Boost version: 1.50 - 1.61
+- Ubuntu: GCC 4.8 - 4.9, 5.3 - 5.4
+- Windows: Visual C++ 2015 (Matlab toolbox not tested)
+- Boost: 1.50 - 1.61
 
 
 Questions & Bug reporting

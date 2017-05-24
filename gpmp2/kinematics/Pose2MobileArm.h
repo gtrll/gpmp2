@@ -10,6 +10,7 @@
 #include <gpmp2/kinematics/Arm.h>
 #include <gpmp2/kinematics/ForwardKinematics.h>
 #include <gpmp2/geometry/Pose2Vector.h>
+#include <gpmp2/config.h>
 
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/base/Matrix.h>
@@ -23,7 +24,7 @@ namespace gpmp2 {
  * Abstract plannar mobile manipulator, without any physical model representation
  * Inherited from ForwardKinematics
  */
-class Pose2MobileArm : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
+class GPMP2_EXPORT Pose2MobileArm : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
 
 private:
   // typedefs

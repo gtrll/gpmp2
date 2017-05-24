@@ -8,6 +8,7 @@
 #pragma once
 
 #include <gpmp2/kinematics/ForwardKinematics.h>
+#include <gpmp2/config.h>
 
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/base/Matrix.h>
@@ -23,7 +24,7 @@ namespace gpmp2 {
  * Abstract arm class use DH parameters, without any physical model representation
  * Inherited from ForwardKinematics
  */
-class Arm : public ForwardKinematics<gtsam::Vector, gtsam::Vector> {
+class GPMP2_EXPORT Arm : public ForwardKinematics<gtsam::Vector, gtsam::Vector> {
 
 private:
   // typedefs

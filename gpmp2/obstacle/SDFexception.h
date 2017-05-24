@@ -7,13 +7,14 @@
 
 #pragma once
 
+#include <gpmp2/config.h>
 #include <stdexcept>
 
 
 namespace gpmp2 {
 
 /// query out of range exception
-class SDFQueryOutOfRange : public std::runtime_error {
+class GPMP2_EXPORT SDFQueryOutOfRange : public std::runtime_error {
 
 public:
   /// constructor
