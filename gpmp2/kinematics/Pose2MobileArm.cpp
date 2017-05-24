@@ -79,13 +79,18 @@ void Pose2MobileArm::forwardKinematics(
   vector<Matrix> Jarm_jpx_jp, Jarm_jvx_jp, Jarm_jvx_jv;
 
   arm_.updateBasePose(arm_base);
-  const Vector varm = v->tail(arm_.dof());
-  arm_.forwardKinematics(p.configuration(),
-      v ? boost::optional<const Vector&>(varm) : boost::none,
-      armjpx, vx ? boost::optional<vector<Vector3>&>(armjvx) : boost::none,
-      J_px_p ? boost::optional<vector<Matrix>&>(Jarm_jpx_jp) : boost::none,
-      J_vx_p ? boost::optional<vector<Matrix>&>(Jarm_jvx_jp) : boost::none,
-      J_vx_v ? boost::optional<vector<Matrix>&>(Jarm_jvx_jv) : boost::none);
+  if (v) {
+    const Vector varm = v->tail(arm_.dof());
+    arm_.forwardKinematics(p.configuration(), boost::optional<const Vector&>(varm),
+        armjpx, vx ? boost::optional<vector<Vector3>&>(armjvx) : boost::none,
+        J_px_p ? boost::optional<vector<Matrix>&>(Jarm_jpx_jp) : boost::none,
+        J_vx_p ? boost::optional<vector<Matrix>&>(Jarm_jvx_jp) : boost::none,
+        J_vx_v ? boost::optional<vector<Matrix>&>(Jarm_jvx_jv) : boost::none);
+  } else {
+    arm_.forwardKinematics(p.configuration(), boost::none,
+        armjpx, vx ? boost::optional<vector<Vector3>&>(armjvx) : boost::none,
+        J_px_p ? boost::optional<vector<Matrix>&>(Jarm_jpx_jp) : boost::none);
+  }
 
   for (size_t i = 0; i < arm_.dof(); i++) {
     px[i+1] = armjpx[i];

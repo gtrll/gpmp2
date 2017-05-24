@@ -46,8 +46,8 @@ Tested Compatibility
 
 The gpmp2 library is designed to be cross-platform, however it's only tested on Ubuntu Linux for now.
 
-- Compilers: GCC 4.8, 4.9, 5.3
-- Boost version: 1.50 - 1.60
+- Compilers: GCC 4.8 - 4.9, 5.3 - 5.4
+- Boost version: 1.50 - 1.61
 
 
 Questions & Bug reporting
