@@ -15,12 +15,6 @@ set(gpmp2_srcs)
 # files want to be excluded
 set(excluded_sources "")
 
-# Generate and install config and dllexport files
-configure_file(config.h.in config.h)
-list(APPEND gpmp2_srcs "${PROJECT_BINARY_DIR}/gpmp2/config.h")
-include_directories(BEFORE ${PROJECT_BINARY_DIR}) # So we can include generated config header files
-install(FILES "${PROJECT_BINARY_DIR}/gpmp2/config.h" DESTINATION include/gpmp2)
-
 # Library sources
 foreach(subdir ${gpmp2_subdirs})
   file(GLOB subdir_srcs "${subdir}/*.cpp" "${subdir}/*.h")
@@ -83,18 +77,3 @@ endif()
 list(APPEND GPMP2_EXPORTED_TARGETS gpmp2)
 set(GPMP2_EXPORTED_TARGETS "${GPMP2_EXPORTED_TARGETS}" PARENT_SCOPE)
 
-
-# Wrapping to MATLAB
-if(GPMP2_BUILD_MATLAB_TOOLBOX)
-  # wrap
-  include(GtsamMatlabWrap)
-  wrap_and_install_library(gpmp2.h ${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}" "")
-  
-  # install matlab functions and scripts
-  add_subdirectory(matlab)
-endif()
-
-
-# Install config and export files
-GtsamMakeConfigFile(gpmp2)
-export(TARGETS ${GPMP2_EXPORTED_TARGETS} FILE gpmp2-exports.cmake)

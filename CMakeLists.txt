@@ -47,9 +47,30 @@ find_package(Boost COMPONENTS serialization REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
 
+# Generate and install config and dllexport files
+configure_file("gpmp2/config.h.in" "gpmp2/config.h")
+list(APPEND gpmp2_srcs "${PROJECT_BINARY_DIR}/gpmp2/config.h")
+include_directories(BEFORE ${PROJECT_BINARY_DIR}) # So we can include generated config header files
+install(FILES "${PROJECT_BINARY_DIR}/gpmp2/config.h" DESTINATION include/gpmp2)
+
+
 # include current source folder, at the very beginning
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Process source subdirs
 add_subdirectory(gpmp2)
 
+# Wrapping to MATLAB
+if(GPMP2_BUILD_MATLAB_TOOLBOX)
+  # wrap
+  include(GtsamMatlabWrap)
+  wrap_and_install_library(gpmp2.h ${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}" "")
+  
+  # install matlab functions and scripts
+  add_subdirectory(matlab)
+endif()
+
+
+# Install config and export files
+GtsamMakeConfigFile(gpmp2)
+export(TARGETS ${GPMP2_EXPORTED_TARGETS} FILE gpmp2-exports.cmake)
