@@ -2,6 +2,19 @@
 Changelog for GPMP2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2017-06-12)
+------------------
+* Update installation documentation
+* Fix compilation on Windows + Visual Stdio 2015
+* Fix compilation on Linux + GCC 5.4
+* Add saving and loading signed distance field as binary .dat file
+* Add Guassian process prior on Lie group, see details in Arxiv preprint
+* Add planar mobile manipulator (SE(2) x Vector(N)) class
+* Fix Matlab signed distance field generation error when no obstacle presents
+* Fix Matlab wrapper for obstacle factors
+* Add planar point robot (Vector(2)) class and plot utils in Matlab
+* Contributors: Jing Dong, Mustafa Mukadam
+
 0.1.0 (2016-06-16)
 ------------------
 * Initial release

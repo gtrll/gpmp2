@@ -70,6 +70,15 @@ If you use GPMP2 in an academic context, please cite following publications:
    Title = "Motion Planning as Probabilistic Inference using Gaussian Processes and Factor Graphs",
    year = {2016}
 }
+
+@article{Dong17arxiv,
+              author    = {Jing Dong and Byron Boots and Frank Dellaert},
+  title     = {Sparse Gaussian Processes for Continuous-Time Trajectory Estimation on Matrix Lie Groups},
+  journal   = {Arxiv},
+  volume    = {abs/1705.06020},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1705.06020}
+}
 ```
 
 
