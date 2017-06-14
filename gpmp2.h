@@ -201,6 +201,14 @@ virtual class GoalFactorArm : gtsam::NoiseModelFactor {
 };
 
 
+// joint limit factor to vector space
+#include <gpmp2/kinematics/JointLimitFactorVector.h>
+
+virtual class JointLimitFactorVector: gtsam::NoiseModelFactor {
+  JointLimitFactorVector(size_t key, const gtsam::noiseModel::Base* cost_model, 
+      Vector down_limit, Vector up_limit, double limit_thresh);
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // dynamics

@@ -50,7 +50,7 @@ public:
       Base(cost_model, poseKey), down_limit_(down_limit), up_limit_(up_limit),
       limit_thresh_(limit_thresh) {
     // check dimensions
-    if (down_limit.size() != cost_model->dim() || up_limit.size() != cost_model->dim())
+    if ((size_t)down_limit.size() != cost_model->dim() || (size_t)up_limit.size() != cost_model->dim())
       throw std::runtime_error("[JointLimitFactorVector] ERROR: limit vector dim does not fit.");
   }
 
@@ -64,7 +64,7 @@ public:
     if (H1)
       *H1 = Matrix::Zero(conf.size(), conf.size());
     Vector err(conf.size());
-    for (size_t i = 0; i < conf.size(); i++) {
+    for (size_t i = 0; i < (size_t)conf.size(); i++) {
       if (H1) {
         double Hp;
         err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), 
@@ -96,7 +96,7 @@ private:
   friend class boost::serialization::access;
   template<class ARCHIVE>
   void serialize(ARCHIVE & ar, const unsigned int version) {
-    ar & boost::serialization::make_nvp("NoiseModelFactor4",
+    ar & boost::serialization::make_nvp("NoiseModelFactor1",
         boost::serialization::base_object<Base>(*this));
   }
 };
