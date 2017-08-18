@@ -10,6 +10,7 @@
 #include <gtsam/base/numericalDerivative.h>
 
 #include <gpmp2/kinematics/Pose2MobileArm.h>
+#include <gpmp2/kinematics/mobileBaseUtils.h>
 #include <gpmp2/geometry/numericalDerivativeDynamic.h>
 
 #include <iostream>
@@ -22,7 +23,7 @@ using namespace gpmp2;
 /* ************************************************************************** */
 // armpose wrapper
 Pose3 armPose(const Pose2MobileArm& r, const Pose2& p2) {
-  return r.computeArmBasePose(p2);
+  return computeArmBasePose(p2, r.base_T_arm());
 }
 
 TEST(Pose2MobileArm, computeArmBasePose) {
@@ -41,7 +42,7 @@ TEST(Pose2MobileArm, computeArmBasePose) {
 
   p2 = Pose2();
   pexp = Pose3();
-  pact = r.computeArmBasePose(p2, Hact);
+  pact = computeArmBasePose(p2, r.base_T_arm(), Hact);
   Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
       boost::bind(&armPose, r, _1)), p2, 1e-6);
   EXPECT(assert_equal(pexp, pact, 1e-9));
@@ -49,7 +50,7 @@ TEST(Pose2MobileArm, computeArmBasePose) {
 
   p2 = Pose2(1.3, 4.5, -0.3);
   pexp = Pose3(Rot3::Yaw(-0.3), Point3(1.3, 4.5, 0));
-  pact = r.computeArmBasePose(p2, Hact);
+  pact = computeArmBasePose(p2, r.base_T_arm(), Hact);
   Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
       boost::bind(&armPose, r, _1)), p2, 1e-6);
   EXPECT(assert_equal(pexp, pact, 1e-9));
@@ -61,7 +62,7 @@ TEST(Pose2MobileArm, computeArmBasePose) {
 
   p2 = Pose2();
   pexp = Pose3(Rot3::Yaw(-0.3), Point3(1,1,2));
-  pact = r.computeArmBasePose(p2, Hact);
+  pact = computeArmBasePose(p2, r.base_T_arm(), Hact);
   Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
       boost::bind(&armPose, r, _1)), p2, 1e-6);
   EXPECT(assert_equal(pexp, pact, 1e-9));
@@ -69,7 +70,7 @@ TEST(Pose2MobileArm, computeArmBasePose) {
 
   p2 = Pose2(2, -2, M_PI_2);
   pexp = Pose3(Rot3::Yaw(M_PI_2-0.3), Point3(1,-1,2));
-  pact = r.computeArmBasePose(p2, Hact);
+  pact = computeArmBasePose(p2, r.base_T_arm(), Hact);
   Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
       boost::bind(&armPose, r, _1)), p2, 1e-6);
   EXPECT(assert_equal(pexp, pact, 1e-9));
