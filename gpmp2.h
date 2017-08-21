@@ -364,6 +364,25 @@ virtual class ObstaclePlanarSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor 
 };
 
 
+// planar obstacle avoid factor (pose2 mobile 2 arms with 2D signed distance field)
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2Mobile2Arms.h>
+virtual class ObstaclePlanarSDFFactorPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPose2Mobile2Arms(
+      size_t posekey, const gpmp2::Pose2Mobile2ArmsModel& marm,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2Mobile2Arms.h>
+virtual class ObstaclePlanarSDFFactorGPPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPose2Mobile2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
 // obstacle avoid factor (pose2 mobile arm with 3D signed distance field)
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
 virtual class ObstacleSDFFactorPose2MobileArm : gtsam::NoiseModelFactor {

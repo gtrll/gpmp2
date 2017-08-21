@@ -51,6 +51,46 @@ if strcmp(str, 'SimpleTwoLinksArm')
     model = Pose2MobileArmModel(marm, sphere_vec);
 
 
+%  2 simple arms on mobile base, each arm has two links 
+elseif strcmp(str, 'SimpleTwoArms')
+    % abstract arm
+    a = [0.6, 0.6]';
+    d = [0, 0]';
+    alpha = [0, 0]';
+    arm = Arm(2, a, alpha, d);
+    % abstract mobile arm
+    % base pose to left and right 60 deg
+    marm = Pose2Mobile2Arms(arm, arm, Pose3(Rot3.Yaw(-pi/3), Point3(0,0,0)), ...
+        Pose3(Rot3.Yaw(pi/3), Point3(0,0,0)));
+    % physical model
+    % base size: 0.8 x 0.4
+    spheres_data = [...
+        0  -0.2  0.0  0.0  0.24
+        0   0.0  0.0  0.0  0.24
+        0   0.2  0.0  0.0  0.24
+        1  -0.6  0.0  0.0  0.1
+        1  -0.4  0.0  0.0  0.1
+        1  -0.2  0.0  0.0  0.1
+        2  -0.6  0.0  0.0  0.1
+        2  -0.4  0.0  0.0  0.1
+        2  -0.2  0.0  0.0  0.1
+        2   0.0  0.0  0.0  0.1
+        3  -0.6  0.0  0.0  0.1
+        3  -0.4  0.0  0.0  0.1
+        3  -0.2  0.0  0.0  0.1
+        4  -0.6  0.0  0.0  0.1
+        4  -0.4  0.0  0.0  0.1
+        4  -0.2  0.0  0.0  0.1
+        4   0.0  0.0  0.0  0.1];
+    nr_body = size(spheres_data, 1);
+    sphere_vec = BodySphereVector;
+    for i=1:nr_body
+        sphere_vec.push_back(BodySphere(spheres_data(i,1), spheres_data(i,5), ...
+            Point3(spheres_data(i,2:4)')));
+    end
+    model = Pose2Mobile2ArmsModel(marm, sphere_vec);
+
+
 %  2DMobileArm2
 elseif strcmp(str, '2DMobileArm2')
     a = [1.0, 1.0]';
