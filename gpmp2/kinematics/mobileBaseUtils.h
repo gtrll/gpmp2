@@ -20,4 +20,9 @@ gtsam::Pose3 computeArmBasePose(const gtsam::Pose2& base_pose2,
     const gtsam::Pose3& base_T_arm, 
     gtsam::OptionalJacobian<6,3> J = boost::none);
 
+/// lift arm base in z direction, with jacobian
+gtsam::Pose3 liftArmBasePose(const gtsam::Pose2& base_pose2,
+  double lift, const gtsam::Pose3& base_T_arm, bool reverse_linact,
+  gtsam::OptionalJacobian<6,4> J = boost::none);
+
 }

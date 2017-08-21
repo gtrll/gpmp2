@@ -7,7 +7,10 @@
 
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/geometry/Pose2.h>
- 
+
+using namespace std;
+using namespace gtsam;
+
 
 namespace gpmp2 {
  
@@ -41,6 +44,40 @@ gtsam::Pose3 computeArmBasePose(const gtsam::Pose2& base_pose2,
     return arm_base;
   } else {
     return computeBasePose3(base_pose2).compose(base_T_arm);
+  }
+}
+
+/* ************************************************************************** */
+gtsam::Pose3 liftArmBasePose(const gtsam::Pose2& base_pose2,
+  double lift, const gtsam::Pose3& base_T_arm, bool reverse_linact,
+  gtsam::OptionalJacobian<6,4> J = boost::none) {
+  
+  // a const pose to lift base
+  Pose3 lift_base_pose;
+  //Matrix63 Jliftbase_z;
+  if (reverse_linact) {
+    lift_base_pose = Pose3::Create(Rot3(), Point3(0, 0, -lift));
+  } else {
+    lift_base_pose = Pose3::Create(Rot3(), Point3(0, 0, lift));
+  }
+
+  if (J) {
+    Matrix63 Harmbase;
+    const Pose3 armbase = computeArmBasePose(base_pose2, base_T_arm, Harmbase);
+    Matrix6 Hcomp1, Hcomp2;
+    const Pose3 armbaselift = lift_base_pose.compose(armbase, Hcomp1, Hcomp2);
+    // J over pose2
+    J->block<6,3>(0,0) = Hcomp2 * Harmbase;
+    // J over lift z
+    // D_lift_base_pose = [0; I], so (Hcomp1 * D_lift_base_pose).col(2) == Hcomp1.col(5)
+    //J->block<6,1>(0,3) = (Hcomp1 * Jliftbase_z).col(2);
+    if (reverse_linact)
+      J->block<6,1>(0,3) = -Hcomp1.col(5);
+    else
+      J->block<6,1>(0,3) = Hcomp1.col(5);
+    return armbaselift;
+  } else {
+    return lift_base_pose.compose(computeArmBasePose(base_pose2, base_T_arm));
   }
 }
 
