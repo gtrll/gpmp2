@@ -117,6 +117,26 @@ class Pose2MobileArm {
   gtsam::Pose3 base_T_arm() const;
 };
 
+#include <gpmp2/kinematics/Pose2Mobile2Arms.h>
+
+class Pose2Mobile2Arms {
+  Pose2Mobile2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2);
+  Pose2Mobile2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2, 
+      const gtsam::Pose3& base_T_arm1, const gtsam::Pose3& base_T_arm2);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm1() const;
+  gpmp2::Arm arm2() const;
+  gtsam::Pose3 base_T_arm1() const;
+  gtsam::Pose3 base_T_arm2() const;
+};
+
 // Abstract Point Robot class
 #include <gpmp2/kinematics/PointRobot.h>
 
@@ -170,6 +190,19 @@ class Pose2MobileArmModel {
   // accesses
   size_t dof() const;
   gpmp2::Pose2MobileArm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+#include <gpmp2/kinematics/Pose2Mobile2ArmsModel.h>
+
+class Pose2Mobile2ArmsModel {
+  Pose2Mobile2ArmsModel(const gpmp2::Pose2Mobile2Arms& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2Mobile2Arms fk_model() const;
   size_t nr_body_spheres() const;
   double sphere_radius(size_t i) const;
 };
