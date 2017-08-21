@@ -97,7 +97,7 @@ void Pose2MobileArm::forwardKinematics(
     px[i+1] = armjpx[i];
     if (J_px_p) {
       // see compose's jacobian
-      (*J_px_p)[i+1].block<6,3>(0,0) = (armjpx[i].inverse () * arm_base).AdjointMap() * Harm_base;
+      (*J_px_p)[i+1].block<6,3>(0,0) = (armjpx[i].inverse() * arm_base).AdjointMap() * Harm_base;
       (*J_px_p)[i+1].block(0,3,6,arm_.dof()) = Jarm_jpx_jp[i];
     }
     if (vx) {
@@ -107,6 +107,5 @@ void Pose2MobileArm::forwardKinematics(
 
 }
 
-}
-
+} // namespace gpmp2
 
