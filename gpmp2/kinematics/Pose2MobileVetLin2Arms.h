@@ -1,8 +1,8 @@
 /**
- *  @file  Pose2MobileVetLinArm.h
- *  @brief Abstract plannar mobile manipulator, Arm on a vetical linear actuator
+ *  @file  Pose2MobileVetLin2Arms.h
+ *  @brief Plannar mobile manipulator with two arms on vertical linear actuator
  *  @author Jing Dong
- *  @date  Aug 18, 2017
+ *  @date  Aug 22, 2016
  **/
 
 #pragma once
@@ -21,35 +21,37 @@
 namespace gpmp2 {
 
 /**
- * Abstract plannar mobile manipulator
- * an Arm on Pose2 mobile base with a vetical linear actuator
- * Linear actuator on 1st dim of gtsam::Vector, remaining are Arm's
+ * Abstract plannar mobile manipulator with 2 arm on vertical linear actuator
+ * pose class is Pose2Vector, linear actuator use first, arm1 uses next arm1.dof, then arm2 uses last arm2.dof
+ * vector DOF = 1 + arm1.dof + arm2.dof
+ * total DOF = 3 + 1 + arm1.dof + arm2.dof
  */
-class GPMP2_EXPORT Pose2MobileVetLinArm : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
+class GPMP2_EXPORT Pose2MobileVetLin2Arms : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
 
 private:
   // typedefs
   typedef ForwardKinematics<Pose2Vector, gtsam::Vector> Base;
 
   // base to arm pose, when linear actuator is on zero
-  gtsam::Pose3 base_T_arm_;
+  gtsam::Pose3 base_T_arm1_, base_T_arm2_;
   // if reverse_linact_ == true, positive value on lin act means move down
   bool reverse_linact_;
   // arm class
-  Arm arm_;
+  Arm arm1_, arm2_;
 
 public:
   /// default contructor do nothing
-  Pose2MobileVetLinArm() {}
+  Pose2MobileVetLin2Arms() {}
 
   /// constructor from Arm
   /// if reverse_linact == true, positive value on lin act means move down
-  explicit Pose2MobileVetLinArm(const Arm& arm, 
-      const gtsam::Pose3& base_T_arm = gtsam::Pose3(), 
+  Pose2MobileVetLin2Arms(const Arm& arm1, const Arm& arm2, 
+      const gtsam::Pose3& base_T_arm1 = gtsam::Pose3(), 
+      const gtsam::Pose3& base_T_arm2 = gtsam::Pose3(),
       bool reverse_linact = false);
 
   /// Default destructor
-  virtual ~Pose2MobileVetLinArm() {}
+  virtual ~Pose2MobileVetLin2Arms() {}
 
 
   /**
@@ -70,8 +72,10 @@ public:
 
 
   /// accesses
-  const gtsam::Pose3& base_T_arm() const { return base_T_arm_; }
-  const Arm& arm() const { return arm_; }
+  const Arm& arm1() const { return arm1_; }
+  const Arm& arm2() const { return arm2_; }
+  const gtsam::Pose3& base_T_arm1() const { return base_T_arm1_; }
+  const gtsam::Pose3& base_T_arm2() const { return base_T_arm2_; }
   bool reverse_linact() const { return reverse_linact_; }
 };
 

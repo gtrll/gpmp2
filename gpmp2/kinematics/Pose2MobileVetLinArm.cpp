@@ -60,8 +60,7 @@ void Pose2MobileVetLinArm::forwardKinematics(const Pose2Vector& p,
         reverse_linact_, Harm_base);
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm_, 
-        reverse_linact_);
+    arm_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm_, reverse_linact_);
   }
 
   // veh base link
