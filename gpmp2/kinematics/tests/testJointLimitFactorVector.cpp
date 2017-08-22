@@ -31,7 +31,7 @@ TEST(JointLimitFactorVector, error) {
 
   // 2 link simple example
   Vector2 dlimit(-5.0, -10.0), ulimit(5, 10.0);
-  double thresh = 2.0;
+  Vector2 thresh(2.0, 2.0);
   JointLimitFactorVector factor(0, cost_model, dlimit, ulimit, thresh);
   Vector2 conf;
   Vector actual, expect;
@@ -74,7 +74,7 @@ TEST(JointLimitFactorVector, optimization_1) {
   noiseModel::Gaussian::shared_ptr prior_model = noiseModel::Isotropic::Sigma(2, 1000);
   Key qkey = Symbol('x', 0);
   Vector2 dlimit(-5.0, -10.0), ulimit(5, 10.0);
-  double thresh = 2.0;
+  Vector2 thresh(2.0, 2.0);
 
   Vector conf;
   conf = (Vector(2) << 0.0, 0.0).finished();
@@ -105,7 +105,7 @@ TEST(JointLimitFactorVector, optimization_2) {
   noiseModel::Gaussian::shared_ptr prior_model = noiseModel::Isotropic::Sigma(2, 1000);
   Key qkey = Symbol('x', 0);
   Vector2 dlimit(-5.0, -10.0), ulimit(5, 10.0);
-  double thresh = 2.0;
+  Vector2 thresh(2.0, 2.0);
 
   Vector conf;
   conf = (Vector(2) << -10.0, -10.0).finished();
@@ -136,7 +136,7 @@ TEST(JointLimitFactorVector, optimization_3) {
   noiseModel::Gaussian::shared_ptr prior_model = noiseModel::Isotropic::Sigma(2, 1000);
   Key qkey = Symbol('x', 0);
   Vector2 dlimit(-5.0, -10.0), ulimit(5, 10.0);
-  double thresh = 2.0;
+  Vector2 thresh(2.0, 2.0);
 
   Vector conf;
   conf = (Vector(2) << 10.0, 10.0).finished();

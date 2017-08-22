@@ -206,7 +206,7 @@ virtual class GoalFactorArm : gtsam::NoiseModelFactor {
 
 virtual class JointLimitFactorVector: gtsam::NoiseModelFactor {
   JointLimitFactorVector(size_t key, const gtsam::noiseModel::Base* cost_model, 
-      Vector down_limit, Vector up_limit, double limit_thresh);
+      Vector down_limit, Vector up_limit, Vector limit_thresh);
 };
 
 

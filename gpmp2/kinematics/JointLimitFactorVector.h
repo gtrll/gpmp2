@@ -33,7 +33,7 @@ private:
   gtsam::Vector down_limit_, up_limit_;
 
   // hinge loss threshold
-  double limit_thresh_;
+  gtsam::Vector limit_thresh_;
 
 public:
 
@@ -46,11 +46,13 @@ public:
    * @param limit_thresh hinge loss threshold
    */
   JointLimitFactorVector(gtsam::Key poseKey, const gtsam::SharedNoiseModel& cost_model, 
-      const gtsam::Vector& down_limit, const gtsam::Vector& up_limit, double limit_thresh) :
+      const gtsam::Vector& down_limit, const gtsam::Vector& up_limit, const gtsam::Vector& limit_thresh) :
       Base(cost_model, poseKey), down_limit_(down_limit), up_limit_(up_limit),
       limit_thresh_(limit_thresh) {
     // check dimensions
-    if ((size_t)down_limit.size() != cost_model->dim() || (size_t)up_limit.size() != cost_model->dim())
+    if ((size_t)down_limit.size() != cost_model->dim() 
+        || (size_t)up_limit.size() != cost_model->dim()
+        || (size_t)limit_thresh.size() != cost_model->dim())
       throw std::runtime_error("[JointLimitFactorVector] ERROR: limit vector dim does not fit.");
   }
 
@@ -67,11 +69,10 @@ public:
     for (size_t i = 0; i < (size_t)conf.size(); i++) {
       if (H1) {
         double Hp;
-        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), 
-            limit_thresh_, Hp);
+        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), limit_thresh_(i), Hp);
         (*H1)(i, i) = Hp;
       } else {
-        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), limit_thresh_);
+        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), limit_thresh_(i));
       }
     }
     return err;

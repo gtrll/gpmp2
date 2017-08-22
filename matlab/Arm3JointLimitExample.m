@@ -70,7 +70,7 @@ flag_joint_limit = true;
 joint_limit_vec_down = [-1000, -1000, 0.0]';
 joint_limit_vec_up = [1000, 1000, 0.0]';
 
-joint_limit_thresh = 0.001;
+joint_limit_thresh = 0.001 * ones(3,1);
 joint_limit_model = noiseModel.Isotropic.Sigma(3, 0.001);
 
 
