@@ -28,7 +28,7 @@ title('Signed Distance Field')
 
 %% settings
 total_time_sec = 5.0;
-total_time_step = 10;
+total_time_step = 50;
 total_check_step = 50;
 delta_t = total_time_sec / total_time_step;
 check_inter = total_check_step / total_time_step - 1;
@@ -40,12 +40,12 @@ use_GP_inter = true;
 arm = generateArm('SimpleThreeLinksArm');
 
 % GP
-Qc = eye(3);
+Qc = 1.0 * eye(3);
 Qc_model = noiseModel.Gaussian.Covariance(Qc); 
 
 % obstacle cost settings
 cost_sigma = 0.1;
-epsilon_dist = 0.1;
+epsilon_dist = 0.2;
 
 % prior to start/goal
 pose_fix = noiseModel.Isotropic.Sigma(3, 0.0001);
@@ -58,21 +58,25 @@ end_conf = [0.9, pi/2-0.9, 0]';
 end_vel = [0, 0, 0]';
 avg_vel = (end_conf / total_time_step) / delta_t;
 
-% joint limit param
-flag_joint_limit = true;
 
+% joint limit param
 % we apply a hard fixed joint limit on 3rd joint, fix it to zero
 
 % note the constraint is not *exact* in output, since it's soft constraint
 % given by joint_limit_model, although it's very near to hard constraint
 % if you need *exact* constraints, post-process the output as you want
 
+flag_joint_limit = true;
 joint_limit_vec_down = [-1000, -1000, 0.0]';
 joint_limit_vec_up = [1000, 1000, 0.0]';
-
 joint_limit_thresh = 0.001 * ones(3,1);
 joint_limit_model = noiseModel.Isotropic.Sigma(3, 0.001);
 
+% joint velocity limit param
+flag_joint_vel_limit = true;
+joint_vel_limit_vec = [1, 1, 1]';
+joint_vel_limit_thresh = 0.01 * ones(3,1);
+joint_vel_limit_model = noiseModel.Isotropic.Sigma(3, 0.1);
 
 % plot param
 pause_time = total_time_sec / total_time_step;
@@ -113,6 +117,12 @@ for i = 0 : total_time_step
     if flag_joint_limit
         graph.add(JointLimitFactorVector(key_pos, joint_limit_model, joint_limit_vec_down, ...
             joint_limit_vec_up, joint_limit_thresh));
+    end
+    
+    % joint velocity limit factor on every velocity
+    if flag_joint_vel_limit
+        graph.add(JointVelocityLimitFactorVector(key_vel, joint_vel_limit_model, ...
+            joint_vel_limit_vec, joint_vel_limit_thresh));
     end
     
     % GP priors and cost factor
@@ -171,6 +181,26 @@ optimizer.optimize();
 toc
 result = optimizer.values();
 % result.print('Final results')
+
+
+%% joint speed values
+
+fprintf('est speed\t\t\tactual speed\t\t\tdiff\n')
+% do not count first and last pose
+for i=1:total_time_step-1
+    % estimated joint speed
+    vel_est = result.atVector(symbol('v', i));
+    % actual joint speed
+    conf_diff = result.atVector(symbol('x', i+1)) - result.atVector(symbol('x', i-1));
+    vel_act = conf_diff / (2*delta_t);
+    % show difference
+    diff_vel = vel_act - vel_est;
+    fprintf('%+6.4f %+6.4f %+6.4f\t\t%+6.4f %+6.4f %+6.4f\t\t%f\n', ...
+        vel_est(1), vel_est(2), vel_est(3), vel_act(1), vel_act(2), vel_act(3), ...
+        norm(diff_vel))
+end
+
+
 
 %% plot final values
 for i=0:total_time_step

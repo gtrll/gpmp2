@@ -210,6 +210,15 @@ virtual class JointLimitFactorVector: gtsam::NoiseModelFactor {
 };
 
 
+// joint velocity limit factor to vector space
+#include <gpmp2/kinematics/JointVelocityLimitFactorVector.h>
+
+virtual class JointVelocityLimitFactorVector: gtsam::NoiseModelFactor {
+  JointVelocityLimitFactorVector(size_t key, const gtsam::noiseModel::Base* cost_model, 
+      Vector vel_limit, Vector limit_thresh);
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // dynamics
 ////////////////////////////////////////////////////////////////////////////////
