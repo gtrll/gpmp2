@@ -20,7 +20,11 @@ namespace gpmp2 {
 
 /**
  * unary factor to apply joint limit cost to vector configuration space
- * the limits are only applied to vector space part of SE(2) x R(N)
+ *
+ * The limits are only applied to vector space part of SE(2) x R(N),
+ * but the input joint limit vector and cost dim still have save dim of SE(2) x R(N) = N+3, 
+ * since we would like to keep the dims consistent everywhere: factor dim reflect var dim
+ * so only last N dims of limit vector and cost dims will be used
  */
 class JointLimitFactorPose2Vector: public gtsam::NoiseModelFactor1<gpmp2::Pose2Vector> {
 
@@ -65,17 +69,22 @@ public:
     using namespace gtsam;
     // get configuration
     const gtsam::Vector& conf = pose.configuration();
-    // Jacobian size = conf.dim x conf.dim + 3, first 3 col are all zeros
+    // error vector conf.dim + 3, first 3 dims are all zeros
+    // Jacobian size = conf.dim + 3 x conf.dim + 3, first 3 col are all zeros
     if (H1)
-      *H1 = Matrix::Zero(conf.size(), conf.size() + 3);
-    Vector err(conf.size());
+      *H1 = Matrix::Zero(conf.size() + 3, conf.size() + 3);
+    Vector err(conf.size() + 3);
+    for (size_t i = 0; i < 3; i++)
+      err(i) = 0.0;
     for (size_t i = 0; i < (size_t)conf.size(); i++) {
       if (H1) {
         double Hp;
-        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), limit_thresh_(i), Hp);
-        (*H1)(i, i + 3) = Hp;
+        err(i+3) = hingeLossJointLimitCost(conf(i), down_limit_(i+3), up_limit_(i+3), 
+            limit_thresh_(i+3), Hp);
+        (*H1)(i+3, i+3) = Hp;
       } else {
-        err(i) = hingeLossJointLimitCost(conf(i), down_limit_(i), up_limit_(i), limit_thresh_(i));
+        err(i+3) = hingeLossJointLimitCost(conf(i), down_limit_(i+3), up_limit_(i+3), 
+            limit_thresh_(i+3));
       }
     }
     return err;
