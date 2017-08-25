@@ -1,6 +1,6 @@
 /**
- *  @file  JointVelocityLimitFactorVector.h
- *  @brief apply joint velocity limit to vector velocity space 
+ *  @file  VelocityLimitFactorVector.h
+ *  @brief apply velocity limit to vector velocity space 
  *  @author Jing Dong
  *  @date  Aug 22, 2017
  **/
@@ -22,11 +22,11 @@ namespace gpmp2 {
 /**
  * unary factor to apply joint limit cost to vector configuration space
  */
-class JointVelocityLimitFactorVector: public gtsam::NoiseModelFactor1<gtsam::Vector> {
+class VelocityLimitFactorVector: public gtsam::NoiseModelFactor1<gtsam::Vector> {
 
 private:
   // typedefs
-  typedef JointVelocityLimitFactorVector This;
+  typedef VelocityLimitFactorVector This;
   typedef gtsam::NoiseModelFactor1<gtsam::Vector> Base;
 
   // joint velocity limit value for each joint
@@ -45,18 +45,18 @@ public:
    * @param cost_model joint limit cost weight
    * @param limit_thresh hinge loss threshold
    */
-   JointVelocityLimitFactorVector(gtsam::Key poseKey, const gtsam::SharedNoiseModel& cost_model, 
+   VelocityLimitFactorVector(gtsam::Key poseKey, const gtsam::SharedNoiseModel& cost_model, 
       const gtsam::Vector& vel_limit, const gtsam::Vector& limit_thresh) :
       Base(cost_model, poseKey), vel_limit_(vel_limit), limit_thresh_(limit_thresh) {
     // check dimensions
     if ((size_t)vel_limit.size() != cost_model->dim() || (size_t)limit_thresh.size() != cost_model->dim())
-      throw std::runtime_error("[JointVelocityLimitFactorVector] ERROR: limit vector dim does not fit.");
+      throw std::runtime_error("[VelocityLimitFactorVector] ERROR: limit vector dim does not fit.");
     // velocity limit should > 0
     if (vel_limit.minCoeff() <= 0.0)
-      throw std::runtime_error("[JointVelocityLimitFactorVector] ERROR: velocity limit <= 0.");
+      throw std::runtime_error("[VelocityLimitFactorVector] ERROR: velocity limit <= 0.");
   }
 
-  virtual ~JointVelocityLimitFactorVector() {}
+  virtual ~VelocityLimitFactorVector() {}
 
   /// error function
   gtsam::Vector evaluateError(const gtsam::Vector& conf, 
@@ -86,7 +86,7 @@ public:
 
   /** print contents */
   void print(const std::string& s="", const gtsam::KeyFormatter& keyFormatter = gtsam::DefaultKeyFormatter) const {
-    std::cout << s << "JointVelocityLimitFactorVector :" << std::endl;
+    std::cout << s << "VelocityLimitFactorVector :" << std::endl;
     Base::print("", keyFormatter);
     std::cout << "Limit cost threshold : " << limit_thresh_ << std::endl;
   }

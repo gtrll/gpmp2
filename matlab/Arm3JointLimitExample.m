@@ -121,7 +121,7 @@ for i = 0 : total_time_step
     
     % joint velocity limit factor on every velocity
     if flag_joint_vel_limit
-        graph.add(JointVelocityLimitFactorVector(key_vel, joint_vel_limit_model, ...
+        graph.add(VelocityLimitFactorVector(key_vel, joint_vel_limit_model, ...
             joint_vel_limit_vec, joint_vel_limit_thresh));
     end
     
