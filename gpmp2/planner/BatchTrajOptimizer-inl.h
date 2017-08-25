@@ -16,7 +16,8 @@ namespace gpmp2 {
 namespace internal {
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP, 
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
 gtsam::Values BatchTrajOptimize(
     const ROBOT& arm, const SDF& sdf,
     const typename ROBOT::Pose& start_conf, const typename ROBOT::Velocity& start_vel,
@@ -44,6 +45,15 @@ gtsam::Values BatchTrajOptimize(
     } else if (i == setting.total_step) {
       graph.add(PriorFactor<typename ROBOT::Pose>(pose_key, end_conf, setting.conf_prior_model));
       graph.add(PriorFactor<typename ROBOT::Velocity>(vel_key, end_vel, setting.vel_prior_model));
+    }
+
+    if (setting.flag_limit) {
+      // joint position limits
+      graph.add(LIMIT_FACTOR_POS(pose_key, setting.pos_limit_model, setting.joint_pos_limits_down, 
+          setting.joint_pos_limits_up, setting.pos_limit_thresh));
+      // velocity limits
+      graph.add(LIMIT_FACTOR_VEL(vel_key, setting.vel_limit_model, setting.vel_limits, 
+          setting.vel_limit_thresh));
     }
 
     // non-interpolated cost factor
@@ -75,21 +85,21 @@ gtsam::Values BatchTrajOptimize(
     DoglegParams opt_param;
     opt_param.setMaxIterations(setting.max_iter);
     opt_param.setRelativeErrorTol(setting.rel_thresh);
-    //opt_param.setVerbosity("ERROR");
+    opt_param.setVerbosity("ERROR");
     results = DoglegOptimizer(graph, init_values, opt_param).optimize();
 
   } else if (setting.opt_type == TrajOptimizerSetting::LM) {
     LevenbergMarquardtParams opt_param;
     opt_param.setMaxIterations(setting.max_iter);
     opt_param.setRelativeErrorTol(setting.rel_thresh);
-    //opt_param.setVerbosity("ERROR");
+    opt_param.setVerbosity("ERROR");
     results = LevenbergMarquardtOptimizer(graph, init_values, opt_param).optimize();
 
   } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
     GaussNewtonParams opt_param;
     opt_param.setMaxIterations(setting.max_iter);
     opt_param.setRelativeErrorTol(setting.rel_thresh);
-    //opt_param.setVerbosity("ERROR");
+    opt_param.setVerbosity("ERROR");
     results = GaussNewtonOptimizer(graph, init_values, opt_param).optimize();
   }
 

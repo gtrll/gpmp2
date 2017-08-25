@@ -16,6 +16,7 @@ TrajOptimizerSetting::TrajOptimizerSetting() :
     dof(0),
     total_step(10),
     total_time(1.0),
+    flag_limit(false),
     epsilon(0.2),
     cost_sigma(0.1),
     obs_check_inter(5),
@@ -31,6 +32,14 @@ TrajOptimizerSetting::TrajOptimizerSetting(size_t system_dof) :
     total_time(1.0),
     conf_prior_model(noiseModel::Isotropic::Sigma(system_dof, 0.0001)),
     vel_prior_model(noiseModel::Isotropic::Sigma(system_dof, 0.0001)),
+    flag_limit(false),
+    joint_pos_limits_up(1e6 * Vector::Ones(system_dof)),
+    joint_pos_limits_down(-1e6 * Vector::Ones(system_dof)),
+    vel_limits(1e6 * Vector::Ones(system_dof)),
+    pos_limit_thresh(0.001 * Vector::Ones(system_dof)),
+    vel_limit_thresh(0.001 * Vector::Ones(system_dof)),
+    pos_limit_model(noiseModel::Isotropic::Sigma(system_dof, 0.001)),
+    vel_limit_model(noiseModel::Isotropic::Sigma(system_dof, 0.001)),
     epsilon(0.2),
     cost_sigma(0.1),
     obs_check_inter(5),
@@ -38,6 +47,16 @@ TrajOptimizerSetting::TrajOptimizerSetting(size_t system_dof) :
     opt_type(LM),
     rel_thresh(1e-6),
     max_iter(100) {
+}
+
+/* ************************************************************************** */
+void TrajOptimizerSetting::set_pos_limit_model(const gtsam::Vector& v) {
+  pos_limit_model = noiseModel::Diagonal::Sigmas(v);
+}
+
+/* ************************************************************************** */
+void TrajOptimizerSetting::set_vel_limit_model(const gtsam::Vector& v) {
+  vel_limit_model = noiseModel::Diagonal::Sigmas(v);
 }
 
 /* ************************************************************************** */
@@ -55,6 +74,4 @@ void TrajOptimizerSetting::set_Qc_model(const Matrix& Qc) {
   Qc_model = noiseModel::Gaussian::Covariance(Qc);
 }
 
-
 }
-

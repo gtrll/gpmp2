@@ -6,7 +6,9 @@
  **/
 
 #include <gpmp2/planner/BatchTrajOptimizer.h>
-
+#include <gpmp2/kinematics/JointLimitFactorVector.h>
+#include <gpmp2/kinematics/JointLimitFactorPose2Vector.h>
+#include <gpmp2/kinematics/VelocityLimitFactorVector.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorArm.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorArm.h>
@@ -31,7 +33,8 @@ gtsam::Values BatchTrajOptimize2DArm(
     const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
 
   return internal::BatchTrajOptimize<ArmModel, GaussianProcessPriorLinear,
-      PlanarSDF, ObstaclePlanarSDFFactorArm, ObstaclePlanarSDFFactorGPArm>(
+      PlanarSDF, ObstaclePlanarSDFFactorArm, ObstaclePlanarSDFFactorGPArm, 
+      JointLimitFactorVector, VelocityLimitFactorVector>(
           arm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
 }
 
@@ -43,7 +46,8 @@ gtsam::Values BatchTrajOptimize3DArm(
     const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
 
   return internal::BatchTrajOptimize<ArmModel, GaussianProcessPriorLinear,
-      SignedDistanceField, ObstacleSDFFactorArm, ObstacleSDFFactorGPArm>(
+      SignedDistanceField, ObstacleSDFFactorArm, ObstacleSDFFactorGPArm, 
+      JointLimitFactorVector, VelocityLimitFactorVector>(
           arm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
 }
 
@@ -55,7 +59,8 @@ gtsam::Values BatchTrajOptimizePose2MobileArm2D(
     const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
 
   return internal::BatchTrajOptimize<Pose2MobileArmModel, GaussianProcessPriorPose2Vector,
-      PlanarSDF, ObstaclePlanarSDFFactorPose2MobileArm, ObstaclePlanarSDFFactorGPPose2MobileArm>(
+      PlanarSDF, ObstaclePlanarSDFFactorPose2MobileArm, ObstaclePlanarSDFFactorGPPose2MobileArm, 
+      JointLimitFactorPose2Vector, VelocityLimitFactorVector>(
           marm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
 }
 
@@ -67,7 +72,8 @@ gtsam::Values BatchTrajOptimizePose2MobileArm(
     const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
 
   return internal::BatchTrajOptimize<Pose2MobileArmModel, GaussianProcessPriorPose2Vector,
-      SignedDistanceField, ObstacleSDFFactorPose2MobileArm, ObstacleSDFFactorGPPose2MobileArm>(
+      SignedDistanceField, ObstacleSDFFactorPose2MobileArm, ObstacleSDFFactorGPPose2MobileArm, 
+      JointLimitFactorPose2Vector, VelocityLimitFactorVector>(
           marm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
 }
 

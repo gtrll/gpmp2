@@ -26,6 +26,14 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
   gtsam::SharedNoiseModel conf_prior_model;    // prior constraint model for initial/end state
   gtsam::SharedNoiseModel vel_prior_model;     // prior constraint model for initial/end velocity
 
+  /// joint position and velocity limit settings
+  bool flag_limit;              // whether enable joint position and velocity limits
+  gtsam::Vector joint_pos_limits_up, joint_pos_limits_down; // joint position limits, if Pose2Vector, only Vector part
+  gtsam::Vector vel_limits;     // joint velocity limits, for all DOF
+  /// joint limit settings
+  gtsam::Vector pos_limit_thresh, vel_limit_thresh;
+  gtsam::SharedNoiseModel pos_limit_model, vel_limit_model;
+
   /// obstacle cost settings
   double epsilon;               // eps of hinge loss function (see the paper)
   double cost_sigma;            // sigma of obstacle cost (see the paper)
@@ -43,27 +51,42 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
   TrajOptimizerSetting();
 
   /// default parameters, DOF must be given explicitly
-  TrajOptimizerSetting(size_t system_dof);
+  explicit TrajOptimizerSetting(size_t system_dof);
 
   ~TrajOptimizerSetting() {}
 
 
   /* matlab utils for wrapper */
+  // traj settings
   void set_total_step(size_t step) { total_step = step; }
   void set_total_time(double time) { total_time = time; }
+  void set_conf_prior_model(double sigma);
+  void set_vel_prior_model(double sigma);
+
+  // joint limit / velocity settings
+  void set_flag_limit(bool flag) { flag_limit = flag; }
+  void set_joint_pos_limits_up(const gtsam::Vector& v) { joint_pos_limits_up = v; }
+  void set_joint_pos_limits_down(const gtsam::Vector& v) { joint_pos_limits_down = v; }
+  void set_vel_limits(const gtsam::Vector& v) { vel_limits = v; }
+  void set_pos_limit_thresh(const gtsam::Vector& v) { pos_limit_thresh = v; }
+  void set_vel_limit_thresh(const gtsam::Vector& v) { vel_limit_thresh = v; }
+  void set_pos_limit_model(const gtsam::Vector& v);
+  void set_vel_limit_model(const gtsam::Vector& v);
+
+  // obstacle settings
   void set_epsilon(double eps) { epsilon = eps; }
   void set_cost_sigma(double sigma) { cost_sigma = sigma; }
   void set_obs_check_inter(size_t inter) { obs_check_inter = inter; }
-  void set_rel_thresh(double thresh) { rel_thresh = thresh; }
-  void set_max_iter(size_t iter) { max_iter = iter; }
-  void set_conf_prior_model(double sigma);
-  void set_vel_prior_model(double sigma);
+
+  // GP settings
   void set_Qc_model(const gtsam::Matrix& Qc);
 
-  /// set optimization type
+  // optimization settings
   void setGaussNewton() { opt_type = GaussNewton; }
   void setLM() { opt_type = LM; }
   void setDogleg() { opt_type = Dogleg; }
+  void set_rel_thresh(double thresh) { rel_thresh = thresh; }
+  void set_max_iter(size_t iter) { max_iter = iter; }
 };
 
 }
