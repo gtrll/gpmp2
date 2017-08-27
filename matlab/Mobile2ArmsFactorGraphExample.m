@@ -42,7 +42,7 @@ use_GP_inter = true;
 marm = generateMobileArm('SimpleTwoArms');
 
 % GP
-Qc = 1 * eye(5);
+Qc = 1 * eye(7);
 Qc_model = noiseModel.Gaussian.Covariance(Qc);
 
 % Obstacle avoid settings
@@ -50,19 +50,19 @@ cost_sigma = 0.5;
 epsilon_dist = 0.5;
 
 % prior to start/goal
-pose_fix = noiseModel.Isotropic.Sigma(5, 0.0001);
-vel_fix = noiseModel.Isotropic.Sigma(5, 0.0001);
+pose_fix = noiseModel.Isotropic.Sigma(7, 0.0001);
+vel_fix = noiseModel.Isotropic.Sigma(7, 0.0001);
 
 % start and end conf
 start_pose = Pose2(-2, 2, -pi/2);
-start_conf = [0, 0]';
+start_conf = [0, 0, 0, 0]';
 pstart = Pose2Vector(start_pose, start_conf);
-start_vel = [0, 0, 0, 0, 0]';
+start_vel = [0, 0, 0, 0, 0, 0, 0]';
 
 end_pose = Pose2(2, -1, pi/2);
-end_conf = [0 0]';
+end_conf = [0, 0, 0, 0]';
 pend = Pose2Vector(end_pose, end_conf);
-end_vel = [0, 0, 0, 0, 0]';
+end_vel = [0, 0, 0, 0, 0, 0, 0]';
 
 avg_vel = [end_pose.x()-start_pose.x(); end_pose.y()-start_pose.y(); ...
     end_pose.theta()-start_pose.theta(); (end_conf / total_time_step)] / delta_t;
