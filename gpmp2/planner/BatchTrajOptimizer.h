@@ -17,6 +17,7 @@
 
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam/nonlinear/NonlinearFactorGraph.h>
+#include <gtsam/nonlinear/NonlinearOptimizer.h>
 #include <gtsam/base/Matrix.h>
 #include <gtsam/base/Vector.h>
 
@@ -181,6 +182,12 @@ template <class ROBOT, class SDF, class OBS_FACTOR>
 double CollisionCost(
     const ROBOT& robot, const SDF& sdf, const gtsam::Values& result, 
     const TrajOptimizerSetting& setting);
+
+/// run a single optimizer iteration
+/// compare to GTSAM default optimization method, if error increase during iteration,
+/// will return the smallest error value, not the increased one
+gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt, 
+    const gtsam::NonlinearOptimizerParams& params, bool iter_no_increase = true);
 
 }   // namespace internal
 }   // namespace gpmp2

@@ -100,7 +100,11 @@ opt_setting.set_conf_prior_model(pose_fix_sigma);
 opt_setting.set_vel_prior_model(vel_fix_sigma);
 opt_setting.set_Qc_model(Qc);
 
-opt_setting.setGaussNewton();
+opt_setting.setDogleg();
+% opt_setting.setGaussNewton();
+% opt_setting.setLM();
+% opt_setting.setVerbosityError();
+opt_setting.setOptimizationNoIncrase(true);
 
 % optimize!
 tic
