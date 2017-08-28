@@ -20,6 +20,8 @@ TrajOptimizerSetting::TrajOptimizerSetting() :
     cost_sigma(0.1),
     obs_check_inter(5),
     opt_type(LM),
+    opt_verbosity(None),
+    final_iter_no_increase(true),
     rel_thresh(1e-6),
     max_iter(100) {
 }
@@ -36,6 +38,8 @@ TrajOptimizerSetting::TrajOptimizerSetting(size_t system_dof) :
     obs_check_inter(5),
     Qc_model(noiseModel::Unit::Create(system_dof)),
     opt_type(LM),
+    opt_verbosity(None),
+    final_iter_no_increase(true),
     rel_thresh(1e-6),
     max_iter(100) {
 }

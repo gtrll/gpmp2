@@ -378,6 +378,11 @@ class TrajOptimizerSetting {
   void setGaussNewton();
   void setLM();
   void setDogleg();
+  /// set optimization verbosity
+  void setVerbosityNone();
+  void setVerbosityError();
+  /// set value is guaranteed not increase
+  void setOptimizationNoIncrase(bool flag);
 };
 
 

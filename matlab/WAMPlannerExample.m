@@ -38,8 +38,8 @@ end_vel = zeros(7,1);
 figure(1), hold on
 title('Problem Settings')
 plotMap3D(dataset.corner_idx, origin, cell_size);
-plotRobotModel(arm, start_conf)
-plotRobotModel(arm, end_conf)
+plotRobotModel(arm, start_conf);
+plotRobotModel(arm, end_conf);
 % plot config
 set3DPlotRange(dataset)
 grid on, view(3)
@@ -118,7 +118,7 @@ opt_setting.set_Qc_model(Qc);
 tic
 result = BatchTrajOptimize3DArm(arm, sdf, start_conf, start_vel, end_conf, ...
     end_vel, init_values, opt_setting);
-fprintf('Optimization Time: %f\n', toc);
+fprintf('Optimization Time: %f\n', toc)
 
 % result.print('Final results')
 
@@ -140,7 +140,7 @@ plotMap3D(dataset.corner_idx, origin, cell_size);
 for i=0:total_plot_step
     % plot arm
     conf = plot_values.atVector(symbol('x', i));
-    plotArm(arm.fk_model(), conf, 'b', 2)
+    plotArm(arm.fk_model(), conf, 'b', 2);
     % plot config
     set3DPlotRange(dataset)
     pause(pause_time)
@@ -158,7 +158,7 @@ for i=0:total_plot_step
     % plot arm
     conf = plot_values.atVector(symbol('x', i));
 %     plotArm(arm, conf, 'b', 2)
-    plotRobotModel(arm, conf)
+    plotRobotModel(arm, conf);
     % plot config
     set3DPlotRange(dataset)
     grid on
