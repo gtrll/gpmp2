@@ -75,9 +75,12 @@ gtsam::Values BatchTrajOptimize(
   // init the params/opt and type specific settings
   if (setting.opt_type == TrajOptimizerSetting::Dogleg) {
     opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new DoglegParams());
+    // trust region ranage, 0.2 rad or meter, no whitenning, not sure make sense or not 
+    dynamic_cast<DoglegParams*>(opt_params_ptr.get())->setDeltaInitial(0.2);
   
   } else if (setting.opt_type == TrajOptimizerSetting::LM) {
     opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new LevenbergMarquardtParams());
+    dynamic_cast<LevenbergMarquardtParams*>(opt_params_ptr.get())->setlambdaInitial(100.0);
   
   } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
     opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new GaussNewtonParams());
