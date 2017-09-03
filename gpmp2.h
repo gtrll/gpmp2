@@ -117,6 +117,7 @@ class Pose2MobileArm {
   gtsam::Pose3 base_T_arm() const;
 };
 
+// abstract pose2 mobile with two arms class
 #include <gpmp2/kinematics/Pose2Mobile2Arms.h>
 
 class Pose2Mobile2Arms {
@@ -135,6 +136,48 @@ class Pose2Mobile2Arms {
   gpmp2::Arm arm2() const;
   gtsam::Pose3 base_T_arm1() const;
   gtsam::Pose3 base_T_arm2() const;
+};
+
+// abstract pose2 mobile with linear actuator and one arm class
+#include <gpmp2/kinematics/Pose2MobileVetLinArm.h>
+
+class Pose2MobileVetLinArm {
+  Pose2MobileVetLinArm(const gpmp2::Arm& arm);
+  Pose2MobileVetLinArm(const gpmp2::Arm& arm, const gtsam::Pose3& base_T_arm, 
+      bool reverse_linact);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm() const;
+  gtsam::Pose3 base_T_arm() const;
+  bool reverse_linact() const;
+};
+
+// abstract pose2 mobile with linear actuator and two arms class
+#include <gpmp2/kinematics/Pose2MobileVetLin2Arms.h>
+
+class Pose2MobileVetLin2Arms {
+  Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2);
+  Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2, 
+      const gtsam::Pose3& base_T_arm1, const gtsam::Pose3& base_T_arm2, bool reverse_linact);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm1() const;
+  gpmp2::Arm arm2() const;
+  gtsam::Pose3 base_T_arm1() const;
+  gtsam::Pose3 base_T_arm2() const;
+  bool reverse_linact() const;
 };
 
 // Abstract Point Robot class
@@ -194,6 +237,7 @@ class Pose2MobileArmModel {
   double sphere_radius(size_t i) const;
 };
 
+// Physical Pose2Mobile2ArmsModel class
 #include <gpmp2/kinematics/Pose2Mobile2ArmsModel.h>
 
 class Pose2Mobile2ArmsModel {
@@ -203,6 +247,34 @@ class Pose2Mobile2ArmsModel {
   // accesses
   size_t dof() const;
   gpmp2::Pose2Mobile2Arms fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Physical Pose2MobileVetLinArmModel class
+#include <gpmp2/kinematics/Pose2MobileVetLinArmModel.h>
+
+class Pose2MobileVetLinArmModel {
+  Pose2MobileVetLinArmModel(const gpmp2::Pose2MobileVetLinArm& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileVetLinArm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Physical Pose2MobileVetLin2ArmsModel class
+#include <gpmp2/kinematics/Pose2MobileVetLin2ArmsModel.h>
+
+class Pose2MobileVetLin2ArmsModel {
+  Pose2MobileVetLin2ArmsModel(const gpmp2::Pose2MobileVetLin2Arms& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileVetLin2Arms fk_model() const;
   size_t nr_body_spheres() const;
   double sphere_radius(size_t i) const;
 };
