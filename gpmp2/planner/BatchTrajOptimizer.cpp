@@ -18,8 +18,9 @@
 #include <gpmp2/gp/GaussianProcessPriorLinear.h>
 #include <gpmp2/gp/GaussianProcessPriorPose2Vector.h>
 
-
+using namespace std;
 using namespace gtsam;
+
 
 namespace gpmp2 {
 
@@ -107,4 +108,72 @@ double CollisionCostPose2MobileArm(
     ObstacleSDFFactorPose2MobileArm>(marm, sdf, result, setting);
 }
 
+
+namespace internal {
+
+/* ************************************************************************** */
+gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt, 
+    const gtsam::NonlinearOptimizerParams& params, bool iter_no_increase) {
+
+  double currentError = opt->error();
+  
+  // check if we're already close enough
+  if (currentError <= params.errorTol) {
+    if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+      cout << "Exiting, as error = " << currentError << " < " << params.errorTol << endl;
+    return opt->values();
+  }
+
+  // Maybe show output
+  if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+    cout << "Initial error: " << currentError << endl;
+
+  // Return if we already have too many iterations
+  if (opt->iterations() >= params.maxIterations) {
+    if (params.verbosity >= NonlinearOptimizerParams::TERMINATION)
+      cout << "iterations: " << opt->iterations() << " > " << params.maxIterations << endl;
+    return opt->values();
+  }
+
+  Values last_values;
+
+  // Iterative loop
+  do {
+    // iteration
+    currentError = opt->error();
+    // copy last values in case error increase
+    if (iter_no_increase)
+      last_values = opt->values();
+    opt->iterate();
+    // Maybe show output
+    if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+      cout << "newError: " << opt->error() << endl;
+
+  } while (opt->iterations() < params.maxIterations &&
+      !checkConvergence(params.relativeErrorTol, params.absoluteErrorTol, params.errorTol,
+          currentError, opt->error(), params.verbosity));
+
+  // Printing if verbose
+  if (params.verbosity >= NonlinearOptimizerParams::TERMINATION) {
+    cout << "iterations: " << opt->iterations() << " > " << params.maxIterations << endl;
+    if (opt->iterations() >= params.maxIterations)
+      cout << "Terminating because reached maximum iterations" << endl;
+  }
+
+  // check whether values increase
+  // if increase use last copied values
+  if (opt->error() > currentError) {
+    if (iter_no_increase) {
+      if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+        cout << "Error increase, use last copied values" << endl;
+      return last_values;
+    } else {
+      return opt->values();
+    }
+  } else {
+    return opt->values();
+  }
 }
+
+} // namespace internal
+} // namespace gpmp2
