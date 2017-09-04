@@ -70,8 +70,6 @@ TEST(GoalFactorArm, error) {
       boost::bind(&GoalFactorArm::evaluateError, factor, _1, boost::none)), q, 1e-6);
   EXPECT(assert_equal(expect, actual, 1e-6));
   EXPECT(assert_equal(H_exp, H_act, 1e-6));
-
-  cout << H_exp << endl;
 }
 
 
