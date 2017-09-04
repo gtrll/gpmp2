@@ -148,9 +148,9 @@ plotMap3D(dataset.corner_idx, origin, dataset.cell_size);
 for i=0:total_plot_step
     % plot arm
     conf = plot_values.atVector(symbol('x', i));
-    plotArm(arm.fk_model(), conf, 'b', 1)
+    plotArm(arm.fk_model(), conf, 'b', 1);
     % plot config
-    set3DPlotRange(dataset)
+    set3DPlotRange(dataset);
     pause(pause_time)
 end
 
@@ -158,9 +158,9 @@ end
 for i=replan_pose_idx*(plot_inter+1) : total_plot_step
     % plot arm
     conf = plot_replan_result.atVector(symbol('x', i));
-    plotArm(arm.fk_model(), conf, 'r', 1)
+    plotArm(arm.fk_model(), conf, 'r', 1);
     % plot config
-    set3DPlotRange(dataset)
+    set3DPlotRange(dataset);
     pause(pause_time)
 end
 

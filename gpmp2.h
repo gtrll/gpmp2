@@ -309,6 +309,23 @@ virtual class GoalFactorArm : gtsam::NoiseModelFactor {
 };
 
 
+// joint limit factor to vector space
+#include <gpmp2/kinematics/JointLimitFactorVector.h>
+
+virtual class JointLimitFactorVector: gtsam::NoiseModelFactor {
+  JointLimitFactorVector(size_t key, const gtsam::noiseModel::Base* cost_model, 
+      Vector down_limit, Vector up_limit, Vector limit_thresh);
+};
+
+
+// joint velocity limit factor to vector space
+#include <gpmp2/kinematics/VelocityLimitFactorVector.h>
+
+virtual class VelocityLimitFactorVector: gtsam::NoiseModelFactor {
+  VelocityLimitFactorVector(size_t key, const gtsam::noiseModel::Base* cost_model, 
+      Vector vel_limit, Vector limit_thresh);
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // dynamics
@@ -493,6 +510,14 @@ class TrajOptimizerSetting {
 
   void set_total_step(size_t step);
   void set_total_time(double time);
+  void set_flag_limit(bool flag);
+  void set_joint_pos_limits_up(Vector v);
+  void set_joint_pos_limits_down(Vector v);
+  void set_vel_limits(Vector v);
+  void set_pos_limit_thresh(Vector v);
+  void set_vel_limit_thresh(Vector v);
+  void set_pos_limit_model(Vector v);
+  void set_vel_limit_model(Vector v);
   void set_epsilon(double eps);
   void set_cost_sigma(double sigma);
   void set_obs_check_inter(size_t inter);

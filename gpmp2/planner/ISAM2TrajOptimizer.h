@@ -8,6 +8,9 @@
 #pragma once
 
 #include <gpmp2/planner/TrajOptimizerSetting.h>
+#include <gpmp2/kinematics/JointLimitFactorVector.h>
+#include <gpmp2/kinematics/JointLimitFactorPose2Vector.h>
+#include <gpmp2/kinematics/VelocityLimitFactorVector.h>
 #include <gpmp2/obstacle/PlanarSDF.h>
 #include <gpmp2/obstacle/SignedDistanceField.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorArm.h>
@@ -47,7 +50,8 @@ namespace internal {
  * @tparam OBS_FACTOR obstacle cost factor type
  * @tparam OBS_FACTOR_GP GP interpolated obstacle cost factor type
  */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP, 
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
 class ISAM2TrajOptimizer {
 
 private:
@@ -130,25 +134,29 @@ public:
 
 /// 2D arm specialization
 typedef internal::ISAM2TrajOptimizer<ArmModel, GaussianProcessPriorLinear,
-    PlanarSDF, ObstaclePlanarSDFFactorArm, ObstaclePlanarSDFFactorGPArm>
+    PlanarSDF, ObstaclePlanarSDFFactorArm, ObstaclePlanarSDFFactorGPArm,
+    JointLimitFactorVector, VelocityLimitFactorVector>
 ISAM2TrajOptimizer2DArm;
 
 
 /// 3D arm specialization
 typedef internal::ISAM2TrajOptimizer<ArmModel, GaussianProcessPriorLinear,
-    SignedDistanceField, ObstacleSDFFactorArm, ObstacleSDFFactorGPArm>
+    SignedDistanceField, ObstacleSDFFactorArm, ObstacleSDFFactorGPArm,
+    JointLimitFactorVector, VelocityLimitFactorVector>
 ISAM2TrajOptimizer3DArm;
 
 
 /// 2D mobile arm specialization
 typedef internal::ISAM2TrajOptimizer<Pose2MobileArmModel, GaussianProcessPriorPose2Vector,
-    PlanarSDF, ObstaclePlanarSDFFactorPose2MobileArm, ObstaclePlanarSDFFactorGPPose2MobileArm>
+    PlanarSDF, ObstaclePlanarSDFFactorPose2MobileArm, ObstaclePlanarSDFFactorGPPose2MobileArm,
+    JointLimitFactorPose2Vector, VelocityLimitFactorVector>
 ISAM2TrajOptimizerPose2MobileArm2D;
 
 
 /// 3D mobile arm specialization
 typedef internal::ISAM2TrajOptimizer<Pose2MobileArmModel, GaussianProcessPriorPose2Vector,
-    SignedDistanceField, ObstacleSDFFactorPose2MobileArm, ObstacleSDFFactorGPPose2MobileArm>
+    SignedDistanceField, ObstacleSDFFactorPose2MobileArm, ObstacleSDFFactorGPPose2MobileArm,
+    JointLimitFactorPose2Vector, VelocityLimitFactorVector>
 ISAM2TrajOptimizerPose2MobileArm;
 
 

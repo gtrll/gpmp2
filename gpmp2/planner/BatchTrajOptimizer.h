@@ -164,7 +164,8 @@ namespace internal {
  * @tparam OBS_FACTOR obstacle cost factor type
  * @tparam OBS_FACTOR_GP GP interpolated obstacle cost factor type
  */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP, 
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
 gtsam::Values BatchTrajOptimize(
     const ROBOT& arm, const SDF& sdf,
     const typename ROBOT::Pose& start_conf, const typename ROBOT::Velocity& start_vel,

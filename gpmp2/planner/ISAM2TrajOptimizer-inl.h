@@ -13,16 +13,18 @@ namespace gpmp2 {
 namespace internal {
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     ISAM2TrajOptimizer(const ROBOT& arm, const SDF& sdf, const TrajOptimizerSetting& setting) :
       setting_(setting), arm_(arm), sdf_(sdf), isam_(gtsam::ISAM2Params(
       gtsam::ISAM2GaussNewtonParams(), 1e-3, 1)), goal_conf_factor_idx_(0),
       goal_vel_factor_idx_(0) {}
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     initFactorGraph(const Pose& start_conf, const Velocity& start_vel,
     const Pose& goal_conf, const Velocity& goal_vel) {
 
@@ -50,6 +52,15 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
       goal_removed_ = false;
     }
 
+    if (setting_.flag_limit) {
+      // joint position limits
+      inc_graph_.add(LIMIT_FACTOR_POS(pose_key, setting_.pos_limit_model, setting_.joint_pos_limits_down, 
+          setting_.joint_pos_limits_up, setting_.pos_limit_thresh));
+      // velocity limits
+      inc_graph_.add(LIMIT_FACTOR_VEL(vel_key, setting_.vel_limit_model, setting_.vel_limits, 
+          setting_.vel_limit_thresh));
+    }
+
     // non-interpolated cost factor
     inc_graph_.add(OBS_FACTOR(pose_key, arm_, sdf_, setting_.cost_sigma, setting_.epsilon));
 
@@ -75,16 +86,18 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     initValues(const gtsam::Values& init_values) {
 
   init_values_ = init_values;
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     update() {
 
   // update isam
@@ -100,8 +113,9 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     changeGoalConfigAndVel(const Pose& goal_conf, const Velocity& goal_vel) {
 
   using namespace gtsam;
@@ -124,8 +138,9 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
     removeGoalConfigAndVel() {
 
   using namespace gtsam;
@@ -139,9 +154,10 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
-	fixConfigAndVel(size_t state_idx, const Pose& conf_fix, const Velocity& vel_fix) {
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
+	  fixConfigAndVel(size_t state_idx, const Pose& conf_fix, const Velocity& vel_fix) {
 
   using namespace gtsam;
 
@@ -151,9 +167,10 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
-  addPoseEstimate(size_t state_idx, const Pose& pose, const Matrix& pose_cov) {
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
+    addPoseEstimate(size_t state_idx, const Pose& pose, const Matrix& pose_cov) {
 
   using namespace gtsam;
 
@@ -162,9 +179,10 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
 }
 
 /* ************************************************************************** */
-template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP>
-void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP>::
-  addStateEstimate(size_t state_idx, const Pose& pose, const Matrix& pose_cov, 
+template <class ROBOT, class GP, class SDF, class OBS_FACTOR, class OBS_FACTOR_GP,
+    class LIMIT_FACTOR_POS, class LIMIT_FACTOR_VEL>
+void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_POS, LIMIT_FACTOR_VEL>::
+    addStateEstimate(size_t state_idx, const Pose& pose, const Matrix& pose_cov, 
     const Velocity& vel, const Matrix& vel_cov) {
 
   using namespace gtsam;
