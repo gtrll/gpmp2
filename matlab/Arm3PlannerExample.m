@@ -134,6 +134,11 @@ opt_setting.set_Qc_model(Qc);
 
 opt_setting.setDogleg();
 
+% opt_setting.setGaussNewton();
+% opt_setting.setLM();
+% opt_setting.setVerbosityError();
+opt_setting.setOptimizationNoIncrase(true);
+
 % optimize!
 tic
 result = BatchTrajOptimize2DArm(arm, sdf, start_conf, start_vel, end_conf, ...

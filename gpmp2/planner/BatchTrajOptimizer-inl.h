@@ -79,31 +79,42 @@ gtsam::Values BatchTrajOptimize(
   }
 
   // optimize!
-  Values results;
+  std::shared_ptr<gtsam::NonlinearOptimizer> opt_ptr;
+  std::shared_ptr<gtsam::NonlinearOptimizerParams> opt_params_ptr;
 
+  // init the params/opt and type specific settings
   if (setting.opt_type == TrajOptimizerSetting::Dogleg) {
-    DoglegParams opt_param;
-    opt_param.setMaxIterations(setting.max_iter);
-    opt_param.setRelativeErrorTol(setting.rel_thresh);
-    opt_param.setVerbosity("ERROR");
-    results = DoglegOptimizer(graph, init_values, opt_param).optimize();
-
+    opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new DoglegParams());
+    // trust region ranage, 0.2 rad or meter, no whitenning, not sure make sense or not 
+    dynamic_cast<DoglegParams*>(opt_params_ptr.get())->setDeltaInitial(0.2);
+  
   } else if (setting.opt_type == TrajOptimizerSetting::LM) {
-    LevenbergMarquardtParams opt_param;
-    opt_param.setMaxIterations(setting.max_iter);
-    opt_param.setRelativeErrorTol(setting.rel_thresh);
-    opt_param.setVerbosity("ERROR");
-    results = LevenbergMarquardtOptimizer(graph, init_values, opt_param).optimize();
-
+    opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new LevenbergMarquardtParams());
+    dynamic_cast<LevenbergMarquardtParams*>(opt_params_ptr.get())->setlambdaInitial(100.0);
+  
   } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
-    GaussNewtonParams opt_param;
-    opt_param.setMaxIterations(setting.max_iter);
-    opt_param.setRelativeErrorTol(setting.rel_thresh);
-    opt_param.setVerbosity("ERROR");
-    results = GaussNewtonOptimizer(graph, init_values, opt_param).optimize();
+    opt_params_ptr = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new GaussNewtonParams());
   }
 
-  return results;
+  // common settings
+  opt_params_ptr->setMaxIterations(setting.max_iter);
+  opt_params_ptr->setRelativeErrorTol(setting.rel_thresh);
+  if (setting.opt_verbosity >= TrajOptimizerSetting::Error)
+    opt_params_ptr->setVerbosity("ERROR");
+
+  // optimizer
+  if (setting.opt_type == TrajOptimizerSetting::Dogleg) {
+    opt_ptr = std::shared_ptr<gtsam::NonlinearOptimizer>(new DoglegOptimizer(
+      graph, init_values, *(dynamic_cast<DoglegParams*>(opt_params_ptr.get()))));
+  } else if (setting.opt_type == TrajOptimizerSetting::LM) {
+    opt_ptr = std::shared_ptr<gtsam::NonlinearOptimizer>(new LevenbergMarquardtOptimizer(
+      graph, init_values, *(dynamic_cast<LevenbergMarquardtParams*>(opt_params_ptr.get()))));
+  } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
+    opt_ptr = std::shared_ptr<gtsam::NonlinearOptimizer>(new GaussNewtonOptimizer(
+      graph, init_values, *(dynamic_cast<GaussNewtonParams*>(opt_params_ptr.get()))));
+  }
+
+  return optimize(opt_ptr, *opt_params_ptr);
 }
 
 /* ************************************************************************** */

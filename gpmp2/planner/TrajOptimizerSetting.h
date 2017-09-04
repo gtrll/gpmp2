@@ -18,6 +18,7 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
 
   /// optimization iteration types
   enum IterationType {GaussNewton, LM, Dogleg};
+  enum VerbosityLevel {None, Error};
 
   /// trajectory settings
   size_t dof;                   // degree of freedom, must be given explicitly
@@ -44,6 +45,8 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
 
   /// Optimization settings
   IterationType opt_type;       // optimizer type
+  VerbosityLevel opt_verbosity; // verbosity level
+  bool final_iter_no_increase;  // value is guaranteed not increase at last iteration
   double rel_thresh;            // relative error decrease threshold for stopping optimization
   size_t max_iter;              // max iteration for stopping optimization
 
@@ -87,6 +90,11 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
   void setDogleg() { opt_type = Dogleg; }
   void set_rel_thresh(double thresh) { rel_thresh = thresh; }
   void set_max_iter(size_t iter) { max_iter = iter; }
+  /// set optimization verbosity
+  void setVerbosityNone() { opt_verbosity = None; }
+  void setVerbosityError() { opt_verbosity = Error; }
+  /// set value is guaranteed not increase
+  void setOptimizationNoIncrase(bool flag) { final_iter_no_increase = flag; }
 };
 
 }
