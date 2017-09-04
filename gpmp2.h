@@ -143,8 +143,8 @@ class Pose2Mobile2Arms {
 
 class Pose2MobileVetLinArm {
   Pose2MobileVetLinArm(const gpmp2::Arm& arm);
-  Pose2MobileVetLinArm(const gpmp2::Arm& arm, const gtsam::Pose3& base_T_arm, 
-      bool reverse_linact);
+  Pose2MobileVetLinArm(const gpmp2::Arm& arm, const gtsam::Pose3& base_T_torso, 
+      const gtsam::Pose3& torso_T_arm, bool reverse_linact);
 
   // full forward kinematics
   Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
@@ -154,7 +154,8 @@ class Pose2MobileVetLinArm {
   size_t dof() const;
   size_t nr_links() const;
   gpmp2::Arm arm() const;
-  gtsam::Pose3 base_T_arm() const;
+  gtsam::Pose3 base_T_torso() const;
+  gtsam::Pose3 torso_T_arm() const;
   bool reverse_linact() const;
 };
 
@@ -164,7 +165,8 @@ class Pose2MobileVetLinArm {
 class Pose2MobileVetLin2Arms {
   Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2);
   Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2, 
-      const gtsam::Pose3& base_T_arm1, const gtsam::Pose3& base_T_arm2, bool reverse_linact);
+      const gtsam::Pose3& base_T_torso,  const gtsam::Pose3& torso_T_arm1, 
+      const gtsam::Pose3& torso_T_arm2, bool reverse_linact);
 
   // full forward kinematics
   Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
@@ -175,8 +177,9 @@ class Pose2MobileVetLin2Arms {
   size_t nr_links() const;
   gpmp2::Arm arm1() const;
   gpmp2::Arm arm2() const;
-  gtsam::Pose3 base_T_arm1() const;
-  gtsam::Pose3 base_T_arm2() const;
+  gtsam::Pose3 base_T_torso() const;
+  gtsam::Pose3 torso_T_arm1() const;
+  gtsam::Pose3 torso_T_arm2() const;
   bool reverse_linact() const;
 };
 
