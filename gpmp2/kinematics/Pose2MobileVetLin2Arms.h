@@ -33,7 +33,7 @@ private:
   typedef ForwardKinematics<Pose2Vector, gtsam::Vector> Base;
 
   // base to arm pose, when linear actuator is on zero
-  gtsam::Pose3 base_T_arm1_, base_T_arm2_;
+  gtsam::Pose3 base_T_torso_, torso_T_arm1_, torso_T_arm2_;
   // if reverse_linact_ == true, positive value on lin act means move down
   bool reverse_linact_;
   // arm class
@@ -46,8 +46,9 @@ public:
   /// constructor from Arm
   /// if reverse_linact == true, positive value on lin act means move down
   Pose2MobileVetLin2Arms(const Arm& arm1, const Arm& arm2, 
-      const gtsam::Pose3& base_T_arm1 = gtsam::Pose3(), 
-      const gtsam::Pose3& base_T_arm2 = gtsam::Pose3(),
+      const gtsam::Pose3& base_T_torso = gtsam::Pose3(), 
+      const gtsam::Pose3& torso_T_arm1 = gtsam::Pose3(), 
+      const gtsam::Pose3& torso_T_arm2 = gtsam::Pose3(),
       bool reverse_linact = false);
 
   /// Default destructor
@@ -74,8 +75,9 @@ public:
   /// accesses
   const Arm& arm1() const { return arm1_; }
   const Arm& arm2() const { return arm2_; }
-  const gtsam::Pose3& base_T_arm1() const { return base_T_arm1_; }
-  const gtsam::Pose3& base_T_arm2() const { return base_T_arm2_; }
+  const gtsam::Pose3& base_T_torso() const { return base_T_torso_; }
+  const gtsam::Pose3& torso_T_arm1() const { return torso_T_arm1_; }
+  const gtsam::Pose3& torso_T_arm2() const { return torso_T_arm2_; }
   bool reverse_linact() const { return reverse_linact_; }
 };
 

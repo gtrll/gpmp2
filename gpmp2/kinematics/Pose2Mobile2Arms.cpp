@@ -57,12 +57,12 @@ void Pose2Mobile2Arms::forwardKinematics(
   Matrix63 Hveh_base, Harm1_base, Harm2_base;
   if (J_px_p || J_vx_p || J_vx_v) {
     veh_base = computeBasePose3(p.pose(), Hveh_base);
-    arm1_base = computeArmBasePose(p.pose(), base_T_arm1_, Harm1_base);
-    arm2_base = computeArmBasePose(p.pose(), base_T_arm2_, Harm2_base);
+    arm1_base = computeBaseTransPose3(p.pose(), base_T_arm1_, Harm1_base);
+    arm2_base = computeBaseTransPose3(p.pose(), base_T_arm2_, Harm2_base);
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm1_base = computeArmBasePose(p.pose(), base_T_arm1_);
-    arm2_base = computeArmBasePose(p.pose(), base_T_arm2_);
+    arm1_base = computeBaseTransPose3(p.pose(), base_T_arm1_);
+    arm2_base = computeBaseTransPose3(p.pose(), base_T_arm2_);
   }
 
   // call arm pose and velocity, for arm links

@@ -36,7 +36,7 @@ TEST(Pose2MobileVetLin2Arms, 2linkPlanarExamples) {
   Arm arm(2, a, alpha, d);
   Pose3 base1_pose(Rot3::Ypr(M_PI/4.0, 0, 0), Point3(1.0, 0.0, 1.0));
   Pose3 base2_pose(Rot3::Ypr(3.0 * M_PI/4.0, 0, 0), Point3(1.0, 0.0, 3.0));
-  Pose2MobileVetLin2Arms marm(arm, arm, base1_pose, base2_pose, false);
+  Pose2MobileVetLin2Arms marm(arm, arm, Pose3(), base1_pose, base2_pose, false);
 
   Pose2Vector q;
   //Vector5 qdot;
@@ -50,6 +50,7 @@ TEST(Pose2MobileVetLin2Arms, 2linkPlanarExamples) {
   // origin with zero poses
   q = Pose2Vector(Pose2(), (Vector5() << 0.0, 0.0, 0.0, 0.0, 0.0).finished());
   pvec_exp.clear();
+  pvec_exp.push_back(Pose3());
   pvec_exp.push_back(Pose3());
   pvec_exp.push_back(Pose3(Rot3::Ypr(M_PI/4.0, 0, 0), Point3(1.707106781186548, 0.707106781186548, 1.0)));
   pvec_exp.push_back(Pose3(Rot3::Ypr(M_PI/4.0, 0, 0), Point3(2.414213562373095, 1.414213562373095, 1.0)));
@@ -66,22 +67,27 @@ TEST(Pose2MobileVetLin2Arms, 2linkPlanarExamples) {
       boost::bind(&fkpose, marm, _1, size_t(3))), q, 1e-6));
   pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
       boost::bind(&fkpose, marm, _1, size_t(4))), q, 1e-6));
+  pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
+      boost::bind(&fkpose, marm, _1, size_t(5))), q, 1e-6));
   marm.forwardKinematics(q, boost::none, pvec_act, boost::none, pJp_act);
   EXPECT(assert_equal(pvec_exp[0], pvec_act[0], 1e-9));
   EXPECT(assert_equal(pvec_exp[1], pvec_act[1], 1e-9));
   EXPECT(assert_equal(pvec_exp[2], pvec_act[2], 1e-9));
   EXPECT(assert_equal(pvec_exp[3], pvec_act[3], 1e-9));
   EXPECT(assert_equal(pvec_exp[4], pvec_act[4], 1e-9));
+  EXPECT(assert_equal(pvec_exp[5], pvec_act[5], 1e-9));
   EXPECT(assert_equal(pJp_exp[0], pJp_act[0], 1e-6));
   EXPECT(assert_equal(pJp_exp[1], pJp_act[1], 1e-6));
   EXPECT(assert_equal(pJp_exp[2], pJp_act[2], 1e-6));
   EXPECT(assert_equal(pJp_exp[3], pJp_act[3], 1e-6));
   EXPECT(assert_equal(pJp_exp[4], pJp_act[4], 1e-6));
+  EXPECT(assert_equal(pJp_exp[5], pJp_act[5], 1e-6));
 
   // origin with non-zero poses
   q = Pose2Vector(Pose2(1.0, 0, M_PI/4.0), (Vector5() << 1.1, M_PI/4.0, M_PI/4.0, M_PI/4.0, M_PI/4.0).finished());
   pvec_exp.clear();
   pvec_exp.push_back(Pose3(Rot3::Ypr(M_PI/4.0, 0, 0), Point3(1.0, 0, 0)));
+  pvec_exp.push_back(Pose3(Rot3::Ypr(M_PI/4.0, 0, 0), Point3(1.0, 0, 1.1)));
   pvec_exp.push_back(Pose3(Rot3::Ypr(3.0 * M_PI/4.0, 0, 0), Point3(1.0, 1.414213562373095, 2.1)));
   pvec_exp.push_back(Pose3(Rot3::Ypr(4.0 * M_PI/4.0, 0, 0), Point3(0.0, 1.414213562373095, 2.1)));
   pvec_exp.push_back(Pose3(Rot3::Ypr(5.0 * M_PI/4.0, 0, 0), Point3(1.0, 0.0, 4.1)));
@@ -97,24 +103,29 @@ TEST(Pose2MobileVetLin2Arms, 2linkPlanarExamples) {
       boost::bind(&fkpose, marm, _1, size_t(3))), q, 1e-6));
   pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
       boost::bind(&fkpose, marm, _1, size_t(4))), q, 1e-6));
+  pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
+      boost::bind(&fkpose, marm, _1, size_t(5))), q, 1e-6));
   marm.forwardKinematics(q, boost::none, pvec_act, boost::none, pJp_act);
   EXPECT(assert_equal(pvec_exp[0], pvec_act[0], 1e-9));
   EXPECT(assert_equal(pvec_exp[1], pvec_act[1], 1e-9));
   EXPECT(assert_equal(pvec_exp[2], pvec_act[2], 1e-9));
   EXPECT(assert_equal(pvec_exp[3], pvec_act[3], 1e-9));
   EXPECT(assert_equal(pvec_exp[4], pvec_act[4], 1e-9));
+  EXPECT(assert_equal(pvec_exp[5], pvec_act[5], 1e-9));
   EXPECT(assert_equal(pJp_exp[0], pJp_act[0], 1e-6));
   EXPECT(assert_equal(pJp_exp[1], pJp_act[1], 1e-6));
   EXPECT(assert_equal(pJp_exp[2], pJp_act[2], 1e-6));
   EXPECT(assert_equal(pJp_exp[3], pJp_act[3], 1e-6));
   EXPECT(assert_equal(pJp_exp[4], pJp_act[4], 1e-6));
+  EXPECT(assert_equal(pJp_exp[5], pJp_act[5], 1e-6));
 
   // random to test jacobians
 
   // random base poses
+  Pose3 torso_base = Pose3(Rot3::Ypr(1.3, -0.9, 1.1), Point3(2.3, -5.3, 8.0));
   base1_pose = Pose3(Rot3::Ypr(-3.3, -4.1, 6.5), Point3(-1.3, 2.2, -0.8));
   base2_pose = Pose3(Rot3::Ypr(2.4, -3.2, 9.1), Point3(3.2, 3.8, -1.2));
-  marm = Pose2MobileVetLin2Arms(arm, arm, base1_pose, base2_pose);
+  marm = Pose2MobileVetLin2Arms(arm, arm, torso_base, base1_pose, base2_pose);
 
   q = Pose2Vector(Pose2(7.5, -2.8, 0.1), (Vector5() << 0.9, -3.4, 5.3, 4.5, -9.9).finished());
   pJp_exp.clear();
@@ -128,12 +139,15 @@ TEST(Pose2MobileVetLin2Arms, 2linkPlanarExamples) {
       boost::bind(&fkpose, marm, _1, size_t(3))), q, 1e-6));
   pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
       boost::bind(&fkpose, marm, _1, size_t(4))), q, 1e-6));
+  pJp_exp.push_back(numericalDerivativeDynamic(boost::function<Pose3(const Pose2Vector&)>(
+      boost::bind(&fkpose, marm, _1, size_t(5))), q, 1e-6));
   marm.forwardKinematics(q, boost::none, pvec_act, boost::none, pJp_act);
   EXPECT(assert_equal(pJp_exp[0], pJp_act[0], 1e-6));
   EXPECT(assert_equal(pJp_exp[1], pJp_act[1], 1e-6));
   EXPECT(assert_equal(pJp_exp[2], pJp_act[2], 1e-6));
   EXPECT(assert_equal(pJp_exp[3], pJp_act[3], 1e-6));
   EXPECT(assert_equal(pJp_exp[4], pJp_act[4], 1e-6));
+  EXPECT(assert_equal(pJp_exp[5], pJp_act[5], 1e-6));
 }
 
 /* ************************************************************************** */

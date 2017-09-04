@@ -18,10 +18,11 @@ namespace gpmp2 {
 
 /* ************************************************************************** */
 Pose2MobileVetLin2Arms::Pose2MobileVetLin2Arms(const Arm& arm1, const Arm& arm2, 
-    const gtsam::Pose3& base_T_arm1, const gtsam::Pose3& base_T_arm2, bool reverse_linact) :
-    Base(arm1.dof() + arm2.dof() + 4, arm1.dof() + arm2.dof() + 1), 
-    base_T_arm1_(base_T_arm1), base_T_arm2_(base_T_arm2), reverse_linact_(reverse_linact),
-    arm1_(arm1), arm2_(arm2) {
+    const gtsam::Pose3& base_T_torso,  const gtsam::Pose3& torso_T_arm1, 
+    const gtsam::Pose3& torso_T_arm2, bool reverse_linact) :
+    Base(arm1.dof() + arm2.dof() + 4, arm1.dof() + arm2.dof() + 2), 
+    base_T_torso_(base_T_torso), torso_T_arm1_(torso_T_arm1), torso_T_arm2_(torso_T_arm2),
+    reverse_linact_(reverse_linact), arm1_(arm1), arm2_(arm2) {
 
   // check arm base pose, warn if non-zero
   if (!arm1_.base_pose().equals(Pose3::identity(), 1e-6) || 
@@ -53,28 +54,33 @@ void Pose2MobileVetLin2Arms::forwardKinematics(
   if (J_vx_v) J_vx_v->assign(nr_links(), Matrix::Zero(3, dof()));
 
   // vehicle & arm base pose
-  Pose3 veh_base, arm1_base, arm2_base;
+  Pose3 veh_base, tso_base, arm1_base, arm2_base;
   Matrix63 Hveh_base;
-  Matrix64 Harm1_base, Harm2_base;
+  Matrix64 Htso_base, Harm1_base, Harm2_base;
   if (J_px_p || J_vx_p || J_vx_v) {
     veh_base = computeBasePose3(p.pose(), Hveh_base);
-    arm1_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm1_, 
-        reverse_linact_, Harm1_base);
-    arm2_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm2_, 
-        reverse_linact_, Harm2_base);
+    tso_base = liftBasePose3(p.pose(), p.configuration()(0), base_T_torso_, reverse_linact_, 
+        Htso_base);
+    Matrix6 H_tso_comp;
+    arm1_base = tso_base.compose(torso_T_arm1_, H_tso_comp);
+    Harm1_base = H_tso_comp * Htso_base;
+    arm2_base = tso_base.compose(torso_T_arm2_, H_tso_comp);
+    Harm2_base = H_tso_comp * Htso_base;
+
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm1_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm1_, reverse_linact_);
-    arm2_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm2_, reverse_linact_);
+    tso_base = liftBasePose3(p.pose(), p.configuration()(0), base_T_torso_, reverse_linact_);
+    arm1_base = tso_base.compose(torso_T_arm1_);
+    arm2_base = tso_base.compose(torso_T_arm2_);
   }
-
-  // call arm pose and velocity, for arm links
-  // px[0] = base_pose3; px[i] = arm_base * px_arm[i-1]
-  // vx[0] = v(0:1,0); vx[i] = vx[0] + angular x arm_base_pos + arm_base_rot * vx_arm[i-1]
 
   // veh base link
   px[0] = veh_base;
   if (J_px_p) (*J_px_p)[0].block<6,3>(0,0) = Hveh_base;
+
+  // torso link
+  px[1] = tso_base;
+  if (J_px_p) (*J_px_p)[1].block<6,4>(0,0) = Htso_base;
 
   // arm1 and arm2 links
   vector<Pose3> arm1jpx, arm2jpx;
@@ -89,19 +95,19 @@ void Pose2MobileVetLin2Arms::forwardKinematics(
       boost::none, J_px_p ? boost::optional<vector<Matrix>&>(Jarm2_jpx_jp) : boost::none);
 
   for (size_t i = 0; i < arm1_.dof(); i++) {
-    px[i+1] = arm1jpx[i];
+    px[i+2] = arm1jpx[i];
     if (J_px_p) {
       // see compose's jacobian
-      (*J_px_p)[i+1].block<6,4>(0,0) = (arm1jpx[i].inverse() * arm1_base).AdjointMap() * Harm1_base;
-      (*J_px_p)[i+1].block(0,4,6,arm1_.dof()) = Jarm1_jpx_jp[i];
+      (*J_px_p)[i+2].block<6,4>(0,0) = (arm1jpx[i].inverse() * arm1_base).AdjointMap() * Harm1_base;
+      (*J_px_p)[i+2].block(0,4,6,arm1_.dof()) = Jarm1_jpx_jp[i];
     }
   }
   for (size_t i = 0; i < arm2_.dof(); i++) {
-    px[i+1+arm1_.dof()] = arm2jpx[i];
+    px[i+2+arm1_.dof()] = arm2jpx[i];
     if (J_px_p) {
       // see compose's jacobian
-      (*J_px_p)[i+1+arm1_.dof()].block<6,4>(0,0) = (arm2jpx[i].inverse() * arm2_base).AdjointMap() * Harm2_base;
-      (*J_px_p)[i+1+arm1_.dof()].block(0,4+arm1_.dof(),6,arm2_.dof()) = Jarm2_jpx_jp[i];
+      (*J_px_p)[i+2+arm1_.dof()].block<6,4>(0,0) = (arm2jpx[i].inverse() * arm2_base).AdjointMap() * Harm2_base;
+      (*J_px_p)[i+2+arm1_.dof()].block(0,4+arm1_.dof(),6,arm2_.dof()) = Jarm2_jpx_jp[i];
     }
   }
 }

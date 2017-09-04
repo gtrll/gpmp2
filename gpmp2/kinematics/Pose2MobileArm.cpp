@@ -53,10 +53,10 @@ void Pose2MobileArm::forwardKinematics(
   Matrix63 Hveh_base, Harm_base;
   if (J_px_p || J_vx_p || J_vx_v) {
     veh_base = computeBasePose3(p.pose(), Hveh_base);
-    arm_base = computeArmBasePose(p.pose(), base_T_arm_, Harm_base);
+    arm_base = computeBaseTransPose3(p.pose(), base_T_arm_, Harm_base);
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm_base = computeArmBasePose(p.pose(), base_T_arm_);
+    arm_base = computeBaseTransPose3(p.pose(), base_T_arm_);
   }
 
 

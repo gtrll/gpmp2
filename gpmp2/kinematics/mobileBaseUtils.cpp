@@ -31,25 +31,25 @@ gtsam::Pose3 computeBasePose3(const gtsam::Pose2& base_pose2,
 }
  
 /* ************************************************************************** */
-gtsam::Pose3 computeArmBasePose(const gtsam::Pose2& base_pose2,
-    const gtsam::Pose3& base_T_arm, 
+gtsam::Pose3 computeBaseTransPose3(const gtsam::Pose2& base_pose2,
+    const gtsam::Pose3& base_T_trans, 
     gtsam::OptionalJacobian<6,3> J = boost::none) {
 
   if (J) {
     gtsam::Matrix63 Hbasep3;
     const gtsam::Pose3 base_pose3 = computeBasePose3(base_pose2, Hbasep3);
     gtsam::Matrix6 Hcomp;
-    const gtsam::Pose3 arm_base = base_pose3.compose(base_T_arm, Hcomp);
+    const gtsam::Pose3 arm_base = base_pose3.compose(base_T_trans, Hcomp);
     *J = Hcomp * Hbasep3;
     return arm_base;
   } else {
-    return computeBasePose3(base_pose2).compose(base_T_arm);
+    return computeBasePose3(base_pose2).compose(base_T_trans);
   }
 }
 
 /* ************************************************************************** */
-gtsam::Pose3 liftArmBasePose(const gtsam::Pose2& base_pose2,
-  double lift, const gtsam::Pose3& base_T_arm, bool reverse_linact,
+gtsam::Pose3 liftBasePose3(const gtsam::Pose2& base_pose2,
+  double lift, const gtsam::Pose3& base_T_trans, bool reverse_linact,
   gtsam::OptionalJacobian<6,4> J = boost::none) {
   
   // a const pose to lift base
@@ -63,7 +63,7 @@ gtsam::Pose3 liftArmBasePose(const gtsam::Pose2& base_pose2,
 
   if (J) {
     Matrix63 Harmbase;
-    const Pose3 armbase = computeArmBasePose(base_pose2, base_T_arm, Harmbase);
+    const Pose3 armbase = computeBaseTransPose3(base_pose2, base_T_trans, Harmbase);
     Matrix6 Hcomp1, Hcomp2;
     const Pose3 armbaselift = lift_base_pose.compose(armbase, Hcomp1, Hcomp2);
     // J over pose2
@@ -77,7 +77,7 @@ gtsam::Pose3 liftArmBasePose(const gtsam::Pose2& base_pose2,
       J->block<6,1>(0,3) = Hcomp1.col(5);
     return armbaselift;
   } else {
-    return lift_base_pose.compose(computeArmBasePose(base_pose2, base_T_arm));
+    return lift_base_pose.compose(computeBaseTransPose3(base_pose2, base_T_trans));
   }
 }
 

@@ -17,15 +17,15 @@ using namespace std;
 namespace gpmp2 {
 
 /* ************************************************************************** */
-Pose2MobileVetLinArm::Pose2MobileVetLinArm(const Arm& arm, const gtsam::Pose3& base_T_arm, 
-    bool reverse_linact) : 
-    Base(arm.dof() + 4, arm.dof() + 1), base_T_arm_(base_T_arm), 
+Pose2MobileVetLinArm::Pose2MobileVetLinArm(const Arm& arm, const gtsam::Pose3& base_T_torso, 
+    const gtsam::Pose3& torso_T_arm, bool reverse_linact) : 
+    Base(arm.dof() + 4, arm.dof() + 2), base_T_torso_(base_T_torso), torso_T_arm_(torso_T_arm), 
     reverse_linact_(reverse_linact), arm_(arm) {
 
   // check arm base pose, warn if non-zero
   if (!arm_.base_pose().equals(Pose3::identity(), 1e-6))
   cout << "[Pose2MobileArm] WARNING: Arm has non-zero base pose, this base pose will be override. "
-      "Set the base_T_arm in Pose2MobileArm." << endl;
+      "Set the base_T_torso and torso_T_arm in Pose2MobileArm." << endl;
 }
 
 /* ************************************************************************** */
@@ -51,21 +51,30 @@ void Pose2MobileVetLinArm::forwardKinematics(const Pose2Vector& p,
   if (J_vx_v) J_vx_v->assign(nr_links(), Matrix::Zero(3, dof()));
 
   // vehicle & arm base pose
-  Pose3 veh_base, arm_base;
+  Pose3 veh_base, tso_base, arm_base;
   Matrix63 Hveh_base;
-  Matrix64 Harm_base;
+  Matrix64 Htso_base, Harm_base;
   if (J_px_p || J_vx_p || J_vx_v) {
     veh_base = computeBasePose3(p.pose(), Hveh_base);
-    arm_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm_, 
-        reverse_linact_, Harm_base);
+    tso_base = liftBasePose3(p.pose(), p.configuration()(0), base_T_torso_, reverse_linact_, 
+        Htso_base);
+    Matrix6 H_tso_comp;
+    arm_base = tso_base.compose(torso_T_arm_, H_tso_comp);
+    Harm_base = H_tso_comp * Htso_base;
+
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm_base = liftArmBasePose(p.pose(), p.configuration()(0), base_T_arm_, reverse_linact_);
+    tso_base = liftBasePose3(p.pose(), p.configuration()(0), base_T_torso_, reverse_linact_);
+    arm_base = tso_base.compose(torso_T_arm_);
   }
 
   // veh base link
   px[0] = veh_base;
   if (J_px_p) (*J_px_p)[0].block<6,3>(0,0) = Hveh_base;
+
+  // torso link
+  px[1] = tso_base;
+  if (J_px_p) (*J_px_p)[1].block<6,4>(0,0) = Htso_base;
 
   // arm links
   vector<Pose3> armjpx;
@@ -76,11 +85,11 @@ void Pose2MobileVetLinArm::forwardKinematics(const Pose2Vector& p,
       J_px_p ? boost::optional<vector<Matrix>&>(Jarm_jpx_jp) : boost::none);
 
   for (size_t i = 0; i < arm_.dof(); i++) {
-    px[i+1] = armjpx[i];
+    px[i+2] = armjpx[i];
     if (J_px_p) {
       // see compose's jacobian
-      (*J_px_p)[i+1].block<6,4>(0,0) = (armjpx[i].inverse() * arm_base).AdjointMap() * Harm_base;
-      (*J_px_p)[i+1].block(0,4,6,arm_.dof()) = Jarm_jpx_jp[i];
+      (*J_px_p)[i+2].block<6,4>(0,0) = (armjpx[i].inverse() * arm_base).AdjointMap() * Harm_base;
+      (*J_px_p)[i+2].block(0,4,6,arm_.dof()) = Jarm_jpx_jp[i];
     }
   }
 }
