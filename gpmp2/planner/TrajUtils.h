@@ -13,6 +13,7 @@
 #include <gtsam/linear/NoiseModel.h>
 #include <gtsam/base/Matrix.h>
 #include <gtsam/base/Vector.h>
+#include <gtsam/geometry/Pose2.h>
 
 
 namespace gpmp2 {
@@ -26,6 +27,18 @@ namespace gpmp2 {
  */
 GPMP2_EXPORT gtsam::Values initArmTrajStraightLine(const gtsam::Vector& init_conf,
     const gtsam::Vector& end_conf, size_t total_step);
+
+/**
+ * @brief initialize the trajectory in configuration space as a straight line
+ * @param init_pose trajectory start pose
+ * @param init_conf trajectory start configuration
+ * @param end_pose  trajectory end pose
+ * @param end_conf  trajectory end configuration
+ * @param total_step is how many intervals do you want in the traj
+ * @return values, x(0) - x(total_step), v(0) - v(total_step)
+ */
+GPMP2_EXPORT gtsam::Values initPose2VectorTrajStraightLine(const gtsam::Pose2& init_pose,
+    const gtsam::Vector& init_conf, const gtsam::Pose2& end_pose, const gtsam::Vector& end_conf, size_t total_step);
 
 /**
  * @brief robot arm trajectory interpolator
