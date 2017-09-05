@@ -620,6 +620,24 @@ gtsam::Values BatchTrajOptimizePose2MobileArm(
     const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
     const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
 
+/// 3D mobile + 2 x arm version optimizer
+gtsam::Values BatchTrajOptimizePose2Mobile2Arms(
+    const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileVetLinArm(
+    const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + 2 x arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileVetLin2Arms(
+    const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
 /// 2D arm collision cost
 double CollisionCost2DArm(
     const gpmp2::ArmModel& arm, const gpmp2::PlanarSDF& sdf,
@@ -638,6 +656,21 @@ double CollisionCostPose2MobileArm2D(
 /// 3D mobile arm collision cost
 double CollisionCostPose2MobileArm(
     const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + 2 x arm collision cost
+double CollisionCostPose2Mobile2Arms(
+    const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + arm collision cost
+double CollisionCostPose2MobileVetLinArm(
+    const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + 2 x arm collision cost
+double CollisionCostPose2MobileVetLin2Arms(
+    const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
     const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
 
 

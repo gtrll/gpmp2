@@ -17,6 +17,12 @@
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileArm.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2Mobile2Arms.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2Mobile2Arms.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLinArm.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLinArm.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLin2Arms.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLin2Arms.h>
 #include <gpmp2/gp/GaussianProcessPriorLinear.h>
 #include <gpmp2/gp/GaussianProcessPriorPose2Vector.h>
 
@@ -79,6 +85,45 @@ gtsam::Values BatchTrajOptimizePose2MobileArm(
 }
 
 /* ************************************************************************** */
+gtsam::Values BatchTrajOptimizePose2Mobile2Arms(
+    const Pose2Mobile2ArmsModel& marm, const SignedDistanceField& sdf,
+    const Pose2Vector& start_conf, const gtsam::Vector& start_vel,
+    const Pose2Vector& end_conf, const gtsam::Vector& end_vel,
+    const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
+
+  return internal::BatchTrajOptimize<Pose2Mobile2ArmsModel, GaussianProcessPriorPose2Vector,
+      SignedDistanceField, ObstacleSDFFactorPose2Mobile2Arms, ObstacleSDFFactorGPPose2Mobile2Arms, 
+      JointLimitFactorPose2Vector, VelocityLimitFactorVector>(
+          marm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
+}
+
+/* ************************************************************************** */
+gtsam::Values BatchTrajOptimizePose2MobileVetLinArm(
+    const Pose2MobileVetLinArmModel& marm, const SignedDistanceField& sdf,
+    const Pose2Vector& start_conf, const gtsam::Vector& start_vel,
+    const Pose2Vector& end_conf, const gtsam::Vector& end_vel,
+    const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
+
+  return internal::BatchTrajOptimize<Pose2MobileVetLinArmModel, GaussianProcessPriorPose2Vector,
+      SignedDistanceField, ObstacleSDFFactorPose2MobileVetLinArm, ObstacleSDFFactorGPPose2MobileVetLinArm, 
+      JointLimitFactorPose2Vector, VelocityLimitFactorVector>(
+          marm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
+}
+
+/* ************************************************************************** */
+gtsam::Values BatchTrajOptimizePose2MobileVetLin2Arms(
+    const Pose2MobileVetLin2ArmsModel& marm, const SignedDistanceField& sdf,
+    const Pose2Vector& start_conf, const gtsam::Vector& start_vel,
+    const Pose2Vector& end_conf, const gtsam::Vector& end_vel,
+    const gtsam::Values& init_values, const TrajOptimizerSetting& setting) {
+
+  return internal::BatchTrajOptimize<Pose2MobileVetLin2ArmsModel, GaussianProcessPriorPose2Vector,
+      SignedDistanceField, ObstacleSDFFactorPose2MobileVetLin2Arms, ObstacleSDFFactorGPPose2MobileVetLin2Arms, 
+      JointLimitFactorPose2Vector, VelocityLimitFactorVector>(
+          marm, sdf, start_conf, start_vel, end_conf, end_vel, init_values, setting);
+}
+
+/* ************************************************************************** */
 double CollisionCost2DArm(
     const ArmModel& arm, const PlanarSDF& sdf,
     const gtsam::Values& result, const TrajOptimizerSetting& setting) {
@@ -112,6 +157,33 @@ double CollisionCostPose2MobileArm(
 
   return internal::CollisionCost<Pose2MobileArmModel, SignedDistanceField, 
     ObstacleSDFFactorPose2MobileArm>(marm, sdf, result, setting);
+}
+
+/* ************************************************************************** */
+double CollisionCostPose2Mobile2Arms(
+    const Pose2Mobile2ArmsModel& marm, const SignedDistanceField& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting) {
+
+  return internal::CollisionCost<Pose2Mobile2ArmsModel, SignedDistanceField, 
+    ObstacleSDFFactorPose2Mobile2Arms>(marm, sdf, result, setting);
+}
+
+/* ************************************************************************** */
+double CollisionCostPose2MobileVetLinArm(
+    const Pose2MobileVetLinArmModel& marm, const SignedDistanceField& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting) {
+
+  return internal::CollisionCost<Pose2MobileVetLinArmModel, SignedDistanceField, 
+    ObstacleSDFFactorPose2MobileVetLinArm>(marm, sdf, result, setting);
+}
+
+/* ************************************************************************** */
+double CollisionCostPose2MobileVetLin2Arms(
+    const Pose2MobileVetLin2ArmsModel& marm, const SignedDistanceField& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting) {
+
+  return internal::CollisionCost<Pose2MobileVetLin2ArmsModel, SignedDistanceField, 
+    ObstacleSDFFactorPose2MobileVetLin2Arms>(marm, sdf, result, setting);
 }
 
 
