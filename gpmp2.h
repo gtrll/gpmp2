@@ -565,7 +565,8 @@ class TrajOptimizerSetting {
 
   void set_total_step(size_t step);
   void set_total_time(double time);
-  void set_flag_limit(bool flag);
+  void set_flag_pos_limit(bool flag);
+  void set_flag_vel_limit(bool flag);
   void set_joint_pos_limits_up(Vector v);
   void set_joint_pos_limits_down(Vector v);
   void set_vel_limits(Vector v);

@@ -47,10 +47,12 @@ gtsam::Values BatchTrajOptimize(
       graph.add(PriorFactor<typename ROBOT::Velocity>(vel_key, end_vel, setting.vel_prior_model));
     }
 
-    if (setting.flag_limit) {
+    if (setting.flag_pos_limit) {
       // joint position limits
       graph.add(LIMIT_FACTOR_POS(pose_key, setting.pos_limit_model, setting.joint_pos_limits_down, 
           setting.joint_pos_limits_up, setting.pos_limit_thresh));
+    }
+    if (setting.flag_vel_limit) {
       // velocity limits
       graph.add(LIMIT_FACTOR_VEL(vel_key, setting.vel_limit_model, setting.vel_limits, 
           setting.vel_limit_thresh));

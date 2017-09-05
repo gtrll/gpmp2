@@ -28,7 +28,8 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
   gtsam::SharedNoiseModel vel_prior_model;     // prior constraint model for initial/end velocity
 
   /// joint position and velocity limit settings
-  bool flag_limit;              // whether enable joint position and velocity limits
+  bool flag_pos_limit;          // whether enable joint position limits
+  bool flag_vel_limit;          // whether enable velocity limits
   gtsam::Vector joint_pos_limits_up, joint_pos_limits_down; // joint position limits, if Pose2Vector, only Vector part
   gtsam::Vector vel_limits;     // joint velocity limits, for all DOF
   /// joint limit settings
@@ -67,7 +68,8 @@ struct GPMP2_EXPORT TrajOptimizerSetting {
   void set_vel_prior_model(double sigma);
 
   // joint limit / velocity settings
-  void set_flag_limit(bool flag) { flag_limit = flag; }
+  void set_flag_pos_limit(bool flag) { flag_pos_limit = flag; }
+  void set_flag_vel_limit(bool flag) { flag_vel_limit = flag; }
   void set_joint_pos_limits_up(const gtsam::Vector& v) { joint_pos_limits_up = v; }
   void set_joint_pos_limits_down(const gtsam::Vector& v) { joint_pos_limits_down = v; }
   void set_vel_limits(const gtsam::Vector& v) { vel_limits = v; }
