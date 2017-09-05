@@ -494,7 +494,62 @@ virtual class ObstacleSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor {
       double delta_t, double tau);
 };
 
+// obstacle avoid factor (pose2 mobile + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2Mobile2Arms.h>
+virtual class ObstacleSDFFactorPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2Mobile2Arms(
+      size_t posekey, const gpmp2::Pose2Mobile2ArmsModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
 
+// obstacle avoid factor with GP interpolation (pose2 mobile + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2Mobile2Arms.h>
+virtual class ObstacleSDFFactorGPPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2Mobile2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+// obstacle avoid factor (pose2 mobile + linear actuator + arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLinArm.h>
+virtual class ObstacleSDFFactorPose2MobileVetLinArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileVetLinArm(
+      size_t posekey, const gpmp2::Pose2MobileVetLinArmModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile + linear actuator + arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLinArm.h>
+virtual class ObstacleSDFFactorGPPose2MobileVetLinArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileVetLinArm(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+// obstacle avoid factor (pose2 mobile + linear actuator + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLin2Arms.h>
+virtual class ObstacleSDFFactorPose2MobileVetLin2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileVetLin2Arms(
+      size_t posekey, const gpmp2::Pose2MobileVetLin2ArmsModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile + linear actuator + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLin2Arms.h>
+virtual class ObstacleSDFFactorGPPose2MobileVetLin2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileVetLin2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // planner
