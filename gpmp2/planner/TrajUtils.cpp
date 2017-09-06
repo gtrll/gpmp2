@@ -62,10 +62,7 @@ gtsam::Values initPose2VectorTrajStraightLine(const Pose2& init_pose, const Vect
     Vector conf;
     Pose2 pose;
     double ratio = static_cast<double>(i) / static_cast<double>(total_step);
-    pose = Pose2((1.0 - ratio)*init_pose.x() + ratio*end_pose.x(), 
-        (1.0 - ratio)*init_pose.y() + ratio*end_pose.y(), 
-        atan2((1.0-ratio)*sin(init_pose.theta())+ratio*sin(end_pose.theta()),
-          (1.0-ratio)*cos(init_pose.theta())+ratio*cos(end_pose.theta())));
+    pose = interpolate<Pose2>(init_pose, end_pose, ratio);
     conf = (1.0 - ratio)*init_conf + ratio*end_conf;
     init_values.insert(Symbol('x', i), Pose2Vector(pose, conf));
     init_values.insert(Symbol('v', i), avg_vel);
