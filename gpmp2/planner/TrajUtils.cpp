@@ -49,6 +49,29 @@ gtsam::Values initArmTrajStraightLine(const Vector& init_conf,
 }
 
 /* ************************************************************************** */
+gtsam::Values initPose2VectorTrajStraightLine(const Pose2& init_pose, const Vector& init_conf,
+    const Pose2& end_pose, const Vector& end_conf, size_t total_step) {
+
+  Values init_values;
+
+  Vector avg_vel = (Vector(3+init_conf.size()) << end_pose.x()-init_pose.x(), 
+      end_pose.y()-init_pose.y(), end_pose.theta()-init_pose.theta(), 
+      end_conf - init_conf).finished() / static_cast<double>(total_step);
+
+  for (size_t i=0; i<=total_step; i++) {
+    Vector conf;
+    Pose2 pose;
+    double ratio = static_cast<double>(i) / static_cast<double>(total_step);
+    pose = interpolate<Pose2>(init_pose, end_pose, ratio);
+    conf = (1.0 - ratio)*init_conf + ratio*end_conf;
+    init_values.insert(Symbol('x', i), Pose2Vector(pose, conf));
+    init_values.insert(Symbol('v', i), avg_vel);
+  }
+
+  return init_values;
+}
+
+/* ************************************************************************** */
 gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
     const gtsam::SharedNoiseModel Qc_model, double delta_t, size_t inter_step) {
 

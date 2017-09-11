@@ -10,6 +10,7 @@
 #include <gtsam/base/numericalDerivative.h>
 
 #include <gpmp2/kinematics/Pose2MobileArm.h>
+#include <gpmp2/kinematics/mobileBaseUtils.h>
 #include <gpmp2/geometry/numericalDerivativeDynamic.h>
 
 #include <iostream>
@@ -17,64 +18,6 @@
 using namespace std;
 using namespace gtsam;
 using namespace gpmp2;
-
-
-/* ************************************************************************** */
-// armpose wrapper
-Pose3 armPose(const Pose2MobileArm& r, const Pose2& p2) {
-  return r.computeArmBasePose(p2);
-}
-
-TEST(Pose2MobileArm, computeArmBasePose) {
-
-  // 2 dof arm
-  Vector2 a(1, 1), alpha(0, 0), d(0, 0);
-  Arm arm(2, a, alpha, d);
-  Pose2MobileArm r;
-  Matrix Hexp, Hact;
-  Pose3 pexp, pact, base_T_arm;
-  Pose2 p2;
-
-  // zero base_T_arm cases
-  base_T_arm = Pose3();
-  r = Pose2MobileArm(arm, base_T_arm);
-
-  p2 = Pose2();
-  pexp = Pose3();
-  pact = r.computeArmBasePose(p2, Hact);
-  Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
-      boost::bind(&armPose, r, _1)), p2, 1e-6);
-  EXPECT(assert_equal(pexp, pact, 1e-9));
-  EXPECT(assert_equal(Hexp, Hact, 1e-6));
-
-  p2 = Pose2(1.3, 4.5, -0.3);
-  pexp = Pose3(Rot3::Yaw(-0.3), Point3(1.3, 4.5, 0));
-  pact = r.computeArmBasePose(p2, Hact);
-  Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
-      boost::bind(&armPose, r, _1)), p2, 1e-6);
-  EXPECT(assert_equal(pexp, pact, 1e-9));
-  EXPECT(assert_equal(Hexp, Hact, 1e-6));
-
-  // non-zero base_T_arm cases
-  base_T_arm = Pose3(Rot3::Yaw(-0.3), Point3(1,1,2));
-  r = Pose2MobileArm(arm, base_T_arm);
-
-  p2 = Pose2();
-  pexp = Pose3(Rot3::Yaw(-0.3), Point3(1,1,2));
-  pact = r.computeArmBasePose(p2, Hact);
-  Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
-      boost::bind(&armPose, r, _1)), p2, 1e-6);
-  EXPECT(assert_equal(pexp, pact, 1e-9));
-  EXPECT(assert_equal(Hexp, Hact, 1e-6));
-
-  p2 = Pose2(2, -2, M_PI_2);
-  pexp = Pose3(Rot3::Yaw(M_PI_2-0.3), Point3(1,-1,2));
-  pact = r.computeArmBasePose(p2, Hact);
-  Hexp = numericalDerivative11(boost::function<Pose3(const Pose2&)>(
-      boost::bind(&armPose, r, _1)), p2, 1e-6);
-  EXPECT(assert_equal(pexp, pact, 1e-9));
-  EXPECT(assert_equal(Hexp, Hact, 1e-6));
-}
 
 
 /* ************************************************************************** */

@@ -6,6 +6,7 @@
  **/
 
 #include <gpmp2/kinematics/Pose2MobileArm.h>
+#include <gpmp2/kinematics/mobileBaseUtils.h>
 
 #include <iostream>
 
@@ -52,10 +53,10 @@ void Pose2MobileArm::forwardKinematics(
   Matrix63 Hveh_base, Harm_base;
   if (J_px_p || J_vx_p || J_vx_v) {
     veh_base = computeBasePose3(p.pose(), Hveh_base);
-    arm_base = computeArmBasePose(p.pose(), Harm_base);
+    arm_base = computeBaseTransPose3(p.pose(), base_T_arm_, Harm_base);
   } else {
     veh_base = computeBasePose3(p.pose());
-    arm_base = computeArmBasePose(p.pose());
+    arm_base = computeBaseTransPose3(p.pose(), base_T_arm_);
   }
 
 
@@ -96,7 +97,7 @@ void Pose2MobileArm::forwardKinematics(
     px[i+1] = armjpx[i];
     if (J_px_p) {
       // see compose's jacobian
-      (*J_px_p)[i+1].block<6,3>(0,0) = (armjpx[i].inverse () * arm_base).AdjointMap() * Harm_base;
+      (*J_px_p)[i+1].block<6,3>(0,0) = (armjpx[i].inverse() * arm_base).AdjointMap() * Harm_base;
       (*J_px_p)[i+1].block(0,3,6,arm_.dof()) = Jarm_jpx_jp[i];
     }
     if (vx) {
@@ -106,36 +107,5 @@ void Pose2MobileArm::forwardKinematics(
 
 }
 
-/* ************************************************************************** */
-gtsam::Pose3 Pose2MobileArm::computeBasePose3(const gtsam::Pose2& base_pose2,
-    gtsam::OptionalJacobian<6,3> J) const {
-  if (J) {
-    J->setZero();
-    const gtsam::Matrix3 Hzrot3 = gtsam::Rot3::ExpmapDerivative(
-        gtsam::Vector3(0, 0, base_pose2.theta()));
-    J->block<3, 1>(0, 2) = Hzrot3.col(2);
-    J->block<2, 2>(3, 0) = gtsam::Matrix2::Identity();
-  }
-  return gtsam::Pose3(gtsam::Rot3::Rodrigues(
-      gtsam::Vector3(0, 0, base_pose2.theta())),
-      gtsam::Point3(base_pose2.x(), base_pose2.y(), 0.0));
-}
-
-/* ************************************************************************** */
-gtsam::Pose3 Pose2MobileArm::computeArmBasePose(const gtsam::Pose2& base_pose2,
-    gtsam::OptionalJacobian<6,3> J) const {
-  if (J) {
-    gtsam::Matrix63 Hbasep3;
-    const gtsam::Pose3 base_pose3 = computeBasePose3(base_pose2, Hbasep3);
-    gtsam::Matrix6 Hcomp;
-    const gtsam::Pose3 arm_base = base_pose3.compose(base_T_arm_, Hcomp);
-    *J = Hcomp * Hbasep3;
-    return arm_base;
-  } else {
-    return computeBasePose3(base_pose2).compose(base_T_arm_);
-  }
-}
-
-}
-
+} // namespace gpmp2
 

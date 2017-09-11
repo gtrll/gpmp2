@@ -117,6 +117,72 @@ class Pose2MobileArm {
   gtsam::Pose3 base_T_arm() const;
 };
 
+// abstract pose2 mobile with two arms class
+#include <gpmp2/kinematics/Pose2Mobile2Arms.h>
+
+class Pose2Mobile2Arms {
+  Pose2Mobile2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2);
+  Pose2Mobile2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2, 
+      const gtsam::Pose3& base_T_arm1, const gtsam::Pose3& base_T_arm2);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm1() const;
+  gpmp2::Arm arm2() const;
+  gtsam::Pose3 base_T_arm1() const;
+  gtsam::Pose3 base_T_arm2() const;
+};
+
+// abstract pose2 mobile with linear actuator and one arm class
+#include <gpmp2/kinematics/Pose2MobileVetLinArm.h>
+
+class Pose2MobileVetLinArm {
+  Pose2MobileVetLinArm(const gpmp2::Arm& arm);
+  Pose2MobileVetLinArm(const gpmp2::Arm& arm, const gtsam::Pose3& base_T_torso, 
+      const gtsam::Pose3& torso_T_arm, bool reverse_linact);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm() const;
+  gtsam::Pose3 base_T_torso() const;
+  gtsam::Pose3 torso_T_arm() const;
+  bool reverse_linact() const;
+};
+
+// abstract pose2 mobile with linear actuator and two arms class
+#include <gpmp2/kinematics/Pose2MobileVetLin2Arms.h>
+
+class Pose2MobileVetLin2Arms {
+  Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2);
+  Pose2MobileVetLin2Arms(const gpmp2::Arm& arm1, const gpmp2::Arm& arm2, 
+      const gtsam::Pose3& base_T_torso,  const gtsam::Pose3& torso_T_arm1, 
+      const gtsam::Pose3& torso_T_arm2, bool reverse_linact);
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsPosition(const gpmp2::Pose2Vector& jp) const;
+  Matrix forwardKinematicsVel(const gpmp2::Pose2Vector& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+  gpmp2::Arm arm1() const;
+  gpmp2::Arm arm2() const;
+  gtsam::Pose3 base_T_torso() const;
+  gtsam::Pose3 torso_T_arm1() const;
+  gtsam::Pose3 torso_T_arm2() const;
+  bool reverse_linact() const;
+};
+
 // Abstract Point Robot class
 #include <gpmp2/kinematics/PointRobot.h>
 
@@ -170,6 +236,48 @@ class Pose2MobileArmModel {
   // accesses
   size_t dof() const;
   gpmp2::Pose2MobileArm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Physical Pose2Mobile2ArmsModel class
+#include <gpmp2/kinematics/Pose2Mobile2ArmsModel.h>
+
+class Pose2Mobile2ArmsModel {
+  Pose2Mobile2ArmsModel(const gpmp2::Pose2Mobile2Arms& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2Mobile2Arms fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Physical Pose2MobileVetLinArmModel class
+#include <gpmp2/kinematics/Pose2MobileVetLinArmModel.h>
+
+class Pose2MobileVetLinArmModel {
+  Pose2MobileVetLinArmModel(const gpmp2::Pose2MobileVetLinArm& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileVetLinArm fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
+
+// Physical Pose2MobileVetLin2ArmsModel class
+#include <gpmp2/kinematics/Pose2MobileVetLin2ArmsModel.h>
+
+class Pose2MobileVetLin2ArmsModel {
+  Pose2MobileVetLin2ArmsModel(const gpmp2::Pose2MobileVetLin2Arms& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gpmp2::Pose2Vector& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileVetLin2Arms fk_model() const;
   size_t nr_body_spheres() const;
   double sphere_radius(size_t i) const;
 };
@@ -348,6 +456,25 @@ virtual class ObstaclePlanarSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor 
 };
 
 
+// planar obstacle avoid factor (pose2 mobile 2 arms with 2D signed distance field)
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2Mobile2Arms.h>
+virtual class ObstaclePlanarSDFFactorPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPose2Mobile2Arms(
+      size_t posekey, const gpmp2::Pose2Mobile2ArmsModel& marm,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2Mobile2Arms.h>
+virtual class ObstaclePlanarSDFFactorGPPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPose2Mobile2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+
 // obstacle avoid factor (pose2 mobile arm with 3D signed distance field)
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
 virtual class ObstacleSDFFactorPose2MobileArm : gtsam::NoiseModelFactor {
@@ -367,7 +494,62 @@ virtual class ObstacleSDFFactorGPPose2MobileArm : gtsam::NoiseModelFactor {
       double delta_t, double tau);
 };
 
+// obstacle avoid factor (pose2 mobile + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2Mobile2Arms.h>
+virtual class ObstacleSDFFactorPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2Mobile2Arms(
+      size_t posekey, const gpmp2::Pose2Mobile2ArmsModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
 
+// obstacle avoid factor with GP interpolation (pose2 mobile + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2Mobile2Arms.h>
+virtual class ObstacleSDFFactorGPPose2Mobile2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2Mobile2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+// obstacle avoid factor (pose2 mobile + linear actuator + arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLinArm.h>
+virtual class ObstacleSDFFactorPose2MobileVetLinArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileVetLinArm(
+      size_t posekey, const gpmp2::Pose2MobileVetLinArmModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile + linear actuator + arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLinArm.h>
+virtual class ObstacleSDFFactorGPPose2MobileVetLinArm : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileVetLinArm(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
+
+// obstacle avoid factor (pose2 mobile + linear actuator + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLin2Arms.h>
+virtual class ObstacleSDFFactorPose2MobileVetLin2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileVetLin2Arms(
+      size_t posekey, const gpmp2::Pose2MobileVetLin2ArmsModel& marm,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gpmp2::Pose2Vector& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile + linear actuator + 2 x arm with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLin2Arms.h>
+virtual class ObstacleSDFFactorGPPose2MobileVetLin2Arms : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileVetLin2Arms(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // planner
@@ -383,7 +565,8 @@ class TrajOptimizerSetting {
 
   void set_total_step(size_t step);
   void set_total_time(double time);
-  void set_flag_limit(bool flag);
+  void set_flag_pos_limit(bool flag);
+  void set_flag_vel_limit(bool flag);
   void set_joint_pos_limits_up(Vector v);
   void set_joint_pos_limits_down(Vector v);
   void set_vel_limits(Vector v);
@@ -438,6 +621,24 @@ gtsam::Values BatchTrajOptimizePose2MobileArm(
     const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
     const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
 
+/// 3D mobile + 2 x arm version optimizer
+gtsam::Values BatchTrajOptimizePose2Mobile2Arms(
+    const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileVetLinArm(
+    const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + 2 x arm version optimizer
+gtsam::Values BatchTrajOptimizePose2MobileVetLin2Arms(
+    const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gpmp2::Pose2Vector& start_conf, Vector start_vel, const gpmp2::Pose2Vector& end_conf, Vector end_vel,
+    const gtsam::Values& init_values, const gpmp2::TrajOptimizerSetting& setting);
+
 /// 2D arm collision cost
 double CollisionCost2DArm(
     const gpmp2::ArmModel& arm, const gpmp2::PlanarSDF& sdf,
@@ -456,6 +657,21 @@ double CollisionCostPose2MobileArm2D(
 /// 3D mobile arm collision cost
 double CollisionCostPose2MobileArm(
     const gpmp2::Pose2MobileArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + 2 x arm collision cost
+double CollisionCostPose2Mobile2Arms(
+    const gpmp2::Pose2Mobile2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + arm collision cost
+double CollisionCostPose2MobileVetLinArm(
+    const gpmp2::Pose2MobileVetLinArmModel& marm, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile + lin act + 2 x arm collision cost
+double CollisionCostPose2MobileVetLin2Arms(
+    const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
     const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
 
 
@@ -552,6 +768,8 @@ class ISAM2TrajOptimizerPose2MobileArm {
 
 /// initialization
 gtsam::Values initArmTrajStraightLine(Vector init_conf, Vector end_conf, size_t total_step);
+gtsam::Values initPose2VectorTrajStraightLine(const gtsam::Pose2& init_pose, Vector init_conf,
+    const gtsam::Pose2& end_pose, Vector end_conf, size_t total_step);
 
 /// robot arm trajectory interpolator
 gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,

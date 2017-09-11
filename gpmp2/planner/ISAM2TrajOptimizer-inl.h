@@ -52,10 +52,12 @@ void ISAM2TrajOptimizer<ROBOT, GP, SDF, OBS_FACTOR, OBS_FACTOR_GP, LIMIT_FACTOR_
       goal_removed_ = false;
     }
 
-    if (setting_.flag_limit) {
+    if (setting_.flag_pos_limit) {
       // joint position limits
       inc_graph_.add(LIMIT_FACTOR_POS(pose_key, setting_.pos_limit_model, setting_.joint_pos_limits_down, 
           setting_.joint_pos_limits_up, setting_.pos_limit_thresh));
+    }
+    if (setting_.flag_vel_limit) {
       // velocity limits
       inc_graph_.add(LIMIT_FACTOR_VEL(vel_key, setting_.vel_limit_model, setting_.vel_limits, 
           setting_.vel_limit_thresh));

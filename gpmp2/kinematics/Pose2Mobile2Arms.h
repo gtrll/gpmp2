@@ -1,8 +1,8 @@
 /**
- *  @file  Pose2MobileArm.h
- *  @brief Abstract plannar mobile manipulator, Pose2 + Arm
+ *  @file  Pose2Mobile2Arms.h
+ *  @brief Plannar mobile manipulator with two arms
  *  @author Jing Dong
- *  @date  Oct 4, 2016
+ *  @date  Aug 20, 2016
  **/
 
 #pragma once
@@ -21,29 +21,32 @@
 namespace gpmp2 {
 
 /**
- * Abstract plannar mobile manipulator, without any physical model representation
- * Inherited from ForwardKinematics
+ * Abstract plannar mobile manipulator with 2 arm
+ * pose class is Pose2Vector, arm1 uses first arm1.dof as pose, then arm2 uses last arm2.dof
+ * total DOF = 3 + arm1.dof + arm2.dof
  */
-class GPMP2_EXPORT Pose2MobileArm : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
+class GPMP2_EXPORT Pose2Mobile2Arms : public ForwardKinematics<Pose2Vector, gtsam::Vector> {
 
 private:
   // typedefs
   typedef ForwardKinematics<Pose2Vector, gtsam::Vector> Base;
 
   // base to arm pose
-  gtsam::Pose3 base_T_arm_;
+  gtsam::Pose3 base_T_arm1_, base_T_arm2_;
   // arm class
-  Arm arm_;
+  Arm arm1_, arm2_;
 
 public:
   /// default contructor do nothing
-  Pose2MobileArm() {}
+  Pose2Mobile2Arms() {}
 
   /// constructor from Arm
-  explicit Pose2MobileArm(const Arm& arm, const gtsam::Pose3& base_T_arm = gtsam::Pose3());
+  Pose2Mobile2Arms(const Arm& arm1, const Arm& arm2, 
+      const gtsam::Pose3& base_T_arm1 = gtsam::Pose3(), 
+      const gtsam::Pose3& base_T_arm2 = gtsam::Pose3());
 
   /// Default destructor
-  virtual ~Pose2MobileArm() {}
+  virtual ~Pose2Mobile2Arms() {}
 
 
   /**
@@ -64,8 +67,10 @@ public:
 
 
   /// accesses
-  const gtsam::Pose3& base_T_arm() const { return base_T_arm_; }
-  const Arm& arm() const { return arm_; }
+  const Arm& arm1() const { return arm1_; }
+  const Arm& arm2() const { return arm2_; }
+  const gtsam::Pose3& base_T_arm1() const { return base_T_arm1_; }
+  const gtsam::Pose3& base_T_arm2() const { return base_T_arm2_; }
 };
 
 }
