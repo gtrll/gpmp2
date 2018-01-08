@@ -331,11 +331,19 @@ virtual class VelocityLimitFactorVector: gtsam::NoiseModelFactor {
 // dynamics
 ////////////////////////////////////////////////////////////////////////////////
 
-// dynamics factor
+// dynamics factor Pose2
 #include <gpmp2/dynamics/VehicleDynamicsFactorPose2Vector.h>
 
 virtual class VehicleDynamicsFactorPose2Vector : gtsam::NoiseModelFactor {
   VehicleDynamicsFactorPose2Vector(size_t poseKey, size_t velKey, double cost_sigma);
+};
+
+
+// dynamics factor Vector
+#include <gpmp2/dynamics/VehicleDynamicsFactorVector.h>
+
+virtual class VehicleDynamicsFactorVector : gtsam::NoiseModelFactor {
+  VehicleDynamicsFactorVector(size_t poseKey, size_t velKey, double cost_sigma);
 };
 
 
