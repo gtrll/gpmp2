@@ -28,7 +28,7 @@ inline double simple2DVehicleDynamicsPose2(const gtsam::Pose2& p, const gtsam::V
 
 /// simple 2D vehicle dynamics: vehicle heading is consistent with velocity direction
 /// return sliding velocity for vector space, lower is better
-inline double simple2DVechileDyanmicsVector3(const gtsam::Vector3& p, const gtsam::Vector3& v,
+inline double simple2DVehicleDynamicsVector3(const gtsam::Vector3& p, const gtsam::Vector3& v,
     gtsam::OptionalJacobian<1, 3> Hp = boost::none, 
     gtsam::OptionalJacobian<1, 3> Hv = boost::none) {
 

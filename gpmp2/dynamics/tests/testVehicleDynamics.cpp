@@ -95,7 +95,7 @@ TEST(VehicleDynamics, simple2DVehicleDynamicsPose2) {
 
 
 /* ************************************************************************** */
-TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
+TEST(VehicleDynamics, simple2DVehicleDynamicsVector3) {
 
   Vector3 p, v;
   double cexp, cact;
@@ -107,10 +107,10 @@ TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
   v = Vector3::Zero();
   cexp = 0;
   Hpexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, _1, v, boost::none, boost::none)), p);
+        boost::bind(simple2DVehicleDynamicsVector3, _1, v, boost::none, boost::none)), p);
   Hvexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, p, _1, boost::none, boost::none)), v);
-  cact = simple2DVechileDyanmicsVector3(p, v, Hpact, Hvact);
+        boost::bind(simple2DVehicleDynamicsVector3, p, _1, boost::none, boost::none)), v);
+  cact = simple2DVehicleDynamicsVector3(p, v, Hpact, Hvact);
   EXPECT_DOUBLES_EQUAL(cexp, cact, 1e-9);
   EXPECT(assert_equal(Hpexp, Hpact, 1e-6));
   EXPECT(assert_equal(Hvexp, Hvact, 1e-6));
@@ -120,10 +120,10 @@ TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
   v = (Vector3() << 0, 0, 1.2).finished();
   cexp = 0;
   Hpexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, _1, v, boost::none, boost::none)), p);
+        boost::bind(simple2DVehicleDynamicsVector3, _1, v, boost::none, boost::none)), p);
   Hvexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, p, _1, boost::none, boost::none)), v);
-  cact = simple2DVechileDyanmicsVector3(p, v, Hpact, Hvact);
+        boost::bind(simple2DVehicleDynamicsVector3, p, _1, boost::none, boost::none)), v);
+  cact = simple2DVehicleDynamicsVector3(p, v, Hpact, Hvact);
   EXPECT_DOUBLES_EQUAL(cexp, cact, 1e-9);
   EXPECT(assert_equal(Hpexp, Hpact, 1e-6));
   EXPECT(assert_equal(Hvexp, Hvact, 1e-6));
@@ -133,10 +133,10 @@ TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
   v = (Vector3() << -1, 1, 1.2).finished();
   cexp = 0;
   Hpexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, _1, v, boost::none, boost::none)), p);
+        boost::bind(simple2DVehicleDynamicsVector3, _1, v, boost::none, boost::none)), p);
   Hvexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, p, _1, boost::none, boost::none)), v);
-  cact = simple2DVechileDyanmicsVector3(p, v, Hpact, Hvact);
+        boost::bind(simple2DVehicleDynamicsVector3, p, _1, boost::none, boost::none)), v);
+  cact = simple2DVehicleDynamicsVector3(p, v, Hpact, Hvact);
   EXPECT_DOUBLES_EQUAL(cexp, cact, 1e-9);
   EXPECT(assert_equal(Hpexp, Hpact, 1e-6));
   EXPECT(assert_equal(Hvexp, Hvact, 1e-6));
@@ -146,10 +146,10 @@ TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
   v = (Vector3() << 0, 1, 1.2).finished();
   cexp = -0.707106781186548;
   Hpexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, _1, v, boost::none, boost::none)), p);
+        boost::bind(simple2DVehicleDynamicsVector3, _1, v, boost::none, boost::none)), p);
   Hvexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, p, _1, boost::none, boost::none)), v);
-  cact = simple2DVechileDyanmicsVector3(p, v, Hpact, Hvact);
+        boost::bind(simple2DVehicleDynamicsVector3, p, _1, boost::none, boost::none)), v);
+  cact = simple2DVehicleDynamicsVector3(p, v, Hpact, Hvact);
   EXPECT_DOUBLES_EQUAL(cexp, cact, 1e-9);
   EXPECT(assert_equal(Hpexp, Hpact, 1e-6));
   EXPECT(assert_equal(Hvexp, Hvact, 1e-6));
@@ -158,10 +158,10 @@ TEST(VehicleDynamics, simple2DVechileDyanmicsVector3) {
   p = (Vector3() << 34.6, -31.2, 1.75).finished();
   v = (Vector3() << 14.3, 6.7, 22.2).finished();
   Hpexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, _1, v, boost::none, boost::none)), p);
+        boost::bind(simple2DVehicleDynamicsVector3, _1, v, boost::none, boost::none)), p);
   Hvexp = numericalDerivative11(boost::function<double(const Vector3&)>(
-        boost::bind(simple2DVechileDyanmicsVector3, p, _1, boost::none, boost::none)), v);
-  cact = simple2DVechileDyanmicsVector3(p, v, Hpact, Hvact);
+        boost::bind(simple2DVehicleDynamicsVector3, p, _1, boost::none, boost::none)), v);
+  cact = simple2DVehicleDynamicsVector3(p, v, Hpact, Hvact);
   //EXPECT_DOUBLES_EQUAL(cexp, cact, 1e-9);
   EXPECT(assert_equal(Hpexp, Hpact, 1e-6));
   EXPECT(assert_equal(Hvexp, Hvact, 1e-6));

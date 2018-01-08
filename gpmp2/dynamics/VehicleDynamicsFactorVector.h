@@ -58,7 +58,7 @@ public:
 
     if (H1 || H2) {
       Matrix13 Hp, Hv;
-      const double err = simple2DVechileDyanmicsVector3(conf.head<3>(),
+      const double err = simple2DVehicleDynamicsVector3(conf.head<3>(),
           vel.head<3>(), Hp, Hv);
       if (H1) {
         *H1 = Matrix::Zero(1, conf.size());
@@ -71,7 +71,7 @@ public:
       return (Vector(1) << err).finished();
 
     } else {
-      return (Vector(1) << simple2DVechileDyanmicsVector3(conf.head<3>(),
+      return (Vector(1) << simple2DVehicleDynamicsVector3(conf.head<3>(),
           vel.head<3>())).finished();
     }
   }
