@@ -222,6 +222,13 @@ double CollisionCost(
     const ROBOT& robot, const SDF& sdf, const gtsam::Values& result, 
     const TrajOptimizerSetting& setting);
 
+/**
+ * @brief collision cost checking for a single state
+ * @tparam ROBOT robot body model type
+ * @tparam SDF signed distance field type
+ * @tparam OBS_FACTOR obstacle cost factor type
+ */
+
 /// run a single optimizer iteration
 /// compare to GTSAM default optimization method, if error increase during iteration,
 /// will return the smallest error value, not the increased one

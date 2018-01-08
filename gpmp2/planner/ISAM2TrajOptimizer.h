@@ -21,8 +21,11 @@
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileArm.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileVetLin2Arms.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileVetLin2Arms.h>
 #include <gpmp2/kinematics/ArmModel.h>
 #include <gpmp2/kinematics/Pose2MobileArmModel.h>
+#include <gpmp2/kinematics/Pose2MobileVetLin2ArmsModel.h>
 #include <gpmp2/gp/GaussianProcessPriorLinear.h>
 #include <gpmp2/gp/GaussianProcessPriorPose2Vector.h>
 
@@ -159,6 +162,12 @@ typedef internal::ISAM2TrajOptimizer<Pose2MobileArmModel, GaussianProcessPriorPo
     JointLimitFactorPose2Vector, VelocityLimitFactorVector>
 ISAM2TrajOptimizerPose2MobileArm;
 
+
+/// 3D mobile arm specialization
+typedef internal::ISAM2TrajOptimizer<Pose2MobileVetLin2ArmsModel, GaussianProcessPriorPose2Vector,
+    SignedDistanceField, ObstacleSDFFactorPose2MobileVetLin2Arms, ObstacleSDFFactorGPPose2MobileVetLin2Arms,
+    JointLimitFactorPose2Vector, VelocityLimitFactorVector>
+ISAM2TrajOptimizerPose2MobileVetLin2Arms;
 
 }   // namespace gpmp2
 

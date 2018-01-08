@@ -763,6 +763,27 @@ class ISAM2TrajOptimizerPose2MobileArm {
 };
 
 
+class ISAM2TrajOptimizerPose2MobileVetLin2Arms {
+  ISAM2TrajOptimizerPose2MobileVetLin2Arms(const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
+      const gpmp2::TrajOptimizerSetting& setting);
+
+  void initFactorGraph(const gpmp2::Pose2Vector& start_conf, Vector start_vel,
+      const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void initValues(const gtsam::Values& init_values);
+  void update();
+
+  /// Replanning interfaces
+  void changeGoalConfigAndVel(const gpmp2::Pose2Vector& goal_conf, Vector goal_vel);
+  void removeGoalConfigAndVel();
+  void fixConfigAndVel(size_t state_idx, const gpmp2::Pose2Vector& conf_fix, Vector vel_fix);
+  void addPoseEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov);
+  void addStateEstimate(size_t state_idx, const gpmp2::Pose2Vector& pose, Matrix pose_cov, Vector vel, Matrix vel_cov);
+
+  /// accesses
+  gtsam::Values values() const;
+};
+
+
 // utils for traj init and interpolation
 #include <gpmp2/planner/TrajUtils.h>
 
