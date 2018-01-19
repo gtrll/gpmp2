@@ -30,7 +30,7 @@ delta_t = total_time_sec / total_time_step;
 check_inter = total_check_step / total_time_step - 1;
 
 % use 2d vehicle dynamics
-use_vehicle_dynamics = false;
+use_vehicle_dynamics = true;
 dynamics_sigma = 0.001;
 
 % use GP interpolation
@@ -52,12 +52,12 @@ pose_fix = noiseModel.Isotropic.Sigma(5, 0.0001);
 vel_fix = noiseModel.Isotropic.Sigma(5, 0.0001);
 
 % start and end conf
-start_pose = Pose2(-1, 2, -pi/2);
+start_pose = Pose2(-1, 0, pi/2);
 start_conf = [0, 0]';
 pstart = Pose2Vector(start_pose, start_conf);
 start_vel = [0, 0, 0, 0, 0]';
 
-end_pose = Pose2(1, -1, pi/2);
+end_pose = Pose2(1, 0, pi/2);
 end_conf = [0 0]';
 pend = Pose2Vector(end_pose, end_conf);
 end_vel = [0, 0, 0, 0, 0]';

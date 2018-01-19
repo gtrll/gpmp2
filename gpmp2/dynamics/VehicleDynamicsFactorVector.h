@@ -1,20 +1,18 @@
 /**
- *  @file   VehicleDynamicsFactorPose2Vector.h
- *  @brief  simple 2D vehicle dynamics factor for mobile arm base in Lie group SE(2)
- *  @author Jing Dong, Mustafa Mukadam
- *  @date   Oct 14, 2016
+ *  @file   VehicleDynamicsFactorVector.h
+ *  @brief  simple 2D vehicle dynamics factor for mobile arm base in vector space
+ *  @author Mustafa Mukadam
+ *  @date   Jan 8, 2018
  **/
 
 
 #pragma once
 
 #include <gpmp2/dynamics/VehicleDynamics.h>
-#include <gpmp2/geometry/Pose2Vector.h>
 
 #include <gtsam/nonlinear/NonlinearFactor.h>
 #include <gtsam/base/Matrix.h>
 #include <gtsam/base/Vector.h>
-#include <gtsam/geometry/Pose2.h>
 
 #include <iostream>
 #include <vector>
@@ -25,12 +23,12 @@ namespace gpmp2 {
 /**
  * unary factor for vehicle dynamics
  */
-class VehicleDynamicsFactorPose2Vector: public gtsam::NoiseModelFactor2<Pose2Vector, gtsam::Vector> {
+class VehicleDynamicsFactorVector: public gtsam::NoiseModelFactor2<gtsam::Vector, gtsam::Vector> {
 
 private:
   // typedefs
-  typedef VehicleDynamicsFactorPose2Vector This;
-  typedef gtsam::NoiseModelFactor2<Pose2Vector, gtsam::Vector> Base;
+  typedef VehicleDynamicsFactorVector This;
+  typedef gtsam::NoiseModelFactor2<gtsam::Vector, gtsam::Vector> Base;
 
 public:
 
@@ -38,21 +36,21 @@ public:
   typedef boost::shared_ptr<This> shared_ptr;
 
   /* Default constructor do nothing */
-  VehicleDynamicsFactorPose2Vector() {}
+  VehicleDynamicsFactorVector() {}
 
   /**
    * Constructor
    * @param cost_sigma cost function covariance, should to identity model
    */
-  VehicleDynamicsFactorPose2Vector(gtsam::Key poseKey, gtsam::Key velKey, double cost_sigma) :
+  VehicleDynamicsFactorVector(gtsam::Key poseKey, gtsam::Key velKey, double cost_sigma) :
         Base(gtsam::noiseModel::Isotropic::Sigma(1, cost_sigma), poseKey, velKey) {}
 
-  virtual ~VehicleDynamicsFactorPose2Vector() {}
+  virtual ~VehicleDynamicsFactorVector() {}
 
 
   /// error function
   /// numerical/analytic Jacobians from cost function
-  gtsam::Vector evaluateError(const Pose2Vector& conf, const gtsam::Vector& vel,
+  gtsam::Vector evaluateError(const gtsam::Vector& conf, const gtsam::Vector& vel,
       boost::optional<gtsam::Matrix&> H1 = boost::none,
       boost::optional<gtsam::Matrix&> H2 = boost::none) const {
 
@@ -60,20 +58,20 @@ public:
 
     if (H1 || H2) {
       Matrix13 Hp, Hv;
-      const double err = simple2DVehicleDynamicsPose2(conf.pose(),
+      const double err = simple2DVehicleDynamicsVector3(conf.head<3>(),
           vel.head<3>(), Hp, Hv);
       if (H1) {
-        *H1 = Matrix::Zero(1, conf.dim());
+        *H1 = Matrix::Zero(1, conf.size());
         H1->block<1,3>(0,0) = Hp;
       }
       if (H2) {
-        *H2 = Matrix::Zero(1, conf.dim());
+        *H2 = Matrix::Zero(1, conf.size());
         H2->block<1,3>(0,0) = Hv;
       }
       return (Vector(1) << err).finished();
 
     } else {
-      return (Vector(1) << simple2DVehicleDynamicsPose2(conf.pose(),
+      return (Vector(1) << simple2DVehicleDynamicsVector3(conf.head<3>(),
           vel.head<3>())).finished();
     }
   }
@@ -86,7 +84,7 @@ public:
 
   /** print contents */
   void print(const std::string& s="", const gtsam::KeyFormatter& keyFormatter = gtsam::DefaultKeyFormatter) const {
-    std::cout << s << "VehicleDynamicsFactorPose2Vector :" << std::endl;
+    std::cout << s << "VehicleDynamicsFactorVector :" << std::endl;
     Base::print("", keyFormatter);
   }
 
