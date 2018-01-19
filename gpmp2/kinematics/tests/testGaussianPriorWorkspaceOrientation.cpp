@@ -55,11 +55,11 @@ TEST(GaussianPriorWorkspaceOrientationArm, optimization) {
   Vector alpha = (Vector(2) << 0, 0).finished();
   Vector d = (Vector(2) << 0, 0).finished();
   ArmModel arm = ArmModel(Arm(2, a, alpha, d), BodySphereVector());
-  Rot3 des(Rot3::RzRyRx(0, 0, -M_PI/2));
+  Rot3 des = Rot3();
 
   Key qkey = Symbol('x', 0);
-  Vector q = (Vector(2) << -0.7853, -0.7853).finished();
-  Vector qinit = (Vector(2) << 0, 0).finished();
+  Vector qinit = (Vector(2) << M_PI/2, M_PI/2).finished();
+  Vector q = (Vector(2) << 0, 0).finished();
 
   NonlinearFactorGraph graph;
   graph.add(GaussianPriorWorkspaceOrientationArm(qkey, arm, 1, des, cost_model));

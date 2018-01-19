@@ -63,12 +63,12 @@ public:
       Matrix36 H_rp;
       Matrix33 H_er;
       Rot3 curr_orientation = joint_pos[joint_].rotation(H_rp);
-      Vector error = traits<Rot3>::Local(des_orientation_, curr_orientation, boost::none, H_er);
+      Vector error = des_orientation_.logmap(curr_orientation, boost::none, H_er);
       *H1 = H_er * H_rp * J_jpx_jp[joint_];
       return error;
     }
     else {
-      return traits<Rot3>::Local(des_orientation_, joint_pos[joint_].rotation());
+      return des_orientation_.logmap(joint_pos[joint_].rotation());
     }
   }
 

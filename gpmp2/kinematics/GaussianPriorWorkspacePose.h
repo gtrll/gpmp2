@@ -61,12 +61,12 @@ public:
 
     if (H1) {
       Matrix66 H_ep;
-      Vector error = traits<Pose3>::Local(des_pose_, joint_pos[joint_], boost::none, H_ep);
+      Vector error = des_pose_.logmap(joint_pos[joint_], boost::none, H_ep);
       *H1 = H_ep * J_jpx_jp[joint_];
       return error;
     }
     else {
-      return traits<Pose3>::Local(des_pose_, joint_pos[joint_]);
+      return des_pose_.logmap(joint_pos[joint_]);
     }
   }
 

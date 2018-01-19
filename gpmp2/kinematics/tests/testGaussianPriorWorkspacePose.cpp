@@ -59,7 +59,7 @@ TEST(GaussianPriorWorkspacePoseArm, optimization) {
 
   Key qkey = Symbol('x', 0);
   Vector q = (Vector(2) << 0, 0).finished();
-  Vector qinit = (Vector(2) << -0.7853, -0.7853).finished();
+  Vector qinit = (Vector(2) << M_PI/2, M_PI/2).finished();
 
   NonlinearFactorGraph graph;
   graph.add(GaussianPriorWorkspacePoseArm(qkey, arm, 1, des, cost_model));
