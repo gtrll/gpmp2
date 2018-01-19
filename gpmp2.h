@@ -327,6 +327,34 @@ virtual class VelocityLimitFactorVector: gtsam::NoiseModelFactor {
 };
 
 
+
+// Gaussian prior defined on the workspace position of a joint
+#include <gpmp2/kinematics/GaussianPriorWorkspacePositionArm.h>
+
+virtual class GaussianPriorWorkspacePositionArm : gtsam::NoiseModelFactor {
+  GaussianPriorWorkspacePositionArm(
+      size_t poseKey, const gpmp2::ArmModel& arm, int joint,
+      const gtsam::Point3& des_position, const gtsam::noiseModel::Base* cost_model);
+};
+
+// Gaussian prior defined on the workspace orientation of a joint
+#include <gpmp2/kinematics/GaussianPriorWorkspaceOrientationArm.h>
+
+virtual class GaussianPriorWorkspaceOrientationArm : gtsam::NoiseModelFactor {
+  GaussianPriorWorkspaceOrientationArm(
+      size_t poseKey, const gpmp2::ArmModel& arm, int joint,
+      const gtsam::Rot3& des_orientation, const gtsam::noiseModel::Base* cost_model);
+};
+
+// Gaussian prior defined on the workspace pose of a joint
+#include <gpmp2/kinematics/GaussianPriorWorkspacePoseArm.h>
+
+virtual class GaussianPriorWorkspacePoseArm : gtsam::NoiseModelFactor {
+  GaussianPriorWorkspacePoseArm(
+      size_t poseKey, const gpmp2::ArmModel& arm, int joint,
+      const gtsam::Pose3& des_pose, const gtsam::noiseModel::Base* cost_model);
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // dynamics
 ////////////////////////////////////////////////////////////////////////////////
