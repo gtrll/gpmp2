@@ -186,30 +186,62 @@ double CollisionCostPose2MobileVetLin2Arms(
     ObstacleSDFFactorPose2MobileVetLin2Arms>(marm, sdf, result, setting);
 }
 
-
-namespace internal {
-
 /* ************************************************************************** */
-gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt, 
-    const gtsam::NonlinearOptimizerParams& params, bool iter_no_increase) {
+gtsam::Values optimize(const gtsam::NonlinearFactorGraph& graph, const gtsam::Values& init_values,
+    const TrajOptimizerSetting& setting, bool iter_no_increase) {
+
+  std::shared_ptr<gtsam::NonlinearOptimizer> opt;
+  std::shared_ptr<gtsam::NonlinearOptimizerParams> params;
+
+  // init the params/opt and type specific settings
+  if (setting.opt_type == TrajOptimizerSetting::Dogleg) {
+    params = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new DoglegParams());
+    // trust region ranage, 0.2 rad or meter, no whitenning, not sure make sense or not 
+    dynamic_cast<DoglegParams*>(params.get())->setDeltaInitial(0.2);
+  
+  } else if (setting.opt_type == TrajOptimizerSetting::LM) {
+    params = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new LevenbergMarquardtParams());
+    dynamic_cast<LevenbergMarquardtParams*>(params.get())->setlambdaInitial(100.0);
+  
+  } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
+    params = std::shared_ptr<gtsam::NonlinearOptimizerParams>(new GaussNewtonParams());
+  }
+
+  // common settings
+  params->setMaxIterations(setting.max_iter);
+  params->setRelativeErrorTol(setting.rel_thresh);
+  if (setting.opt_verbosity >= TrajOptimizerSetting::Error)
+    params->setVerbosity("ERROR");
+
+  // optimizer
+  if (setting.opt_type == TrajOptimizerSetting::Dogleg) {
+    opt = std::shared_ptr<gtsam::NonlinearOptimizer>(new DoglegOptimizer(
+      graph, init_values, *(dynamic_cast<DoglegParams*>(params.get()))));
+  } else if (setting.opt_type == TrajOptimizerSetting::LM) {
+    opt = std::shared_ptr<gtsam::NonlinearOptimizer>(new LevenbergMarquardtOptimizer(
+      graph, init_values, *(dynamic_cast<LevenbergMarquardtParams*>(params.get()))));
+  } else if (setting.opt_type == TrajOptimizerSetting::GaussNewton) {
+    opt = std::shared_ptr<gtsam::NonlinearOptimizer>(new GaussNewtonOptimizer(
+      graph, init_values, *(dynamic_cast<GaussNewtonParams*>(params.get()))));
+  }
 
   double currentError = opt->error();
   
   // check if we're already close enough
-  if (currentError <= params.errorTol) {
-    if (params.verbosity >= NonlinearOptimizerParams::ERROR)
-      cout << "Exiting, as error = " << currentError << " < " << params.errorTol << endl;
+  if (currentError <= params->errorTol) {
+    if (params->verbosity >= NonlinearOptimizerParams::ERROR)
+      cout << "Exiting, as error = " << currentError << " < " << params->errorTol << endl;
     return opt->values();
   }
 
   // Maybe show output
-  if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+  if (params->verbosity >= NonlinearOptimizerParams::ERROR)
     cout << "Initial error: " << currentError << endl;
 
   // Return if we already have too many iterations
-  if (opt->iterations() >= params.maxIterations) {
-    if (params.verbosity >= NonlinearOptimizerParams::TERMINATION)
-      cout << "iterations: " << opt->iterations() << " > " << params.maxIterations << endl;
+  if (opt->iterations() >= params->maxIterations) {
+    if (params->verbosity >= NonlinearOptimizerParams::TERMINATION)
+      cout << "iterations: " << opt->iterations() << " > " << params->maxIterations << endl;
     return opt->values();
   }
 
@@ -224,17 +256,17 @@ gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt,
       last_values = opt->values();
     opt->iterate();
     // Maybe show output
-    if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+    if (params->verbosity >= NonlinearOptimizerParams::ERROR)
       cout << "newError: " << opt->error() << endl;
 
-  } while (opt->iterations() < params.maxIterations &&
-      !checkConvergence(params.relativeErrorTol, params.absoluteErrorTol, params.errorTol,
-          currentError, opt->error(), params.verbosity));
+  } while (opt->iterations() < params->maxIterations &&
+      !checkConvergence(params->relativeErrorTol, params->absoluteErrorTol, params->errorTol,
+          currentError, opt->error(), params->verbosity));
 
   // Printing if verbose
-  if (params.verbosity >= NonlinearOptimizerParams::TERMINATION) {
-    cout << "iterations: " << opt->iterations() << " > " << params.maxIterations << endl;
-    if (opt->iterations() >= params.maxIterations)
+  if (params->verbosity >= NonlinearOptimizerParams::TERMINATION) {
+    cout << "iterations: " << opt->iterations() << " > " << params->maxIterations << endl;
+    if (opt->iterations() >= params->maxIterations)
       cout << "Terminating because reached maximum iterations" << endl;
   }
 
@@ -242,7 +274,7 @@ gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt,
   // if increase use last copied values
   if (opt->error() > currentError) {
     if (iter_no_increase) {
-      if (params.verbosity >= NonlinearOptimizerParams::ERROR)
+      if (params->verbosity >= NonlinearOptimizerParams::ERROR)
         cout << "Error increase, use last copied values" << endl;
       return last_values;
     } else {
@@ -253,5 +285,4 @@ gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt,
   }
 }
 
-} // namespace internal
 } // namespace gpmp2

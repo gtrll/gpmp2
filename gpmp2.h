@@ -710,6 +710,9 @@ double CollisionCostPose2MobileVetLin2Arms(
     const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
     const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
 
+/// Optimization function for custom graphs
+gtsam::Values optimize(const gtsam::NonlinearFactorGraph& graph, const gtsam::Values& init_values,
+    const gpmp2::TrajOptimizerSetting& setting, bool iter_no_increase);
 
 /// iSAM2 incremental trajectory optimizers
 #include <gpmp2/planner/ISAM2TrajOptimizer.h>
