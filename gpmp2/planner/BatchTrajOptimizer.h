@@ -190,6 +190,13 @@ GPMP2_EXPORT double CollisionCostPose2MobileVetLin2Arms(
     const gtsam::Values& result, const TrajOptimizerSetting& setting);
 
 
+/// run a single optimizer iteration
+/// compare to GTSAM default optimization method, if error increase during iteration,
+/// will return the smallest error value, not the increased one
+GPMP2_EXPORT gtsam::Values optimize(const gtsam::NonlinearFactorGraph& graph,
+    const gtsam::Values& init_values, const TrajOptimizerSetting& setting,
+    bool iter_no_increase = true);
+
 namespace internal {
 
 /**
@@ -229,11 +236,6 @@ double CollisionCost(
  * @tparam OBS_FACTOR obstacle cost factor type
  */
 
-/// run a single optimizer iteration
-/// compare to GTSAM default optimization method, if error increase during iteration,
-/// will return the smallest error value, not the increased one
-gtsam::Values optimize(std::shared_ptr<gtsam::NonlinearOptimizer> opt, 
-    const gtsam::NonlinearOptimizerParams& params, bool iter_no_increase = true);
 
 }   // namespace internal
 }   // namespace gpmp2
