@@ -9,6 +9,7 @@
 
 #include <gpmp2/planner/TrajOptimizerSetting.h>
 #include <gpmp2/kinematics/ArmModel.h>
+#include <gpmp2/kinematics/Pose2MobileBaseModel.h>
 #include <gpmp2/kinematics/Pose2MobileArmModel.h>
 #include <gpmp2/kinematics/Pose2Mobile2ArmsModel.h>
 #include <gpmp2/kinematics/Pose2MobileVetLinArmModel.h>
@@ -161,6 +162,15 @@ GPMP2_EXPORT double CollisionCostPose2MobileArm2D(
     const Pose2MobileArmModel& marm, const PlanarSDF& sdf,
     const gtsam::Values& result, const TrajOptimizerSetting& setting);
 
+/// 2D mobile base SE(2)
+GPMP2_EXPORT double CollisionCostPose2MobileBase2D(
+    const Pose2MobileBaseModel& marm, const PlanarSDF& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting);
+
+/// 3D mobile base SE(2)
+GPMP2_EXPORT double CollisionCostPose2MobileBase(
+    const Pose2MobileBaseModel& marm, const SignedDistanceField& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting);
 
 /**
  * @brief collision cost for 3D mobile arm trajectory

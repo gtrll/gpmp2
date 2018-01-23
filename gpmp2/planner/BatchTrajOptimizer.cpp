@@ -13,6 +13,10 @@
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorGPArm.h>
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2MobileBase.h>
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileBase.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileBase.h>
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileBase.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileArm.h>
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
@@ -148,6 +152,24 @@ double CollisionCostPose2MobileArm2D(
 
   return internal::CollisionCost<Pose2MobileArmModel, PlanarSDF, 
     ObstaclePlanarSDFFactorPose2MobileArm>(marm, sdf, result, setting);
+}
+
+/* ************************************************************************** */
+double CollisionCostPose2MobileBase2D(
+    const Pose2MobileBaseModel& robot, const PlanarSDF& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting) {
+
+  return internal::CollisionCost<Pose2MobileBaseModel, PlanarSDF, 
+    ObstaclePlanarSDFFactorPose2MobileBase>(robot, sdf, result, setting);
+}
+
+/* ************************************************************************** */
+double CollisionCostPose2MobileBase(
+    const Pose2MobileBaseModel& robot, const SignedDistanceField& sdf,
+    const gtsam::Values& result, const TrajOptimizerSetting& setting) {
+
+  return internal::CollisionCost<Pose2MobileBaseModel, SignedDistanceField, 
+    ObstacleSDFFactorPose2MobileBase>(robot, sdf, result, setting);
 }
 
 /* ************************************************************************** */
