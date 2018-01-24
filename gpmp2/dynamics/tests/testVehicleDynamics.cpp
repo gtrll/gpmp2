@@ -6,6 +6,7 @@
 #include <CppUnitLite/TestHarness.h>
 
 #include <gpmp2/dynamics/VehicleDynamics.h>
+#include <gpmp2/dynamics/VehicleDynamicsFactorPose2.h>
 #include <gpmp2/dynamics/VehicleDynamicsFactorPose2Vector.h>
 #include <gpmp2/dynamics/VehicleDynamicsFactorVector.h>
 

@@ -8,13 +8,13 @@
 #pragma once
 
 #include <gpmp2/kinematics/Pose2MobileBaseModel.h>
-#include <gpmp2/gp/GaussianProcessInterpolatorPose2Vector.h>
+#include <gpmp2/gp/GaussianProcessInterpolatorPose2.h>
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorGP.h>
 
 namespace gpmp2 {
 
 // template uses PointRobotModel as robot type
-typedef ObstaclePlanarSDFFactorGP<Pose2MobileBaseModel, GaussianProcessInterpolatorPose2Vector>
+typedef ObstaclePlanarSDFFactorGP<Pose2MobileBaseModel, GaussianProcessInterpolatorPose2>
     ObstaclePlanarSDFFactorGPPose2MobileBase;
 
 }

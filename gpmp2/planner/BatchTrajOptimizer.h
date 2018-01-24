@@ -164,12 +164,12 @@ GPMP2_EXPORT double CollisionCostPose2MobileArm2D(
 
 /// 2D mobile base SE(2)
 GPMP2_EXPORT double CollisionCostPose2MobileBase2D(
-    const Pose2MobileBaseModel& marm, const PlanarSDF& sdf,
+    const Pose2MobileBaseModel& robot, const PlanarSDF& sdf,
     const gtsam::Values& result, const TrajOptimizerSetting& setting);
 
 /// 3D mobile base SE(2)
 GPMP2_EXPORT double CollisionCostPose2MobileBase(
-    const Pose2MobileBaseModel& marm, const SignedDistanceField& sdf,
+    const Pose2MobileBaseModel& robot, const SignedDistanceField& sdf,
     const gtsam::Values& result, const TrajOptimizerSetting& setting);
 
 /**
