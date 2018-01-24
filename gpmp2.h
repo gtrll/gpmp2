@@ -98,6 +98,20 @@ class Arm {
   gtsam::Pose3 base_pose() const;
 };
 
+// abstract pose2 mobile base class
+#include <gpmp2/kinematics/Pose2MobileBase.h>
+
+class Pose2MobileBase {
+  Pose2MobileBase();
+
+  // full forward kinematics
+  Matrix forwardKinematicsPose(const gtsam::Pose2& jp) const;
+  Matrix forwardKinematicsPosition(const gtsam::Pose2& jp) const;
+  Matrix forwardKinematicsVel(const gtsam::Pose2& jp, Vector jv) const;
+  // accesses
+  size_t dof() const;
+  size_t nr_links() const;
+};
 
 // abstract pose2 mobile arm class
 #include <gpmp2/kinematics/Pose2MobileArm.h>
@@ -225,6 +239,19 @@ class ArmModel {
   double sphere_radius(size_t i) const;
 };
 
+// Physical Pose2MobileBaseModel class
+#include <gpmp2/kinematics/Pose2MobileBaseModel.h>
+
+class Pose2MobileBaseModel {
+  Pose2MobileBaseModel(const gpmp2::Pose2MobileBase& r, const gpmp2::BodySphereVector& spheres);
+  // solve sphere center position in world frame
+  Matrix sphereCentersMat(const gtsam::Pose2& conf) const ;
+  // accesses
+  size_t dof() const;
+  gpmp2::Pose2MobileBase fk_model() const;
+  size_t nr_body_spheres() const;
+  double sphere_radius(size_t i) const;
+};
 
 // Physical Pose2MobileArmModel class
 #include <gpmp2/kinematics/Pose2MobileArmModel.h>
@@ -360,6 +387,13 @@ virtual class GaussianPriorWorkspacePoseArm : gtsam::NoiseModelFactor {
 ////////////////////////////////////////////////////////////////////////////////
 
 // dynamics factor Pose2
+#include <gpmp2/dynamics/VehicleDynamicsFactorPose2.h>
+
+virtual class VehicleDynamicsFactorPose2 : gtsam::NoiseModelFactor {
+  VehicleDynamicsFactorPose2(size_t poseKey, size_t velKey, double cost_sigma);
+};
+
+// dynamics factor Pose2Vector
 #include <gpmp2/dynamics/VehicleDynamicsFactorPose2Vector.h>
 
 virtual class VehicleDynamicsFactorPose2Vector : gtsam::NoiseModelFactor {
@@ -472,6 +506,23 @@ virtual class ObstaclePlanarSDFFactorGPPointRobot : gtsam::NoiseModelFactor {
       double delta_t, double tau);
 };
 
+// planar obstacle avoid factor (pose2 mobile base with 2D signed distance field)
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2MobileBase.h>
+virtual class ObstaclePlanarSDFFactorPose2MobileBase : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorPose2MobileBase(
+      size_t posekey, const gpmp2::Pose2MobileBaseModel& robot,
+      const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gtsam::Pose2& pose) const;
+};
+
+#include <gpmp2/obstacle/ObstaclePlanarSDFFactorGPPose2MobileBase.h>
+virtual class ObstaclePlanarSDFFactorGPPose2MobileBase : gtsam::NoiseModelFactor {
+  ObstaclePlanarSDFFactorGPPose2MobileBase(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileBaseModel& robot, const gpmp2::PlanarSDF& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
 
 // planar obstacle avoid factor (pose2 mobile arm with 2D signed distance field)
 #include <gpmp2/obstacle/ObstaclePlanarSDFFactorPose2MobileArm.h>
@@ -510,6 +561,25 @@ virtual class ObstaclePlanarSDFFactorGPPose2Mobile2Arms : gtsam::NoiseModelFacto
       double delta_t, double tau);
 };
 
+
+// obstacle avoid factor (pose2 mobile base with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileBase.h>
+virtual class ObstacleSDFFactorPose2MobileBase : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorPose2MobileBase(
+      size_t posekey, const gpmp2::Pose2MobileBaseModel& robot,
+      const gpmp2::SignedDistanceField& sdf, double cost_sigma, double epsilon);
+  Vector evaluateError(const gtsam::Pose2& pose) const;
+};
+
+// obstacle avoid factor with GP interpolation (pose2 mobile base with 3D signed distance field)
+#include <gpmp2/obstacle/ObstacleSDFFactorGPPose2MobileBase.h>
+virtual class ObstacleSDFFactorGPPose2MobileBase : gtsam::NoiseModelFactor {
+  ObstacleSDFFactorGPPose2MobileBase(
+      size_t pose1key, size_t vel1key, size_t pose2key, size_t vel2key,
+      const gpmp2::Pose2MobileBaseModel& robot, const gpmp2::SignedDistanceField& sdf,
+      double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
+      double delta_t, double tau);
+};
 
 // obstacle avoid factor (pose2 mobile arm with 3D signed distance field)
 #include <gpmp2/obstacle/ObstacleSDFFactorPose2MobileArm.h>
@@ -685,6 +755,16 @@ double CollisionCost3DArm(
     const gpmp2::ArmModel& arm, const gpmp2::SignedDistanceField& sdf,
     const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
 
+/// 2D mobile base collision cost
+double CollisionCostPose2MobileBase2D(
+    const gpmp2::Pose2MobileBaseModel& robot, const gpmp2::PlanarSDF& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
+/// 3D mobile base collision cost
+double CollisionCostPose2MobileBase(
+    const gpmp2::Pose2MobileBaseModel& robot, const gpmp2::SignedDistanceField& sdf,
+    const gtsam::Values& result, const gpmp2::TrajOptimizerSetting& setting);
+
 /// 2D mobile arm collision cost
 double CollisionCostPose2MobileArm2D(
     const gpmp2::Pose2MobileArmModel& marm, const gpmp2::PlanarSDF& sdf,
@@ -830,6 +910,8 @@ class ISAM2TrajOptimizerPose2MobileVetLin2Arms {
 gtsam::Values initArmTrajStraightLine(Vector init_conf, Vector end_conf, size_t total_step);
 gtsam::Values initPose2VectorTrajStraightLine(const gtsam::Pose2& init_pose, Vector init_conf,
     const gtsam::Pose2& end_pose, Vector end_conf, size_t total_step);
+gtsam::Values initPose2TrajStraightLine(const gtsam::Pose2& init_pose,
+    const gtsam::Pose2& end_pose, size_t total_step);
 
 /// robot arm trajectory interpolator
 gtsam::Values interpolateArmTraj(const gtsam::Values& opt_values,
@@ -845,6 +927,10 @@ gtsam::Values interpolatePose2MobileArmTraj(const gtsam::Values& opt_values,
     const gtsam::noiseModel::Base* Qc_model, double delta_t, size_t inter_step, 
     size_t start_index, size_t end_index);
 
+/// mobile base trajectory interpolator between any two states
+gtsam::Values interpolatePose2Traj(const gtsam::Values& opt_values,
+    const gtsam::noiseModel::Base* Qc_model, double delta_t, size_t inter_step, 
+    size_t start_index, size_t end_index);
 
 ////////////////////////////////////////////////////////////////////////////////
 // utils
