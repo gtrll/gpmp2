@@ -1,6 +1,6 @@
 GPMP2
 ===================================================
-This library is an implementation of GPMP2 (Gaussian Process Motion Planner 2) algorithm described in [Motion Planning as Probabilistic Inference using Gaussian Processes and Factor Graphs](http://www.cc.gatech.edu/~bboots3/files/GPMP2.pdf) (RSS 2016). The core library is developed in C++ language, and an optional Matlab toolbox is provided. Examples are provided in Matlab scripts. An OpenRAVE plugin, [orgpmp2](https://github.com/gtrll/gpmp2_orplugin), is also available with examples.
+This library is an implementation of GPMP2 (Gaussian Process Motion Planner 2) algorithm described in [Motion Planning as Probabilistic Inference using Gaussian Processes and Factor Graphs](http://www.cc.gatech.edu/~bboots3/files/GPMP2.pdf) (RSS 2016). The core library is developed in C++ language, and an optional Matlab toolbox is provided. Examples are provided in Matlab scripts. An OpenRAVE plugin, [orgpmp2](https://github.com/gtrll/gpmp2_orplugin), is available with examples. A ROS interface is also available within [PIPER](https://github.com/gtrll/piper).
 
 GPMP2 is being developed by [Jing Dong](mailto:thu.dongjing@gmail.com) and 
 [Mustafa Mukadam](mailto:mmukadam3@gatech.edu) as part of their work at Georgia Tech Robot Learning Lab. 
