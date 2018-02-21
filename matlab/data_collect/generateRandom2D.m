@@ -1,6 +1,6 @@
-function dataset = generate_random_2D()
-
-cols = 300; rows = 300;
+function dataset = generateRandom2D(dim)
+cols=dim(1);
+rows=dim(2);
 dataset.cols = cols;
 dataset.rows = rows;
 dataset.cell_size = 0.01;

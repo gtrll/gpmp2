@@ -9,14 +9,17 @@ import gtsam.*
 import gpmp2.*
 addpath('/usr/local/gtsam_toolbox/')
 
+
 rng(0);
+
+map_dim = [256,256];
 
 iter = 0;
 while iter < 10
     %% small dataset
     generate = true;
     while generate
-        dataset = generate_random_2D();
+        dataset = generateRandom2D(map_dim);
         rows = dataset.rows;
         cols = dataset.cols;
         cell_size = dataset.cell_size;
@@ -32,9 +35,9 @@ while iter < 10
     sdf = PlanarSDF(origin_point2, cell_size, field);
 
     % plot sdf
-    figure(2)
-    plotSignedDistanceField2D(field, dataset.origin_x, dataset.origin_y, dataset.cell_size);
-    title('Signed Distance Field')
+%     figure(2)
+%     plotSignedDistanceField2D(field, dataset.origin_x, dataset.origin_y, dataset.cell_size);
+%     title('Signed Distance Field')
 
 
     %% settings
@@ -48,10 +51,10 @@ while iter < 10
     use_GP_inter = true;
 
     % abstract arm
-    a = [5, 5, 5]';
-    d = [0, 0, 0]';
-    alpha = [0, 0, 0]';
-    arm = Arm(3, a, alpha, d);
+%     a = [5, 5, 5]';
+%     d = [0, 0, 0]';
+%     alpha = [0, 0, 0]';
+%     arm = Arm(3, a, alpha, d);
 
     % arm model
     arm = generateArm('SimpleThreeLinksArm');
@@ -94,12 +97,12 @@ while iter < 10
     plot_inter = 10;
 
     % plot start configuration / goal point
-    figure(1), hold on
-    plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
-    plotPlanarArm(arm.fk_model(), start_conf, 'b', 2);
-    plot(goal(1), goal(2), 'r*');
-    title('Layout')
-    hold off
+%     figure(1), hold on
+%     plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
+%     plotPlanarArm(arm.fk_model(), start_conf, 'b', 2);
+%     plot(goal(1), goal(2), 'r*');
+%     title('Layout')
+%     hold off
 
 
     %% init optimization
@@ -233,38 +236,59 @@ while iter < 10
         end
     end
 
-
-    % plot
+    
+    % Initialize figures
+    figure(4)
+    set(gca,'Position',[0 0 1 1]);
+    set(gcf,'Position',[500 500 map_dim(1) map_dim(2)]);
+    a(1) = gca;
+    
+    figure(5)
+    set(gca,'Position',[0 0 1 1]);
+    set(gcf,'Position',[500+map_dim(1) 500 map_dim(1) map_dim(2)]);
+    set(gca,'XColor','none');
+    set(gca,'YColor','none');
+    a(2) = gca;
+    linkaxes(a, 'xy');
+    
     if CollisionCost2DArm(arm, sdf, result, traj_settings) == 0
-        iter = iter + 1;
         
         % Extract joint angles and velocities.
         % x = joint angles, size [3, time steps]
         % u = joint velocities, size [3, time steps]
         x = zeros(3, total_time_step+1);
         u = zeros(3, total_time_step+1);
-        for t = 0:total_time_step
+%         Im = zeros(map_dim(1), map_dim(2), 3, total_time_step+1);
+        
+        for t = 0:total_time_step+1
             x(:,t+1) = result.atVector(symbol('x', t));
             u(:,t+1) = result.atVector(symbol('v', t));
         end
-        for i=0:10:total_plot_step
-            figure(4), hold on
-            title('Optimized Values')
-            % plot world
-            plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
-        %     plotSignedDistanceField2D(field, dataset.origin_x, dataset.origin_y, dataset.cell_size, epsilon_dist);
-            % plot traj 
-            for j=1:3
-                plot(opt_traj_line(2*j-1,:), opt_traj_line(2*j,:), 'r.', 'MarkerSize', 10);
-                plot(smooth_traj_line(2*j-1,:), smooth_traj_line(2*j,:), 'r-.');
-            end
-            % plot arm
-            conf = plot_values.atVector(symbol('x', i));
-            plotPlanarArm(arm.fk_model(), conf, 'b', 2);
-            % plot goal
-            plot(goal(1), goal(2), 'r*', 'MarkerSize', 10);
-            %pause(pause_time), hold off
-            pause(0.01); hold off;
-        end
+        
+        % plot obstacles
+        figure(4), cla
+        hold on
+        plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
+        pause(0.01); hold off;
+%         
+%         % goal
+%         axes=get(gcf,'CurrentAxes');
+%         Im_goal = getGoalImage(goal, axes, map_dim);
+        
+%         for i=1:total_plot_step+1
+%             
+%             %plot arm
+%             figure(5), cla
+%             hold on
+%             conf = plot_values.atVector(symbol('x', i));
+%             plotPlanarArm(arm.fk_model(), conf, 'b', 2);
+%             pause(0.01); hold off
+%             
+%             fr = getframe(5);
+%             Im(:,:,:,i) = frame2im(fr);
+%         end
+        
+        iter = iter + 1;
+        pause;
     end
 end
