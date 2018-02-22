@@ -1,6 +1,6 @@
 function ImG = getGoalImage(x_target, axes, img_size)
 
-    goal_rad = 10; % in pixels
+    goal_rad = 5; % in pixels
 
     x_lim = axes.XLim; y_lim = axes.YLim;
     c_gpix = ceil(img_size(1) * (x_target(1) - x_lim(1))/(x_lim(2)-x_lim(1)));

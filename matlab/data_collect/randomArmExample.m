@@ -14,8 +14,13 @@ rng(0);
 
 map_dim = [256,256];
 
+% data directory
+date = datestr(now,'mmm-dd-yy_HH:MM:SS');
+data_path = fullfile(pwd,'data',date);
+mkdir(data_path);
+
 iter = 0;
-while iter < 10
+while iter < 20
     %% small dataset
     generate = true;
     while generate
@@ -103,6 +108,7 @@ while iter < 10
 %     plot(goal(1), goal(2), 'r*');
 %     title('Layout')
 %     hold off
+
 
 
     %% init optimization
@@ -253,42 +259,51 @@ while iter < 10
     
     if CollisionCost2DArm(arm, sdf, result, traj_settings) == 0
         
+        iter = iter + 1;
+        
         % Extract joint angles and velocities.
         % x = joint angles, size [3, time steps]
         % u = joint velocities, size [3, time steps]
         x = zeros(3, total_time_step+1);
         u = zeros(3, total_time_step+1);
-%         Im = zeros(map_dim(1), map_dim(2), 3, total_time_step+1);
+        Im = zeros(map_dim(1), map_dim(2), 3, total_time_step+1);
         
-        for t = 0:total_time_step+1
+        for t = 0:total_time_step
             x(:,t+1) = result.atVector(symbol('x', t));
             u(:,t+1) = result.atVector(symbol('v', t));
-        end
+        end 
         
         % plot obstacles
         figure(4), cla
         hold on
         plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
         pause(0.01); hold off;
-%         
-%         % goal
-%         axes=get(gcf,'CurrentAxes');
-%         Im_goal = getGoalImage(goal, axes, map_dim);
         
-%         for i=1:total_plot_step+1
-%             
-%             %plot arm
-%             figure(5), cla
-%             hold on
-%             conf = plot_values.atVector(symbol('x', i));
-%             plotPlanarArm(arm.fk_model(), conf, 'b', 2);
-%             pause(0.01); hold off
-%             
-%             fr = getframe(5);
-%             Im(:,:,:,i) = frame2im(fr);
-%         end
+        fr = getframe(4);
+        Im_obst = frame2im(fr);
         
-        iter = iter + 1;
-        pause;
+        % goal image
+        axes=get(gcf,'CurrentAxes');
+        Im_goal = getGoalImage(goal, axes, map_dim);
+        
+        for i=0:total_plot_step
+            
+%            plot arm
+            figure(5), cla
+            hold on
+            conf = plot_values.atVector(symbol('x', i));
+            plotPlanarArm(arm.fk_model(), conf, 'b', 2);
+            pause(0.01); hold off
+            
+            fr = getframe(5);
+            Im(:,:,:,i+1) = frame2im(fr);
+        end
+        
+        
+        case_path = fullfile(data_path, sprintf('%05d',iter));
+        mkdir(case_path);
+        saveData(x,u,Im,Im_obst,Im_goal,case_path);
+        
+%         pause;
     end
 end
