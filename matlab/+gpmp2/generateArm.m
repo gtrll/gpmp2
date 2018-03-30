@@ -47,7 +47,8 @@ if strcmp(arm_str, 'SimpleTwoLinksArm')
 % 3 link arm
 elseif strcmp(arm_str, 'SimpleThreeLinksArm')
     % abstract arm
-    a = [0.5, 0.5, 0.5]';
+%     a = [0.5, 0.5, 0.5]';
+    a = [0.4, 0.4, 0.4]';
     d = [0, 0, 0]';
     alpha = [0, 0, 0]';
     arm = Arm(3, a, alpha, d);
