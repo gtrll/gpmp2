@@ -1,4 +1,5 @@
 function dataset = generateRandom2D(dim)
+
 cols=dim(1);
 rows=dim(2);
 dataset.cols = cols;
