@@ -30,6 +30,7 @@
 #include <gpmp2/gp/GaussianProcessPriorPose2Vector.h>
 
 #include <gtsam/nonlinear/ISAM2.h>
+#include <gtsam/nonlinear/ISAM2Result.h>
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam/nonlinear/NonlinearFactorGraph.h>
 #include <gtsam/linear/NoiseModel.h>
@@ -78,7 +79,7 @@ private:
   // internal caches
   gtsam::NonlinearFactorGraph inc_graph_;
   gtsam::Values opt_values_, init_values_;
-  std::vector<size_t> removed_factor_index_;    // factors want to be removed in next update
+  gtsam::FactorIndices removed_factor_index_;    // factors want to be removed in next update
   size_t goal_conf_factor_idx_, goal_vel_factor_idx_;  // index of goal prior factor, use to remove
   bool goal_removed_; // flag for removed goal
 
