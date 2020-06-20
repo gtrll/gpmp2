@@ -13,6 +13,8 @@
 #include <gtsam/base/Vector.h>
 #include <gtsam/base/Matrix.h>
 
+#include <iostream>
+
 
 namespace gpmp2 {
 
