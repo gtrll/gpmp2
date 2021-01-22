@@ -45,9 +45,12 @@ Tested Compatibility
 
 The gpmp2 library is designed to be cross-platform. It has been tested on Ubuntu Linux and Windows for now.
 
-- Ubuntu: GCC 4.8 - 4.9, 5.3 - 5.4
+- Ubuntu: GCC 4.8 - 4.9, 5.3 - 5.4, 7.5.0
 - Windows: Visual C++ 2015 (Matlab toolbox not tested)
-- Boost: 1.50 - 1.61
+- Boost: 1.50 - 1.61, 1.65.1
+- CMake: 3.18.4
+- Matlab: R2020b
+- GTSAM: 4.0.3
 
 
 Questions & Bug reporting
