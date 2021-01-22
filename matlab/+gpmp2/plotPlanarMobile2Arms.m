@@ -7,10 +7,10 @@ import gpmp2.*
 
 pose = p.pose();
 % vehicle corners
-corner1 = pose.transform_from(Point2(vehsize(1)/2, vehsize(2)/2));
-corner2 = pose.transform_from(Point2(-vehsize(1)/2, vehsize(2)/2));
-corner3 = pose.transform_from(Point2(-vehsize(1)/2, -vehsize(2)/2));
-corner4 = pose.transform_from(Point2(vehsize(1)/2, -vehsize(2)/2));
+corner1 = pose.transformFrom(Point2(vehsize(1)/2, vehsize(2)/2));
+corner2 = pose.transformFrom(Point2(-vehsize(1)/2, vehsize(2)/2));
+corner3 = pose.transformFrom(Point2(-vehsize(1)/2, -vehsize(2)/2));
+corner4 = pose.transformFrom(Point2(vehsize(1)/2, -vehsize(2)/2));
 
 % vehicle base black lines
 h(1) = plot([corner1.x() corner2.x() corner3.x() corner4.x() corner1.x()], ...
