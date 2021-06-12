@@ -1,9 +1,7 @@
 GPMP2
 ===================================================
-This library is an implementation of GPMP2 (Gaussian Process Motion Planner 2) algorithm described in [Motion Planning as Probabilistic Inference using Gaussian Processes and Factor Graphs](http://www.cc.gatech.edu/~bboots3/files/GPMP2.pdf) (RSS 2016). The core library is developed in C++ language, and an optional Matlab toolbox is provided. Examples are provided in Matlab scripts. A ROS interface is also available within [PIPER](https://github.com/gtrll/piper).
+This library is an implementation of GPMP2 (Gaussian Process Motion Planner 2) algorithm described in [Motion Planning as Probabilistic Inference using Gaussian Processes and Factor Graphs](http://www.cc.gatech.edu/~bboots3/files/GPMP2.pdf) (RSS 2016). The core library is developed in C++ language, and an optional Matlab toolbox is provided. Examples are provided in Matlab scripts. A ROS interface is also available within [PIPER](https://github.com/gtrll/piper). GPMP2 was started at Georgia Tech Robot Learning Lab, see [THANKS](THANKS.md) for contributors.
 
-GPMP2 was developed by [Jing Dong](mailto:thu.dongjing@gmail.com) and 
-[Mustafa Mukadam](http://www.mustafamukadam.com) as part of their work at Georgia Tech Robot Learning Lab. 
 
 Prerequisites
 ------
@@ -38,6 +36,7 @@ $ make install
 
 After you install the Matlab toolbox, don't forget to add `/path/install/toolbox` to your Matlab path.
 
+
 Tested Compatibility
 -----
 
@@ -46,13 +45,6 @@ The gpmp2 library is designed to be cross-platform. It has been tested on Ubuntu
 - Ubuntu: GCC 4.8 - 4.9, 5.3 - 5.4
 - Windows: Visual C++ 2015 (Matlab toolbox not tested)
 - Boost: 1.50 - 1.61
-
-
-Questions & Bug reporting
------
-
-Please use Github issue tracker to report bugs. For other questions please contact [Jing Dong](mailto:thu.dongjing@gmail.com)
-or [Mustafa Mukadam](mailto:mmukadam3@gatech.edu) .
 
 
 Citing
@@ -92,4 +84,4 @@ If you use GPMP2 in an academic context, please cite following publications:
 License
 -----
 
-GPMP2 is released under the BSD license, reproduced in the file LICENSE in this directory.
+GPMP2 is released under the BSD license, reproduced in [LICENSE](LICENSE).
