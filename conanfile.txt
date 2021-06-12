@@ -1,0 +1,8 @@
+[requires]
+gtsam/4.0.2
+
+[generators]
+cmake_find_package
+
+[options]
+gtsam:shared=True
