@@ -50,13 +50,13 @@ void Arm::forwardKinematics(
   if (J_jvx_jv) J_jvx_jv->assign(dof(), Matrix::Zero(3, dof()));
 
   // variables
-  vector<Matrix4> H(dof());
-  vector<Matrix4> Ho(dof()+1); // start from 1
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>> H(dof());
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>> Ho(dof()+1); // start from 1
   vector<Matrix> J;
   if (jv) J.assign(dof(), Matrix::Zero(3, dof()));
   // vars cached for calculate output Jacobians
-  vector<Matrix4> dH(dof());
-  vector<Matrix4> Hoinv(dof()+1); // start from 1
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>> dH(dof());
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>> Hoinv(dof()+1); // start from 1
 
 
   // first iteration
@@ -87,7 +87,7 @@ void Arm::forwardKinematics(
   }
 
   // cache dHoi_dqj (DOF^2 memory), only fill in i >= j since others are all zeros
-  vector<vector<Matrix4> > dHo_dq(dof(), vector<Matrix4>(dof()));
+  vector<vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>> > dHo_dq(dof(), vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4f>>(dof()));
   if (J_jpx_jp || J_jvx_jp)
     for (size_t i = 0; i < dof(); i++)
       for (size_t j = 0; j <= i; j++)
