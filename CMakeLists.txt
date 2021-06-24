@@ -17,6 +17,7 @@ set(GPMP2_VERSION_STRING "${GPMP2_VERSION_MAJOR}.${GPMP2_VERSION_MINOR}.${GPMP2_
 # option: whether turn on Matlab toolbox
 option(GPMP2_BUILD_STATIC_LIBRARY "whether build static library" OFF)
 option(GPMP2_BUILD_MATLAB_TOOLBOX "whether build matlab toolbox, need shared lib" OFF)
+option(GPMP2_BUILD_PYTHON_TOOLBOX "whether build python toolbox, need shared lib" OFF)
 
 if(GPMP2_BUILD_STATIC_LIBRARY AND GPMP2_BUILD_MATLAB_TOOLBOX)
   message(FATAL_ERROR "matlab toolbox needs shared lib")
@@ -70,6 +71,22 @@ if(GPMP2_BUILD_MATLAB_TOOLBOX)
   add_subdirectory(matlab)
 endif()
 
+
+# Wrapping to Python
+if(GPMP2_BUILD_PYTHON_TOOLBOX)
+  include_directories(${GTSAM_DIR}/cython)
+  include_directories(/usr/local/cython)
+  include(GtsamCythonWrap)
+  include_directories(${GTSAM_EIGENCY_INSTALL_PATH})
+
+  wrap_and_install_library_cython("gpmp2.h"
+                                  "from gtsam.gtsam cimport *" # extra import of gtsam/gtsam.pxd Cython header
+                                  "/usr/local/cython" # install path
+                                  gpmp2  # library to link with
+                                  "gtsam"  # dependencies which need to be built before wrapping
+                                  )
+  add_definitions(-DBOOST_OPTIONAL_ALLOW_BINDING_TO_RVALUES -DBOOST_OPTIONAL_CONFIG_ALLOW_BINDING_TO_RVALUES)
+endif()
 
 # Install config and export files
 GtsamMakeConfigFile(gpmp2)
