@@ -147,9 +147,6 @@ dmypy.json
 # models
 *.pth
 *.th
-locobot_navigation/orb_slam2_ros/cfg/default.yaml
-thirdparty/ORB_SLAM2/tools/bin_vocabulary
-thirdparty/ORB_SLAM2/Vocabulary/ORBvoc.txt
 *.npz
 *.bin
 
