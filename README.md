@@ -24,6 +24,40 @@ $ make check  # optional, run unit tests
 $ make install
 ```
 
+Python Toolbox
+-----
+
+The python toolbox has been tested to work with only Gtsam "wrap-export" release version.
+
+Additional Prerequisites : gtsam python bindings.
+To enable stable gtsam python bindings, complie Gtsam with the following options,
+```
+cd gtsam/build
+cmake -DGTSAM_INSTALL_CYTHON_TOOLBOX:=ON ..
+make check  # optional, run unit tests
+sudo make install
+```
+
+Instructions to setup gpmp2 python binding are as follows,
+```
+cd gpmp2/build
+cmake -DGPMP2_BUILD_PYTHON_TOOLBOX:=ON ..
+make check  # optional, run unit tests
+sudo make install
+```
+
+Finally, add the python bindings to your python path
+```
+echo "export PYTHONPATH=$PYTHONPATH:/usr/local/cython" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Aditionally, we also provide some python only visualizations and utlity functions, these can be installed using,
+
+```
+cd gpmp2_python && pip install -e .
+```
+
 Matlab Toolbox
 -----
 

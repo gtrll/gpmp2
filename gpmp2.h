@@ -1,5 +1,19 @@
 // gpmp2 matlab wrapper declarations
 
+/* *   Forward declarations and class definitions for Cython:
+ *     - Need to specify the base class (both this forward class and base 
+          class are declared in an external cython header)
+ *       This is so Cython can generate proper inheritance.
+ *       Example when wrapping a gtsam-based project:
+ *          // forward declarations
+ *          virtual class gtsam::NonlinearFactor
+ *          virtual class gtsam::NoiseModelFactor : gtsam::NonlinearFactor
+ *          // class definition
+ *          #include <MyFactor.h>
+ *          virtual class MyFactor : gtsam::NoiseModelFactor {...};
+ *    - *DO NOT* re-define overriden function already declared in the external (forward-declared) base class
+ *        - This will cause an ambiguity problem in Cython pxd header file*/
+
 // gtsam deceleration
 class gtsam::Vector6;
 class gtsam::Vector3;
@@ -7,13 +21,15 @@ class gtsam::Point3;
 class gtsam::Pose3;
 class gtsam::Point2;
 class gtsam::Pose2;
+//class gtsam::Vector;
 
 class gtsam::GaussianFactorGraph;
 class gtsam::Values;
 virtual class gtsam::noiseModel::Base;
 virtual class gtsam::NonlinearFactor;
 virtual class gtsam::NonlinearFactorGraph;
-virtual class gtsam::NoiseModelFactor;
+virtual class gtsam::NoiseModelFactor : gtsam::NonlinearFactor;
+//virtual class gtsam::NoiseModelFactor;
 
 namespace gpmp2 {
 
@@ -40,11 +56,21 @@ class Pose2Vector {
 ////////////////////////////////////////////////////////////////////////////////
 
 // prior factor
-#include <gpmp2/gp/GaussianProcessPriorLinear.h>
 
+//template<class VALUE1, class VALUE2, class VALUE3, class VALUE4>
+//template<Vector, Vector, Vector, Vector>
+//virtual class gtsam::NoiseModelFactor4: gtsam::NoiseModelFactor;
+
+#include <gpmp2/gp/GaussianProcessPriorLinear.h>
+//template<gtsam::Vector, gtsam::Vector, gtsam::Vector, gtsam::Vector>
 virtual class GaussianProcessPriorLinear : gtsam::NoiseModelFactor {
   GaussianProcessPriorLinear(size_t key1, size_t key2, size_t key3, size_t key4,
       double delta, const gtsam::noiseModel::Base* Qc_model);
+  //Vector evaluateError(Vector pose) const;
+  Vector evaluateError(const Vector& pose1, const Vector& vel1, 
+                    const Vector& pose2, const Vector& vel2);
+  // enabling serialization functionality
+  void serialize() const;
 };
 
 #include <gpmp2/gp/GaussianProcessPriorPose2.h>
@@ -469,6 +495,7 @@ virtual class ObstaclePlanarSDFFactorArm : gtsam::NoiseModelFactor {
       size_t posekey, const gpmp2::ArmModel& arm,
       const gpmp2::PlanarSDF& sdf, double cost_sigma, double epsilon);
   Vector evaluateError(Vector pose) const;
+  void serialize() const;
 };
 
 
@@ -655,6 +682,13 @@ virtual class ObstacleSDFFactorGPPose2MobileVetLin2Arms : gtsam::NoiseModelFacto
       const gpmp2::Pose2MobileVetLin2ArmsModel& marm, const gpmp2::SignedDistanceField& sdf,
       double cost_sigma, double epsilon, const gtsam::noiseModel::Base* Qc_model,
       double delta_t, double tau);
+};
+
+// self collision Arm
+#include <gpmp2/obstacle/SelfCollisionArm.h>
+virtual class SelfCollisionArm : gtsam::NoiseModelFactor {
+  SelfCollisionArm(size_t poseKey, const gpmp2::ArmModel& arm, Matrix data);
+  Vector evaluateError(Vector pose) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

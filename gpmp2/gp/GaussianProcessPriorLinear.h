@@ -62,21 +62,21 @@ public:
       boost::optional<gtsam::Matrix&> H3 = boost::none,
       boost::optional<gtsam::Matrix&> H4 = boost::none) const {
 
-    using namespace gtsam;
+    //using namespace gtsam;
 
     // state vector
-    Vector x1 = (Vector(2*dof_) << pose1, vel1).finished();
-    Vector x2 = (Vector(2*dof_) << pose2, vel2).finished();
+    gtsam::Vector x1 = (gtsam::Vector(2*dof_) << pose1, vel1).finished();
+    gtsam::Vector x2 = (gtsam::Vector(2*dof_) << pose2, vel2).finished();
 
     // Jacobians
-    if (H1) *H1 = (Matrix(2*dof_, dof_) << Matrix::Identity(dof_, dof_),
-        Matrix::Zero(dof_, dof_)).finished();
-    if (H2) *H2 = (Matrix(2*dof_, dof_) << delta_t_ * Matrix::Identity(dof_, dof_),
-        Matrix::Identity(dof_, dof_)).finished();
-    if (H3) *H3 = (Matrix(2*dof_, dof_) << -1.0 * Matrix::Identity(dof_, dof_),
-        Matrix::Zero(dof_, dof_)).finished();
-    if (H4) *H4 = (Matrix(2*dof_, dof_) << Matrix::Zero(dof_, dof_),
-        -1.0 * Matrix::Identity(dof_, dof_)).finished();
+    if (H1) *H1 = (gtsam::Matrix(2*dof_, dof_) << gtsam::Matrix::Identity(dof_, dof_),
+        gtsam::Matrix::Zero(dof_, dof_)).finished();
+    if (H2) *H2 = (gtsam::Matrix(2*dof_, dof_) << delta_t_ * gtsam::Matrix::Identity(dof_, dof_),
+        gtsam::Matrix::Identity(dof_, dof_)).finished();
+    if (H3) *H3 = (gtsam::Matrix(2*dof_, dof_) << -1.0 * gtsam::Matrix::Identity(dof_, dof_),
+        gtsam::Matrix::Zero(dof_, dof_)).finished();
+    if (H4) *H4 = (gtsam::Matrix(2*dof_, dof_) << gtsam::Matrix::Zero(dof_, dof_),
+        -1.0 * gtsam::Matrix::Identity(dof_, dof_)).finished();
 
     // transition matrix & error
     return calcPhi(dof_, delta_t_) * x1 - x2;
