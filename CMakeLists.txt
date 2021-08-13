@@ -81,7 +81,7 @@ if(GPMP2_BUILD_PYTHON_TOOLBOX)
 
   wrap_and_install_library_cython("gpmp2.h"
                                   "from gtsam.gtsam cimport *" # extra import of gtsam/gtsam.pxd Cython header
-                                  "/usr/local/cython" # install path
+                                  "${CMAKE_INSTALL_PREFIX}/cython" # install path
                                   gpmp2  # library to link with
                                   "gtsam"  # dependencies which need to be built before wrapping
                                   )
