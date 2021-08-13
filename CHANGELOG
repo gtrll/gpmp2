@@ -2,10 +2,11 @@
 Changelog for GPMP2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.3.0 (2021-07-22)
+0.3.0 (2021-08-13)
 ------------------
 * Python wrapper with utils and examples
 * Self collision factor
+* Bugfix for theta_bias in Arm.h
 * Contributors: Kalyan Vasudev Alwala, Mustafa Mukadam
 
 0.2.1 (2021-07-21)
