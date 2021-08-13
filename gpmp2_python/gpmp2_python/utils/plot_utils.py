@@ -252,28 +252,28 @@ def plotPointRobot2D(figure, axis, robot, conf, color_rgb=[0.4, 0.4, 0.4]):
         )
 
 
-# def plotPointRobot2D_theta(figure, axis, robot, conf, color_rgb=[0.4, 0.4, 0.4]):
-#     # %plotPointRobot2D Plot PointRobotModel in 2D
-#     # %
-#     # %   Usage: plotRobotModel(robot, conf, color_rgb)
-#     # %   @robot      PointRobotModel object
-#     # %   @conf       robot configuration vector
-#     # %   @color_rgb  optional color RGB values, default is gray [0.4 0.4 0.4]
+def plotPointRobot2D_theta(figure, axis, robot, conf, color_rgb=[0.4, 0.4, 0.4]):
+    # %plotPointRobot2D Plot PointRobotModel in 2D
+    # %
+    # %   Usage: plotRobotModel(robot, conf, color_rgb)
+    # %   @robot      PointRobotModel object
+    # %   @conf       robot configuration vector
+    # %   @color_rgb  optional color RGB values, default is gray [0.4 0.4 0.4]
 
-#     # points
-#     body_points = conf
-#     r = robot.sphere_radius(0)
+    # points
+    body_points = conf
+    r = robot.sphere_radius(0)
 
-#     theta = np.linspace(0, 2 * np.pi, num=40)
-#     x = r * np.cos(theta) + body_points[0]
-#     y = r * np.sin(theta) + body_points[1]
-#     axis.plot(x, y, color=color_rgb)
-#     # axis.plot([conf.x(), conf.x()+ r* np.cos(conf.theta())], [conf.y(), conf.y()+ r * np.sin(conf.theta())], color='b')
-#     axis.plot(
-#         [conf[0], conf[0] + r * np.cos(conf[2])],
-#         [conf[1], conf[1] + r * np.sin(conf[2])],
-#         color="b",
-#     )
+    theta = np.linspace(0, 2 * np.pi, num=40)
+    x = r * np.cos(theta) + body_points[0]
+    y = r * np.sin(theta) + body_points[1]
+    axis.plot(x, y, color=color_rgb)
+    # axis.plot([conf.x(), conf.x()+ r* np.cos(conf.theta())], [conf.y(), conf.y()+ r * np.sin(conf.theta())], color='b')
+    axis.plot(
+        [conf[0], conf[0] + r * np.cos(conf[2])],
+        [conf[1], conf[1] + r * np.sin(conf[2])],
+        color="b",
+    )
 
 
 def plotSphere(figure, axis, radius, center, color):

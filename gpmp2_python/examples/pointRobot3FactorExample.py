@@ -9,8 +9,6 @@ from gpmp2_python.utils.plot_utils import *
 from gpmp2_python.utils.signedDistanceField2D import signedDistanceField2D
 
 
-# from pyrobot import Robot
-
 dataset = generate2Ddataset("MultiObstacleDataset")
 rows = dataset.rows
 cols = dataset.cols
@@ -54,7 +52,7 @@ Qc_model = noiseModel_Gaussian.Covariance(Qc)
 
 # Obstacle avoid settings
 cost_sigma = 0.005
-epsilon_dist = 0.1
+epsilon_dist = 1.5
 
 # prior to start/goal
 pose_fix = noiseModel_Isotropic.Sigma(pR_model.dof(), 0.0001)
@@ -62,12 +60,10 @@ vel_fix = noiseModel_Isotropic.Sigma(pR_model.dof(), 0.0001)
 
 
 # start and end conf
-
-# start_conf_val, start_vel =  np.asarray([0,0,0])  #robot.get_robot_state()
 start_conf_val = np.asarray([0, 0, 0])
 start_conf = Pose2(start_conf_val)
 start_vel = np.asarray([0, 0, 0])
-end_conf_val = np.asarray([2, 2, 0.1])
+end_conf_val = np.asarray([17, 17, 0])
 end_conf = Pose2(end_conf_val)
 end_vel = np.asarray([0, 0, 0])
 avg_vel = (end_conf_val - start_conf_val / total_time_step) / delta_t
@@ -176,11 +172,9 @@ plotEvidenceMap2D(
 )
 for i in range(total_time_step + 1):
     axis.set_title("Optimized Values")
-    # plot arm
     conf = result.atPose2(symbol(ord("x"), i))
     print(conf.x(), conf.y(), conf.theta(), result.atVector(symbol(ord("v"), i)))
     plotPointRobot2D_theta(figure, axis, pR_model, [conf.x(), conf.y(), conf.theta()])
-    plt.pause(0.1)
-
+    plt.pause(pause_time)
 
 plt.show()

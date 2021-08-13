@@ -3,13 +3,9 @@ from gtsam import *
 from gpmp2 import *
 
 import matplotlib.pyplot as plt
-from gpmp_utils.generate2Ddataset import generate2Ddataset
-from gpmp_utils.signedDistanceField2D import signedDistanceField2D
-from gpmp_utils.plotEvidenceMap2D import plotEvidenceMap2D
-from gpmp_utils.plotPointRobot2D import plotPointRobot2D
-from gpmp_utils.plotSignedDistanceField2D import plotSignedDistanceField2D
-
-from pyrobot import Robot
+from gpmp2_python.datasets.generate2Ddataset import generate2Ddataset
+from gpmp2_python.utils.signedDistanceField2D import signedDistanceField2D
+from gpmp2_python.utils.plot_utils import *
 from graph_utils import *
 import time
 

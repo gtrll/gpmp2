@@ -131,9 +131,9 @@ def generateArm(arm_str, base_pose=None):
             )
         arm_model = ArmModel(abs_arm, sphere_vec)
 
-    #% 7 link WAM arm
+    #% Sawyer arm
     elif arm_str is "SAWYERArm":
-        #% arm: WAM arm
+        #% arm: Sawyer arm
         alpha = np.asarray(
             [-np.pi / 2, -np.pi / 2, np.pi / 2, np.pi / 2, -np.pi / 2, -np.pi / 2, 0.0]
         )
