@@ -2,6 +2,22 @@
 Changelog for GPMP2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.0 (2021-08-13)
+------------------
+* Python wrapper with utils and examples
+* Self collision factor
+* Bugfix for theta_bias in Arm.h
+* Contributors: Kalyan Vasudev Alwala, Mustafa Mukadam
+
+0.2.1 (2021-07-21)
+------------------
+* Joint limit factors with examples
+* Optimizer no increase feature
+* More robot models (two arm, w/ mobile base, w/ linear actuator)
+* Workspace i.e. end effector position, orientation, and full pose constraint
+* Updated documentation and some bugfixes
+* Contributors: Jing Dong, Mustafa Mukadam
+
 0.2.0 (2017-06-16)
 ------------------
 * Update installation documentation
