@@ -18,8 +18,9 @@ TODO List
 ------
 More or less in order of priority
 
+- Update to latest GTSAM version
+- Support Python 3.x
 - Load environments from urdf/xml style formats to construct signed distance fields
 - Load robot urdf/xml files and construct forward kinematics for them automatically
-- Basic python wrapper for front end scripting that can replace the matlab wrapper
 - Simple visualizer for environment, robot, trajectory, etc on the python wrapper side
 - Alternate obstacle cost functions like, barrier function
