@@ -91,5 +91,5 @@ if(GPMP2_BUILD_PYTHON_TOOLBOX)
 endif()
 
 # Install config and export files
-GtsamMakeConfigFile(gpmp2)
+GtsamMakeConfigFile(GPMP2)
 export(TARGETS ${GPMP2_EXPORTED_TARGETS} FILE gpmp2-exports.cmake)
