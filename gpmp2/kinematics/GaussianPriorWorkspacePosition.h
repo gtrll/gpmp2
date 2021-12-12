@@ -63,10 +63,10 @@ public:
       Matrix36 Hpp;
       Point3 curr_position = joint_pos[joint_].translation(Hpp);
       *H1 = Hpp * J_jpx_jp[joint_];
-      return curr_position.vector() - des_position_.vector();
+      return curr_position - des_position_;
     }
     else {
-      return joint_pos[joint_].translation().vector() - des_position_.vector();
+      return joint_pos[joint_].translation() - des_position_;
     }
   }
 
@@ -80,7 +80,7 @@ public:
   void print(const std::string& s="", const gtsam::KeyFormatter& keyFormatter = gtsam::DefaultKeyFormatter) const {
     std::cout << s << "GaussianPriorWorkspacePosition :" << std::endl;
     Base::print("", keyFormatter);
-    std::cout << "desired position : "; des_position_.print();
+    std::cout << "desired position : "; des_position_;
   }
 
 private:

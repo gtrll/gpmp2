@@ -22,7 +22,7 @@ gtsam::Matrix ForwardKinematics<POSE, VELOCITY>::forwardKinematicsPose(const Pos
   for (size_t i = 0; i < nr_links_; i++)
     jpx_mat.col(i) = (gtsam::Vector6() << gtsam::Vector3(jpx[i].rotation().yaw(),
         jpx[i].rotation().pitch(), jpx[i].rotation().roll()),
-        jpx[i].translation().vector()).finished();
+        jpx[i].translation()).finished();
   return jpx_mat;
 }
 
@@ -36,7 +36,7 @@ gtsam::Matrix ForwardKinematics<POSE, VELOCITY>::forwardKinematicsPosition(const
   // convert vector in matrix
   gtsam::Matrix jpx_mat(3, nr_links_);
   for (size_t i = 0; i < nr_links_; i++)
-    jpx_mat.col(i) = jpx[i].translation().vector();
+    jpx_mat.col(i) = jpx[i].translation();
   return jpx_mat;
 }
 
