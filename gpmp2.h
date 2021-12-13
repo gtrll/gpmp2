@@ -28,8 +28,8 @@ class gtsam::Values;
 virtual class gtsam::noiseModel::Base;
 virtual class gtsam::NonlinearFactor;
 virtual class gtsam::NonlinearFactorGraph;
-virtual class gtsam::NoiseModelFactor : gtsam::NonlinearFactor;
-//virtual class gtsam::NoiseModelFactor;
+//virtual class gtsam::NoiseModelFactor : gtsam::NonlinearFactor;
+virtual class gtsam::NoiseModelFactor;
 
 namespace gpmp2 {
 
@@ -122,6 +122,7 @@ class Arm {
   Vector d() const;
   Vector alpha() const;
   gtsam::Pose3 base_pose() const;
+  Vector theta_bias() const;
 };
 
 // abstract pose2 mobile base class

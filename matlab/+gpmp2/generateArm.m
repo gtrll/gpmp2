@@ -22,7 +22,7 @@ if strcmp(arm_str, 'SimpleTwoLinksArm')
     a = [0.5, 0.5]';
     d = [0, 0]';
     alpha = [0, 0]';
-    arm = Arm(2, a, alpha, d);
+    arm = Arm(2, a, alpha, d,Pose3(),[0,0]');
     % physical arm
     spheres_data = [...
         0  -0.5  0.0  0.0  0.01
