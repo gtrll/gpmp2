@@ -85,6 +85,7 @@ public:
   const gtsam::Vector& d() const { return d_; }
   const gtsam::Vector& alpha() const { return alpha_; }
   const gtsam::Pose3& base_pose() const { return base_pose_; }
+  const gtsam::Vector& theta_bias() const { return theta_bias_; }
 
 
 private:

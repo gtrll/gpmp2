@@ -31,12 +31,19 @@ template <class POSE, class VELOCITY>
 gtsam::Matrix ForwardKinematics<POSE, VELOCITY>::forwardKinematicsPosition(const Pose& jp) const {
 
   std::vector<gtsam::Pose3> jpx;
+  
+  std::cout << "Starting forwardKinemtics()" << std::endl;
   forwardKinematics(jp, boost::none, jpx, boost::none);
-
+  std::cout << "Finished forwardKinemtics()" << std::endl;
+  std::cout << jpx.size() << std::endl; 	
   // convert vector in matrix
   gtsam::Matrix jpx_mat(3, nr_links_);
+  std::cout << "Number of links:" << nr_links_ << std::endl; 
   for (size_t i = 0; i < nr_links_; i++)
+  {
     jpx_mat.col(i) = jpx[i].translation();
+    std::cout << "Iteration number"<<i<< std::endl; 
+  }
   return jpx_mat;
 }
 
