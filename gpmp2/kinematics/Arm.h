@@ -44,16 +44,9 @@ public:
 
   /// Contructor take in number of joints for the arm, its DH parameters
   /// the base pose (default zero pose), and theta bias (default zero)
-  Arm(size_t dof, const gtsam::Vector& a, const gtsam::Vector& alpha, const gtsam::Vector& d) :
-    Arm(dof, a, alpha, d, gtsam::Pose3(gtsam::Rot3(), gtsam::Point3(0,0,0)), gtsam::Vector::Zero(dof)) {}
-
   Arm(size_t dof, const gtsam::Vector& a, const gtsam::Vector& alpha, const gtsam::Vector& d,
-      const gtsam::Pose3& base_pose) :
-    Arm(dof, a, alpha, d, base_pose, gtsam::Vector::Zero(dof)) {}
-
-  Arm(size_t dof, const gtsam::Vector& a, const gtsam::Vector& alpha, const gtsam::Vector& d,
-      const gtsam::Pose3& base_pose, const gtsam::Vector& theta_bias);
-
+      const gtsam::Pose3& base_pose = gtsam::Pose3(gtsam::Rot3(), gtsam::Point3(0,0,0)),
+      boost::optional<const gtsam::Vector&> theta_bias = boost::none);
 
   /// Default destructor
   virtual ~Arm() {}
@@ -85,7 +78,6 @@ public:
   const gtsam::Vector& d() const { return d_; }
   const gtsam::Vector& alpha() const { return alpha_; }
   const gtsam::Pose3& base_pose() const { return base_pose_; }
-  const gtsam::Vector& theta_bias() const { return theta_bias_; }
 
 
 private:

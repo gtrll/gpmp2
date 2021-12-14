@@ -69,7 +69,7 @@ public:
       Matrix36 Hpp;
       Point3 end_point = joint_pos[arm_.dof() - 1].translation(Hpp);
       *H1 = Hpp * J_jpx_jp[arm_.dof() - 1];
-      return end_point - dest_point_;
+      return end_point- dest_point_;
 
     } else {
       return joint_pos[arm_.dof() - 1].translation() - dest_point_;
