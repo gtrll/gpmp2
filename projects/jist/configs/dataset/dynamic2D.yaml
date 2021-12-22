@@ -1,0 +1,6 @@
+dataset:
+  #Receding Horizon specific things
+  name: "Dynamic2Ddataset"
+  obstacle_num: 80
+  vel_limit : 1 # m/s
+  acc_limit: .1

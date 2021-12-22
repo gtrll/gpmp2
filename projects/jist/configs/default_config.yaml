@@ -1,0 +1,5 @@
+defaults:
+  - problem: example
+  #- algorithm/rh # this extends the "problem" with algo specific params
+  #- algorithm/rrt # this extends the "problem" with algo specific params
+  - dataset: dynamic2D

@@ -1,0 +1,8 @@
+problem:
+
+  #RRT specific things
+  node_num: 100
+  width: 20.0
+  height: 20.0
+  move_along_val: 0.5
+  move_along_val_theta: 0.2
