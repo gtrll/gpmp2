@@ -1,0 +1,6 @@
+dataset:
+  #Receding Horizon specific things
+  name: "Patrol2Ddataset"
+  obstacle_num: 2
+  vel_limit : 0.8 # m/s
+  acc_limit: .1
