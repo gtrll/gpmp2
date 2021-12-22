@@ -57,4 +57,4 @@ If you use JIST in an academic context, please cite following publication.
 License
 -----
 
-JIST is released under the BSD license, reproduced in [../../LICENSE](LICENSE).
+JIST is released under the BSD license, reproduced in [LICENSE](../../LICENSE).
