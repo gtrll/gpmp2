@@ -1,3 +1,5 @@
+**Note**: Version compatible with latest GTSAM is being maintained at [borglab/gpmp2](https://github.com/borglab/gpmp2).
+
 GPMP2
 ===================================================
 
