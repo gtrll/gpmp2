@@ -63,11 +63,20 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 # Process source subdirs
 add_subdirectory(gpmp2)
 
+# Find current wrap repository
+find_package(gtwrap)
+
+#if(NOT GPMP2_TOOLBOX_INSTALL_PATH)
+  #set(GPMP2_TOOLBOX_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/gpmp2_toolbox")
+#sendif()
+#set(GPMP2_TOOLBOX_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/gpmp2_toolbox")
+#set(WRAP_TOOLBOX_INSTALL_PATH "${GTSAM_TOOLBOX_INSTALL_PATH}")
+
 # Wrapping to MATLAB
 if(GPMP2_BUILD_MATLAB_TOOLBOX)
-  # wrap
-  include(GtsamMatlabWrap)
-  wrap_and_install_library(gpmp2.h ${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}" "")
+
+  include(MatlabWrap)
+  matlab_wrap(gpmp2.h ${PROJECT_NAME} "gtsam;${PROJECT_NAME}" "" "" "")
   
   # install matlab functions and scripts
   add_subdirectory(matlab)

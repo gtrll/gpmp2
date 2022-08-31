@@ -28,12 +28,12 @@ void RobotModel<FK>::sphereCenters(const Pose& jp,
   for (size_t sph_idx = 0; sph_idx < nr_body_spheres(); sph_idx++) {
     if (J_point_conf) {
       gtsam::Matrix36 J_point_pose;
-      sph_centers[sph_idx] = link_poses[body_spheres_[sph_idx].link_id].transform_from(
+      sph_centers[sph_idx] = link_poses[body_spheres_[sph_idx].link_id].transformFrom(
           body_spheres_[sph_idx].center, J_point_pose);
       (*J_point_conf)[sph_idx] = J_point_pose * J_pose_jp[body_spheres_[sph_idx].link_id];
 
     } else {
-      sph_centers[sph_idx] = link_poses[body_spheres_[sph_idx].link_id].transform_from(
+      sph_centers[sph_idx] = link_poses[body_spheres_[sph_idx].link_id].transformFrom(
           body_spheres_[sph_idx].center);
     }
   }
@@ -55,12 +55,12 @@ gtsam::Point3 RobotModel<FK>::sphereCenter(size_t sph_idx, const Pose& jp,
   gtsam::Point3 sph_center;
   if (J_point_conf) {
     gtsam::Matrix36 J_point_pose;
-    sph_center = link_poses[body_spheres_[sph_idx].link_id].transform_from(
+    sph_center = link_poses[body_spheres_[sph_idx].link_id].transformFrom(
         body_spheres_[sph_idx].center, J_point_pose);
     *J_point_conf = J_point_pose * J_pose_jp[body_spheres_[sph_idx].link_id];
 
   } else {
-    sph_center = link_poses[body_spheres_[sph_idx].link_id].transform_from(
+    sph_center = link_poses[body_spheres_[sph_idx].link_id].transformFrom(
         body_spheres_[sph_idx].center);
   }
 
@@ -77,7 +77,7 @@ gtsam::Matrix RobotModel<FK>::sphereCentersMat(const Pose& jp) const {
   // convert to matrix
   gtsam::Matrix points_mat(3, nr_body_spheres());
   for (size_t i = 0; i < nr_body_spheres(); i++)
-    points_mat.col(i) = sph_centers[i].vector();
+    points_mat.col(i) = sph_centers[i];
   return points_mat;
 }
 

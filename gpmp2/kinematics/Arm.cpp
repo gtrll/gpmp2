@@ -14,9 +14,14 @@ namespace gpmp2 {
 
 /* ************************************************************************** */
 Arm::Arm(size_t dof, const Vector& a, const Vector& alpha, const Vector& d,
-    const Pose3& base_pose, const Vector& theta_bias) :
-    Base(dof, dof), a_(a), alpha_(alpha), d_(d), base_pose_(base_pose),
-    theta_bias_(theta_bias) {
+    const gtsam::Pose3& base_pose, boost::optional<const Vector&> theta_bias) :
+    Base(dof, dof), a_(a), alpha_(alpha), d_(d), base_pose_(base_pose) {
+
+  // theta bias
+  if (theta_bias)
+    theta_bias_ = *theta_bias;
+  else
+    theta_bias_ = Vector::Zero(dof);
 
   // DH transformation for each link, without theta matrix
   // Spong06book, page. 69, eq. (3.10)
@@ -45,13 +50,13 @@ void Arm::forwardKinematics(
   if (J_jvx_jv) J_jvx_jv->assign(dof(), Matrix::Zero(3, dof()));
 
   // variables
-  vector<Matrix4> H(dof());
-  vector<Matrix4> Ho(dof()+1); // start from 1
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>> H(dof());
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>> Ho(dof()+1); // start from 1
   vector<Matrix> J;
   if (jv) J.assign(dof(), Matrix::Zero(3, dof()));
   // vars cached for calculate output Jacobians
-  vector<Matrix4> dH(dof());
-  vector<Matrix4> Hoinv(dof()+1); // start from 1
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>> dH(dof());
+  vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>> Hoinv(dof()+1); // start from 1
 
 
   // first iteration
@@ -82,7 +87,7 @@ void Arm::forwardKinematics(
   }
 
   // cache dHoi_dqj (DOF^2 memory), only fill in i >= j since others are all zeros
-  vector<vector<Matrix4> > dHo_dq(dof(), vector<Matrix4>(dof()));
+  vector<vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>> > dHo_dq(dof(), vector<Matrix4, Eigen::aligned_allocator<Eigen::Matrix4d>>(dof()));
   if (J_jpx_jp || J_jvx_jp)
     for (size_t i = 0; i < dof(); i++)
       for (size_t j = 0; j <= i; j++)

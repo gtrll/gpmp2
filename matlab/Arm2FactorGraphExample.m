@@ -65,8 +65,9 @@ pause_time = total_time_sec / total_time_step;
 figure(1), hold on
 plotEvidenceMap2D(dataset.map, dataset.origin_x, dataset.origin_y, cell_size);
 title('Layout')
-plotPlanarArm(arm.fk_model(), start_conf, 'b', 2);
-plotPlanarArm(arm.fk_model(), end_conf, 'r', 2);
+tmp = arm.fk_model();
+plotPlanarArm(tmp, start_conf, 'b', 2);
+plotPlanarArm(tmp, end_conf, 'r', 2);
 hold off
 
 
